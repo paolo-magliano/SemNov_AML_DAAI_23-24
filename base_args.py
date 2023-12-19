@@ -20,7 +20,7 @@ def add_base_args(parser):
     parser.add_argument("--batch_size",
                         default=64, type=int, help="batch size for each GPU worker")
     parser.add_argument("--num_workers",
-                        default=6, type=int)
+                        default=4, type=int)
     parser.add_argument("--resume",
                         type=str, default=None, help="resume training from checkpoint")
     parser.add_argument("--apply_fix_cellphone", 
