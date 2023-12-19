@@ -1,4 +1,5 @@
-# Towards Open Set 3D Learning: Benchmarking and Understanding Semantic Novelty Detection on Pointclouds
+# AML-DAAI Project 2023-2024
+## Code from Towards Open Set 3D Learning: Benchmarking and Understanding Semantic Novelty Detection on Pointclouds
 Official PyTorch implementation of ["Towards Open Set 3D Learning: Benchmarking and Understanding Semantic Novelty Detection on Pointclouds"](https://openreview.net/pdf?id=X2dHozbd1at) by Antonio Alliegro, Francesco Cappio Borlino and Tatiana Tommasi.
 
 **This work has been accepted to NeurIPS 2022 Datasets and Benchmarks Track.**
