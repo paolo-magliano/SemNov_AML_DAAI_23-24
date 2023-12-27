@@ -49,12 +49,27 @@ The absolute path to the datasets root must be passed as **--data_root** argumen
 
 ## Run example
 
+## RUNNING ON COLAB FOR STUDENTS
+We use PyTorch Distributed Training that assumes an environment/machine with multiple GPUs. To run on Google Colab (single GPU machine) **you need to remove "-m torch.distributed.launch --nproc_per_node=1" from the bash command.**
+
+### Example
+```bash
+# Original with PyTorch DDP:
+python -m torch.distributed.launch --nproc_per_node=1 classifiers/trainer_cla.py --config cfgs/dgcnn-cla.yaml --exp_name DGCNN_CE_SN1 --src SN1 --loss CE 
+
+# [AML/DAAI STUDENT] On colab or single GPU environment:
+python classifiers/trainer_cla.py --config cfgs/dgcnn-cla.yaml --exp_name DGCNN_CE_SN1 --src SN1 --loss CE 
+```
+The same also holds for the eval commands. 
+
+
 ### Training
 
 Each experiment requires to choose a backbone (through the config file), a loss function and a source set. For example: 
 
 ```bash
-python -m torch.distributed.launch --nproc_per_node=1 classifiers/trainer_ddp_cla.py --config cfgs/dgcnn-cla.yaml --exp_name DGCNN_CE_SN1 --src SN1 --loss CE 
+# multiple gpus
+python -m torch.distributed.launch --nproc_per_node=1 classifiers/trainer_cla.py --config cfgs/dgcnn-cla.yaml --exp_name DGCNN_CE_SN1 --src SN1 --loss CE 
 ```
 
 Details: 
@@ -70,8 +85,9 @@ Details:
 ### Eval 
 
 ```bash
-python -m torch.distributed.launch --nproc_per_node=1 classifiers/trainer_ddp_cla.py --config cfgs/dgcnn-cla.yaml --exp_name DGCNN_CE_SN1 --src SN1 --loss CE \
-    -mode eval --ckpt_path outputs/DGCNN_CE_SN1/models/model_last.pth
+# multiple gpus
+python -m torch.distributed.launch --nproc_per_node=1 classifiers/trainer_cla.py --config cfgs/dgcnn-cla.yaml --exp_name DGCNN_CE_SN1 --src SN1 --loss CE -mode eval --ckpt_path outputs/DGCNN_CE_SN1/models/model_last.pth
+
 ```
 
 Example output:

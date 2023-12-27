@@ -1,12 +1,26 @@
 # Synthetic Benchmark 
 
+## RUNNING ON COLAB FOR STUDENTS
+We use PyTorch Distributed Training that assumes an environment/machine with multiple GPUs. To run on Google Colab (single GPU machine) **you need to remove "-m torch.distributed.launch --nproc_per_node=1" from the bash command.**
+
+### Example
+```bash
+# Original with PyTorch DDP:
+python -m torch.distributed.launch --nproc_per_node=1 classifiers/trainer_cla.py --config cfgs/dgcnn-cla.yaml --exp_name DGCNN_CE_SN1 --src SN1 --loss CE 
+
+# [AML/DAAI STUDENT] On colab or single GPU environment:
+python classifiers/trainer_cla.py --config cfgs/dgcnn-cla.yaml --exp_name DGCNN_CE_SN1 --src SN1 --loss CE 
+```
+The same also holds for the eval commands.
+
+
 ## Discriminative methods
 
 ```bash
 # train
-python -m torch.distributed.launch --nproc_per_node=1 classifiers/trainer_ddp_cla.py --config cfgs/dgcnn-cla.yaml --exp_name DGCNN_CE_SN1 --src SN1 --loss CE 
+python -m torch.distributed.launch --nproc_per_node=1 classifiers/trainer_cla.py --config cfgs/dgcnn-cla.yaml --exp_name DGCNN_CE_SN1 --src SN1 --loss CE 
 # eval
-python -m torch.distributed.launch --nproc_per_node=1 classifiers/trainer_ddp_cla.py --config cfgs/dgcnn-cla.yaml --exp_name DGCNN_CE_SN1 --src SN1 --loss CE \
+python -m torch.distributed.launch --nproc_per_node=1 classifiers/trainer_cla.py --config cfgs/dgcnn-cla.yaml --exp_name DGCNN_CE_SN1 --src SN1 --loss CE \
     -mode eval --ckpt_path outputs/DGCNN_CE_SN1/models/model_last.pth
 ```
 
@@ -26,9 +40,9 @@ TODO
 
 ```bash
 # train
-python -m torch.distributed.launch --nproc_per_node=1 classifiers/trainer_ddp_NF.py --config cfgs/dgcnn-cla.yaml --exp_name DGCNN_NF_SN1 --src SN1
+python -m torch.distributed.launch --nproc_per_node=1 classifiers/trainer_NF.py --config cfgs/dgcnn-cla.yaml --exp_name DGCNN_NF_SN1 --src SN1
 # eval
-python -m torch.distributed.launch --nproc_per_node=1 classifiers/trainer_ddp_NF.py --config cfgs/dgcnn-cla.yaml --exp_name DGCNN_NF_SN1 --src SN1 \
+python -m torch.distributed.launch --nproc_per_node=1 classifiers/trainer_NF.py --config cfgs/dgcnn-cla.yaml --exp_name DGCNN_NF_SN1 --src SN1 \
     -mode eval --ckpt_path outputs/DGCNN_NF_SN1/models/model_last.pth
 ```
 
@@ -43,12 +57,12 @@ to first of all perform a training like done for discriminative models:
 
 ```bash
 # first training step for classification
-python -m torch.distributed.launch --nproc_per_node=1 classifiers/trainer_ddp_cla.py --config cfgs/dgcnn-cla.yaml --exp_name DGCNN_CE_SN1 --src SN1 --loss CE 
+python -m torch.distributed.launch --nproc_per_node=1 classifiers/trainer_cla.py --config cfgs/dgcnn-cla.yaml --exp_name DGCNN_CE_SN1 --src SN1 --loss CE 
 # outlier exposure finetuning
-python -m torch.distributed.launch --nproc_per_node=1 classifiers/trainer_ddp_cla.py --config cfgs/dgcnn_exposure.yaml --exp_name DGCNN_OE_SN1 --src SN1 --loss CE \
+python -m torch.distributed.launch --nproc_per_node=1 classifiers/trainer_cla.py --config cfgs/dgcnn_exposure.yaml --exp_name DGCNN_OE_SN1 --src SN1 --loss CE \
     --resume outputs/DGCNN_CE_SN1/models/model_last.pth --epochs 100 -mode 'train_exposure'
 # eval
-python -m torch.distributed.launch --nproc_per_node=1 classifiers/trainer_ddp_cla.py --config cfgs/dgcnn-cla.yaml --exp_name DGCNN_OE_SN1 --src SN1 --loss CE \
+python -m torch.distributed.launch --nproc_per_node=1 classifiers/trainer_cla.py --config cfgs/dgcnn-cla.yaml --exp_name DGCNN_OE_SN1 --src SN1 --loss CE \
     -mode eval --ckpt_path outputs/DGCNN_OE_SN1/models/model_last.pth
 ```
 
@@ -65,9 +79,9 @@ The interesting result, which we reported in the paper, corresponds with the out
 
 ```bash
 # train
-python -m torch.distributed.launch --nproc_per_node=1 classifiers/trainer_ddp_cla.py --config cfgs/dgcnn-cla.yaml --exp_name DGCNN_ARPL_CS_SN1 --src SN1 --loss ARPL --cs
+python -m torch.distributed.launch --nproc_per_node=1 classifiers/trainer_cla.py --config cfgs/dgcnn-cla.yaml --exp_name DGCNN_ARPL_CS_SN1 --src SN1 --loss ARPL --cs
 # eval
-python -m torch.distributed.launch --nproc_per_node=1 classifiers/trainer_ddp_cla.py --config cfgs/dgcnn-cla.yaml --exp_name DGCNN_ARPL_CS_SN1 --src SN1 --loss ARPL --cs \
+python -m torch.distributed.launch --nproc_per_node=1 classifiers/trainer_cla.py --config cfgs/dgcnn-cla.yaml --exp_name DGCNN_ARPL_CS_SN1 --src SN1 --loss ARPL --cs \
     -mode eval --ckpt_path outputs/DGCNN_ARPL_CS_SN1/models/model_last.pth
 ```
 
@@ -79,9 +93,9 @@ The interesting result, which we reported in the paper, corresponds with the out
 
 ```bash
 # train
-python -m torch.distributed.launch --nproc_per_node=1 classifiers/trainer_ddp_cla.py --config cfgs/dgcnn-cla.yaml --exp_name DGCNN_cosine_SN1 --src SN1 --loss cosine
+python -m torch.distributed.launch --nproc_per_node=1 classifiers/trainer_cla.py --config cfgs/dgcnn-cla.yaml --exp_name DGCNN_cosine_SN1 --src SN1 --loss cosine
 # eval
-python -m torch.distributed.launch --nproc_per_node=1 classifiers/trainer_ddp_cla.py --config cfgs/dgcnn-cla.yaml --exp_name DGCNN_cosine_SN1 --src SN1 --loss cosine \
+python -m torch.distributed.launch --nproc_per_node=1 classifiers/trainer_cla.py --config cfgs/dgcnn-cla.yaml --exp_name DGCNN_cosine_SN1 --src SN1 --loss cosine \
     -mode eval --ckpt_path outputs/DGCNN_cosine_SN1/models/model_last.pth
 ```
 
@@ -98,9 +112,9 @@ interesting output result is the one dubbed *Euclidean distances in a non-normal
 
 ```bash
 # train
-python -m torch.distributed.launch --nproc_per_node=1 supcon/trainer_ddp_supcon.py --config cfgs/dgcnn_contrast.yaml --exp_name DGCNN_supcon_SN1 --src SN1
+python -m torch.distributed.launch --nproc_per_node=1 supcon/trainer_supcon.py --config cfgs/dgcnn_contrast.yaml --exp_name DGCNN_supcon_SN1 --src SN1
 # eval 
-python -m torch.distributed.launch --nproc_per_node=1 supcon/trainer_ddp_supcon.py --config cfgs/dgcnn_contrast.yaml --exp_name DGCNN_supcon_SN1 --src SN1 \
+python -m torch.distributed.launch --nproc_per_node=1 supcon/trainer_supcon.py --config cfgs/dgcnn_contrast.yaml --exp_name DGCNN_supcon_SN1 --src SN1 \
     -mode eval --ckpt_path outputs/DGCNN_supcon_SN1/models/model_last.pth
 ```
 
@@ -113,9 +127,9 @@ The output results reported in the paper are those called *Evaluation - Nearest 
 
 ```bash
 # train
-python -m torch.distributed.launch --nproc_per_node=1 classifiers/trainer_ddp_cla.py --config cfgs/face_losses_SN/dgcnn_face_SN.yaml --exp_name DGCNN_subarcface_SN1 --src SN1 --loss subcenter_arcface --epochs 500
+python -m torch.distributed.launch --nproc_per_node=1 classifiers/trainer_cla.py --config cfgs/face_losses_SN/dgcnn_face_SN.yaml --exp_name DGCNN_subarcface_SN1 --src SN1 --loss subcenter_arcface --epochs 500
 # eval
-python -m torch.distributed.launch --nproc_per_node=1 classifiers/trainer_ddp_cla.py --config cfgs/face_losses_SN/dgcnn_face_SN.yaml --exp_name DGCNN_subarcface_SN1 --src SN1 --loss subcenter_arcface --epochs 500 \
+python -m torch.distributed.launch --nproc_per_node=1 classifiers/trainer_cla.py --config cfgs/face_losses_SN/dgcnn_face_SN.yaml --exp_name DGCNN_subarcface_SN1 --src SN1 --loss subcenter_arcface --epochs 500 \
     -mode eval --ckpt_path outputs/DGCNN_subarcface_SN1/models/model_last.pth
 ```
 

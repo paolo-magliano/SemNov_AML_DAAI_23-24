@@ -1,12 +1,16 @@
 import sys
 import os
+import os.path as osp
 
 sys.path.append(os.getcwd())
 import time
 from torch.cuda.amp import GradScaler, autocast
+from torch.nn.parallel import DistributedDataParallel as DDP
+from torch.utils.data.distributed import DistributedSampler
 from torch.utils.data import DataLoader
 from torchvision import transforms
 from utils.utils import *
+from utils.dist import *
 from utils.data_utils import *
 from datasets.sncore_4k import ShapeNetCore4k
 # noinspection PyUnresolvedReferences
@@ -21,6 +25,7 @@ from base_args import add_base_args
 from models.common import convert_model_state, logits_entropy_loss
 from models.ARPL_utils import Generator, Discriminator
 from classifiers.common import train_epoch_rsmix_exposure, train_epoch_cs, train_epoch_cla
+
 
 
 def get_args():
@@ -63,6 +68,8 @@ def get_args():
 
 
 def get_sncore_train_loader(opt, synset=None, split="train"):
+    world_size = get_ws()
+    rank = get_rank()
     drop_last = not str(opt.script_mode).startswith('eval')
     if opt.augm_set == 'st':
         print("Augm set ST")
@@ -92,13 +99,16 @@ def get_sncore_train_loader(opt, synset=None, split="train"):
     train_data = ShapeNetCore4k(
         data_root=opt.data_root, split=split, class_choice=list(eval(synset).keys()),
         num_points=4096, transforms=train_transforms, apply_fix_cellphone=opt.apply_fix_cellphone)
+    train_sampler = DistributedSampler(train_data, num_replicas=world_size, rank=rank, shuffle=True)
     train_loader = DataLoader(train_data, batch_size=opt.batch_size, drop_last=drop_last, num_workers=opt.num_workers,
-                              worker_init_fn=init_np_seed)
+                              sampler=train_sampler, worker_init_fn=init_np_seed)
     return train_loader
 
 
 def get_sncore_val_loader(opt):
-    # single gpu
+    # Also compatible with DDP training runtime evaluation
+    ws = get_ws()
+    rank = get_rank()
     drop_last = not str(opt.script_mode).startswith('eval')
 
     base_data_params = {
@@ -106,15 +116,17 @@ def get_sncore_val_loader(opt):
         'apply_fix_cellphone': opt.apply_fix_cellphone}
 
     val_data = ShapeNetCore4k(**base_data_params, class_choice=list(eval(opt.src).keys()))
+    val_sampler = DistributedSampler(val_data, num_replicas=ws, rank=rank, shuffle=True) if is_dist() else None
+    print(f"val_sampler: {val_sampler}")
     val_loader = DataLoader(val_data, batch_size=opt.batch_size, drop_last=drop_last, num_workers=6,
-                            worker_init_fn=init_np_seed)
+                            sampler=val_sampler, worker_init_fn=init_np_seed)
     return val_loader
 
 
 def get_test_loaders(opt):
+
     """
-    single gpu
-    Returns all dataloaders used for evaluation
+    Returns all dataloaders used for evaluation, this function is compatible with DDP training runtime evaluation
 
     Return values:
         train_loader: train loader to compute category centroids - no augm, shuffle=True, drop_last=True if Training else False
@@ -123,7 +135,10 @@ def get_test_loaders(opt):
         tar2_loader: test OOD 2 data loader - no augm, shuffle=True, drop_last=True if Training else False
 
     """
+
+    ws, rank = get_ws(), get_rank()
     drop_last = not str(opt.script_mode).startswith('eval')
+
     base_data_params = {
         'data_root': opt.data_root, 'num_points': opt.num_points, 'transforms': None,
         'apply_fix_cellphone': opt.apply_fix_cellphone}
@@ -139,30 +154,43 @@ def get_test_loaders(opt):
     tar1_data = ShapeNetCore4k(**base_data_params, split='test', class_choice=list(eval(opt.tar1).keys()))
     tar2_data = ShapeNetCore4k(**base_data_params, split='test', class_choice=list(eval(opt.tar2).keys()))
 
+    # samplers - are None if not distributed training
+    train_sampler = DistributedSampler(train_data, num_replicas=ws, rank=rank, shuffle=True) if is_dist() else None
+    test_sampler = DistributedSampler(test_data, num_replicas=ws, rank=rank, shuffle=True) if is_dist() else None
+    tar1_sampler = DistributedSampler(tar1_data, num_replicas=ws, rank=rank, shuffle=True) if is_dist() else None
+    tar2_sampler = DistributedSampler(tar2_data, num_replicas=ws, rank=rank, shuffle=True) if is_dist() else None
+
     # loaders
-    train_loader = DataLoader(  # train loader with no augmentation for feature eval
+    train_loader = DataLoader( # train loader with no augmentation for feature eval
         train_data, batch_size=opt.batch_size, drop_last=drop_last, num_workers=opt.num_workers,
-        worker_init_fn=init_np_seed)
+        sampler=train_sampler, worker_init_fn=init_np_seed)
     test_loader = DataLoader(
         test_data, batch_size=opt.batch_size, drop_last=drop_last, num_workers=opt.num_workers,
-        worker_init_fn=init_np_seed)
+        sampler=test_sampler, worker_init_fn=init_np_seed)
     tar1_loader = DataLoader(
         tar1_data, batch_size=opt.batch_size, drop_last=drop_last, num_workers=opt.num_workers,
-        worker_init_fn=init_np_seed)
+        sampler=tar1_sampler, worker_init_fn=init_np_seed)
     tar2_loader = DataLoader(
         tar2_data, batch_size=opt.batch_size, drop_last=drop_last, num_workers=opt.num_workers,
-        worker_init_fn=init_np_seed)
+        sampler=tar2_sampler, worker_init_fn=init_np_seed)
+
     return test_loader, tar1_loader, tar2_loader, train_loader
 
 
 def train(opt, config):
+    if torch.cuda.device_count() > 1 and is_dist():
+        dist.init_process_group(backend='nccl', init_method='env://')
+        device_id, device = opt.local_rank, torch.device(opt.local_rank)
+        torch.cuda.set_device(device_id)
+
+    rank, world_size = get_rank(), get_ws()
     assert torch.cuda.is_available(), "no cuda device is available"
     torch.autograd.set_detect_anomaly(True)
     torch.backends.cudnn.enabled = True
     torch.backends.cudnn.benchmark = True
     set_random_seed(opt.seed)
-    rank, world_size = 0, 1
     print("*" * 30)
+    print(f"{rank}/{world_size} process initialized.\n")
     print(f"{rank}/{world_size} arguments: {opt}. \n")
     print("*" * 30)
 
@@ -177,6 +205,7 @@ def train(opt, config):
         logger = IOStream(path=osp.join(opt.log_dir, f'log_{int(time.time())}.txt'))
         logger.cprint(f"Arguments: {opt}")
         logger.cprint(f"Config: {config}")
+        logger.cprint(f"World size: {world_size}\n")
         wandb.login()
         if opt.wandb_name is None:
             opt.wandb_name = opt.exp_name
@@ -204,12 +233,19 @@ def train(opt, config):
     else:
         model.apply(weights_init_normal)
 
-    # move to CUDA
+    # move to CUDA, build DDP
     model = model.cuda()
+    if opt.use_sync_bn:
+        assert torch.cuda.device_count() > 1 and is_dist(), "cannot use SyncBatchNorm without distributed data parallel"
+        model = torch.nn.SyncBatchNorm.convert_sync_batchnorm(model)
     if rank == 0:
         logger.cprint(f"model: \n{model}")
         logger.cprint(f"Model params count: {count_parameters(model) / 1000000:.4f} M")
         logger.cprint(f"loss: {opt.loss}\n")
+
+    if torch.cuda.device_count() > 1 and is_dist():
+        model = DDP(model, device_ids=[opt.local_rank], output_device=opt.local_rank, find_unused_parameters=True)
+    if rank == 0:
         wandb.watch(model, log="gradients")
 
     # optimizer and scheduler
@@ -219,6 +255,7 @@ def train(opt, config):
 
     optimizer, scheduler = get_opti_sched(named_parameters, config)
     scaler = GradScaler(enabled=opt.use_amp)
+
     netG, netD = None, None
     optimizerG, optimizerD = None, None
     criterionD = None
@@ -227,6 +264,9 @@ def train(opt, config):
         netG = Generator(num_points=opt.num_points).cuda()
         netD = Discriminator().cuda()
         criterionD = nn.BCELoss()
+        if torch.cuda.device_count() > 1 and is_dist():
+            netG = DDP(netG, device_ids=[opt.local_rank], output_device=opt.local_rank, find_unused_parameters=True)
+            netD = DDP(netD, device_ids=[opt.local_rank], output_device=opt.local_rank, find_unused_parameters=True)
         optimizerD = torch.optim.Adam(netD.parameters(), lr=opt.cs_gan_lr, betas=(0.5, 0.999))
         optimizerG = torch.optim.Adam(netG.parameters(), lr=opt.cs_gan_lr, betas=(0.5, 0.999))
 
@@ -265,6 +305,10 @@ def train(opt, config):
     time1 = time.time()
     for epoch in range(start_epoch, opt.epochs + 1):
         is_best = False
+
+        if isinstance(train_loader, DataLoader) and isinstance(train_loader.sampler, DistributedSampler):
+            train_loader.sampler.set_epoch(epoch)
+
         if opt.script_mode == 'train_exposure':
             train_epoch_rsmix_exposure(
                 epoch=epoch,
@@ -290,6 +334,9 @@ def train(opt, config):
 
         # evaluation routine
         if epoch % opt.eval_step == 0:
+            src_loader.sampler.set_epoch(epoch)
+            tar1_loader.sampler.set_epoch(epoch)
+            tar2_loader.sampler.set_epoch(epoch)
             start_eval = time.time()
             # MSP as validation metric
             src_conf, src_pred, src_labels = get_confidence(model, src_loader)

@@ -1,12 +1,18 @@
 import sys
 import os
-sys.path.append(os.getcwd())
 import warnings
+import numpy as np
+
+sys.path.append(os.getcwd())
+import os.path as osp
 import time
 from torch.cuda.amp import GradScaler, autocast
+from torch.nn.parallel import DistributedDataParallel as DDP
+from torch.utils.data.distributed import DistributedSampler
 from torch.utils.data import DataLoader
 from torchvision import transforms
 from utils.utils import *
+from utils.dist import *
 # noinspection PyUnresolvedReferences
 from utils.data_utils import H5_Dataset
 from datasets.modelnet import *
@@ -121,6 +127,7 @@ def get_list_corr_data(opt, severity=None, split="train"):
 # for training routine
 def get_md_loaders(opt):
     assert opt.src.startswith('SR')
+    ws, rank = get_ws(), get_rank()
     drop_last = not str(opt.script_mode).startswith('eval')
 
     if opt.augm_set == 'st':
@@ -172,10 +179,14 @@ def get_md_loaders(opt):
         class_choice=opt.src,
         transforms=None)
 
+    train_sampler = DistributedSampler(train_data, num_replicas=ws, rank=rank, shuffle=True)
+    test_sampler = DistributedSampler(test_data, num_replicas=ws, rank=rank, shuffle=True)
     train_loader = DataLoader(
-        train_data, batch_size=opt.batch_size, drop_last=drop_last, num_workers=opt.num_workers, worker_init_fn=init_np_seed)
+        train_data, batch_size=opt.batch_size, drop_last=drop_last, num_workers=opt.num_workers,
+        sampler=train_sampler, worker_init_fn=init_np_seed)
     test_loader = DataLoader(
-        test_data, batch_size=opt.batch_size, drop_last=drop_last, num_workers=opt.num_workers, worker_init_fn=init_np_seed)
+        test_data, batch_size=opt.batch_size, drop_last=drop_last, num_workers=opt.num_workers,
+        sampler=test_sampler, worker_init_fn=init_np_seed)
     return train_loader, test_loader
 
 ### for evaluation routine ###
@@ -247,7 +258,12 @@ def get_md_react_val_loader(opt):
 
 
 def train(opt, config):
-    rank, world_size = 0, 1
+    if torch.cuda.device_count() > 1 and is_dist():
+        dist.init_process_group(backend='nccl', init_method='env://')
+        device_id, device = opt.local_rank, torch.device(opt.local_rank)
+        torch.cuda.set_device(device_id)
+
+    rank, world_size = get_rank(), get_ws()
     assert torch.cuda.is_available(), "no cuda device is available"
     torch.backends.cudnn.enabled = True
     torch.backends.cudnn.benchmark = True
@@ -300,10 +316,17 @@ def train(opt, config):
         model.apply(weights_init_normal)
 
     model = model.cuda()
+    if opt.use_sync_bn:
+        assert torch.cuda.device_count() > 1 and is_dist(), "cannot use SyncBatchNorm without distributed data parallel"
+        model = torch.nn.SyncBatchNorm.convert_sync_batchnorm(model)
     if rank == 0:
         logger.cprint(f"Model: \n{model}\n")
         logger.cprint(f"param count: \n{count_parameters(model) / 1000000 :.4f} M")
         logger.cprint(f"Loss: {opt.loss}\n")
+
+    if torch.cuda.device_count() > 1 and is_dist():
+        model = DDP(model, device_ids=[opt.local_rank], output_device=opt.local_rank, find_unused_parameters=True)
+    if rank == 0:
         wandb.watch(model, log="gradients")
 
     # optimizer and scheduler
@@ -317,6 +340,10 @@ def train(opt, config):
         netG = Generator(num_points=opt.num_points).cuda()
         netD = Discriminator().cuda()
         criterionD = nn.BCELoss()
+        # move to distributed
+        if torch.cuda.device_count() > 1 and is_dist():
+            netG = DDP(netG, device_ids=[opt.local_rank], output_device=opt.local_rank, find_unused_parameters=True)
+            netD = DDP(netD, device_ids=[opt.local_rank], output_device=opt.local_rank, find_unused_parameters=True)
         optimizerD = torch.optim.Adam(netD.parameters(), lr=opt.cs_gan_lr, betas=(0.5, 0.999))
         optimizerG = torch.optim.Adam(netG.parameters(), lr=opt.cs_gan_lr, betas=(0.5, 0.999))
 
@@ -353,6 +380,8 @@ def train(opt, config):
     time1 = time.time()
     for epoch in range(start_epoch, opt.epochs + 1):
         is_best = False
+        train_loader.sampler.set_epoch(epoch)
+        test_loader.sampler.set_epoch(epoch)
 
         if opt.script_mode == 'train_exposure':
             # finetuning clf for Outlier Exposure with mixup data
