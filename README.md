@@ -50,14 +50,16 @@ The absolute path to the datasets root must be passed as **--data_root** argumen
 ## Run example
 
 ## RUNNING ON COLAB FOR STUDENTS
-In this repository we use PyTorch Distributed Training that assumes an environment/machine with multiple GPUs. To run experiments on Google Colab (single GPU machine) **you need to remove "-m torch.distributed.launch --nproc_per_node=1" from the bash commands in the guidelines.**
+<span style="color:red">
+In this repository we use PyTorch Distributed Training that assumes an environment/machine with multiple GPUs. To run experiments on Google Colab (single GPU machine) you need to remove "-m torch.distributed.launch --nproc_per_node=1" from the bash commands in the guidelines.
+</span>
 
 ### Example
 ```bash
-# Original with PyTorch DDP:
+# Original bash command from README with PyTorch DDP:
 python -m torch.distributed.launch --nproc_per_node=1 classifiers/trainer_cla.py --config cfgs/dgcnn-cla.yaml --exp_name DGCNN_CE_SN1 --src SN1 --loss CE 
 
-# [AML/DAAI STUDENT] On colab or single GPU environment:
+# [AML/DAAI STUDENT] What you should run on COLAB or single GPU environment:
 python classifiers/trainer_cla.py --config cfgs/dgcnn-cla.yaml --exp_name DGCNN_CE_SN1 --src SN1 --loss CE 
 ```
 The same also holds for the eval commands. 
