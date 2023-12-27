@@ -50,7 +50,7 @@ The absolute path to the datasets root must be passed as **--data_root** argumen
 ## Run example
 
 ## RUNNING ON COLAB FOR STUDENTS
-We use PyTorch Distributed Training that assumes an environment/machine with multiple GPUs. To run on Google Colab (single GPU machine) **you need to remove "-m torch.distributed.launch --nproc_per_node=1" from the bash command.**
+In this repository we use PyTorch Distributed Training that assumes an environment/machine with multiple GPUs. To run experiments on Google Colab (single GPU machine) **you need to remove "-m torch.distributed.launch --nproc_per_node=1" from the bash commands in the guidelines.**
 
 ### Example
 ```bash
