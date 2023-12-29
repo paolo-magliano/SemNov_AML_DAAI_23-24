@@ -1,5 +1,7 @@
 from models.common import *
 from models import *
+from models.pointnet2.model_yanx27 import *
+
 
 
 def get_feature_encoder(args):
@@ -20,14 +22,20 @@ def get_feature_encoder(args):
     elif args.ENCO_NAME.lower() == 'pointmlpelite':
         return pointMLPElite()
     elif args.ENCO_NAME.lower() == 'pn2-ssg':
-        return get_pn2_ssg_encoder(input_channels=0, use_xyz=True)
+        # return get_pn2_ssg_encoder(input_channels=0, use_xyz=True)
+        # TODO: using a different pointnet++ implementation because the previous one is not working on colab!
+        return Pointnet2_SSG_Y(normal_channel=False)
     elif args.ENCO_NAME.lower() == 'pn2-msg':
-        return get_pn2_msg_encoder(input_channels=0, use_xyz=True)
+        # return get_pn2_msg_encoder(input_channels=0, use_xyz=True)
+        # TODO: using a different pointnet++ implementation because the previous one is not working on colab!
+        return Pointnet2_MSG_Y(normal_channel=False)
     elif args.ENCO_NAME.lower() == 'pn2-msgabn':
+        raise NotImplementedError
         base_enco = get_pn2_msg_encoder(input_channels=0, use_xyz=True)
         return convert_pn2_abn(base_enco)
     else:
         raise ValueError("Unknown encoder")
+
 
 
 class Classifier(nn.Module):
