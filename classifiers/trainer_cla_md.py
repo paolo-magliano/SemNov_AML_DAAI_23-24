@@ -45,6 +45,7 @@ def get_args():
     parser.add_argument("--wandb_name", type=str, default=None)
     parser.add_argument("--wandb_group", type=str, default="md-2-sonn-augmCorr")
     parser.add_argument("--wandb_proj", type=str, default="benchmark-3d-ood-cla")
+    parser.add_argument("--wandb_api", type=str, default=None)
     parser.add_argument("--loss", type=str, default="CE",
                         choices=["CE", "CE_ls", "cosface", "arcface", "subcenter_arcface", "ARPL", "cosine"],
                         help="Which loss to use for training. CE is default")
@@ -288,7 +289,10 @@ def train(opt, config):
         logger.cprint(f"Arguments: {opt}")
         logger.cprint(f"Config: {config}")
         logger.cprint(f"World size: {world_size}\n")
-        wandb.login()
+        if opt.wandb_api is not None:
+            wandb.login(key=opt.wandb_api)
+        else:
+            wandb.login()
         if opt.wandb_name is None:
             opt.wandb_name = opt.exp_name
         wandb.init(project=opt.wandb_proj, group=opt.wandb_group, name=opt.wandb_name,
