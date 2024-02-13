@@ -532,6 +532,7 @@ def eval_ood_md2sonn(opt, config):
         scores_list=[src_MSP_scores, tar1_MSP_scores, tar2_MSP_scores],
         preds_list=[src_pred, tar1_pred, tar2_pred],  # computes also MSP accuracy on ID test set
         labels_list=[src_labels, tar1_labels, tar2_labels],  # computes also MSP accuracy on ID test set
+        label_names_list=[src_label_names, tar1_label_names, tar2_label_names],
         src_label=1)
     print("#" * 80)
 
