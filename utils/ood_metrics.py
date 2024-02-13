@@ -110,6 +110,22 @@ def f1_threshold(preds, labels, pos_label = 1):
     f1 = 2 * (precision * recall) / (precision + recall)
     return thresholds[np.argmax(f1)]
 
+def f1_accuracy(preds, labels, pos_label = 1):
+    """Return the accuracy when using the threshold that maximizes the F1 score.
+        
+    preds: array, shape = [n_samples]
+           Target normality scores, can either be probability estimates of the positive class, confidence values, or non-thresholded measure of decisions.
+           i.e.: an high value means sample predicted "normal", belonging to the positive class
+           
+    labels: array, shape = [n_samples]
+            True binary labels in range {0, 1} or {-1, 1}.
+
+    pos_label: label of the positive class (1 by default)
+    """
+    threshold = f1_threshold(preds, labels, pos_label=pos_label)
+    preds = [1 if p >= threshold else 0 for p in preds]
+    return sum([1 if p == l else 0 for p, l in zip(preds, labels)]) / len(labels)
+
 def j_threshold(preds, labels, pos_label = 1):
     """Return the threshold that maximizes the J statistic.
         
@@ -125,6 +141,22 @@ def j_threshold(preds, labels, pos_label = 1):
     fpr, tpr, thresholds = roc_curve(labels, preds, pos_label=pos_label)
     j = tpr - fpr
     return thresholds[np.argmax(j)]
+
+def j_accuracy(preds, labels, pos_label = 1):
+    """Return the accuracy when using the threshold that maximizes the J statistic.
+        
+    preds: array, shape = [n_samples]
+           Target normality scores, can either be probability estimates of the positive class, confidence values, or non-thresholded measure of decisions.
+           i.e.: an high value means sample predicted "normal", belonging to the positive class
+           
+    labels: array, shape = [n_samples]
+            True binary labels in range {0, 1} or {-1, 1}.
+
+    pos_label: label of the positive class (1 by default)
+    """
+    threshold = j_threshold(preds, labels, pos_label=pos_label)
+    preds = [1 if p >= threshold else 0 for p in preds]
+    return sum([1 if p == l else 0 for p, l in zip(preds, labels)]) / len(labels)
 
 def calc_metrics(predictions, labels, pos_label = 1):
     """Using predictions and labels, return a dictionary containing all novelty
@@ -150,5 +182,7 @@ def calc_metrics(predictions, labels, pos_label = 1):
         'aupr_in': aupr(predictions, labels, pos_label=pos_label),
         'aupr_out': aupr([-a for a in predictions], [1 - a for a in labels], pos_label=pos_label),
         'f1_threshold': f1_threshold(predictions, labels, pos_label=pos_label),
-        'j_threshold': j_threshold(predictions, labels, pos_label=pos_label)
+        'f1_accuracy': f1_accuracy(predictions, labels, pos_label=pos_label),
+        'j_threshold': j_threshold(predictions, labels, pos_label=pos_label),
+        'j_accuracy': j_accuracy(predictions, labels, pos_label=pos_label)
     }

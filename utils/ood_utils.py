@@ -19,12 +19,12 @@ except KeyError:
 
 def print_ood_output(res_tar1, res_tar2, res_big_tar):
     # invert aupr in and out as we use label 1 for ID data
-    auroc1, fpr1, auprin1, auprout1, f1_threshold1, j_threshold1 = res_tar1['auroc'], res_tar1['fpr_at_95_tpr'], res_tar1['aupr_in'], res_tar1['aupr_out'], res_tar1['f1_threshold'], res_tar1['j_threshold']
-    auroc2, fpr2, auprin2, auprout2, f1_threshold2, j_threshold2 = res_tar2['auroc'], res_tar2['fpr_at_95_tpr'], res_tar2['aupr_in'], res_tar2['aupr_out'], res_tar2['f1_threshold'], res_tar2['j_threshold']
-    auroc3, fpr3, auprin3, auprout3, f1_threshold3, j_threshold3 = res_big_tar['auroc'], res_big_tar['fpr_at_95_tpr'], res_big_tar['aupr_in'], res_big_tar['aupr_out'], res_big_tar['f1_threshold'], res_big_tar['j_threshold']
-    print(f"SRC->TAR1:      AUROC: {auroc1:.4f}, FPR95: {fpr1:.4f}, AUPR_IN: {auprin1:.4f}, AUPR_OUT: {auprout1:.4f}, F1: {f1_threshold1:.4f}, J: {j_threshold1:.4f}")
-    print(f"SRC->TAR2:      AUROC: {auroc2:.4f}, FPR95: {fpr2:.4f}, AUPR_IN: {auprin2:.4f}, AUPR_OUT: {auprout2:.4f}, F1: {f1_threshold2:.4f}, J: {j_threshold2:.4f}")
-    print(f"SRC->TAR1+TAR2: AUROC: {auroc3:.4f}, FPR95: {fpr3:.4f}, AUPR_IN: {auprin3:.4f}, AUPR_OUT: {auprout3:.4f}, F1: {f1_threshold3:.4f}, J: {j_threshold3:.4f}")
+    auroc1, fpr1, auprin1, auprout1, f1_threshold1, f1_accuracy1, j_threshold1, j_accuracy1 = res_tar1['auroc'], res_tar1['fpr_at_95_tpr'], res_tar1['aupr_in'], res_tar1['aupr_out'], res_tar1['f1_threshold'], res_tar1['f1_accuracy'], res_tar1['j_threshold'], res_tar1['j_accuracy']
+    auroc2, fpr2, auprin2, auprout2, f1_threshold2, f1_accuracy2, j_threshold2, j_accuracy2 = res_tar2['auroc'], res_tar2['fpr_at_95_tpr'], res_tar2['aupr_in'], res_tar2['aupr_out'], res_tar2['f1_threshold'], res_tar2['f1_accuracy'], res_tar2['j_threshold'], res_tar2['j_accuracy']
+    auroc3, fpr3, auprin3, auprout3, f1_threshold3, f1_accuracy3, j_threshold3, j_accuracy3 = res_big_tar['auroc'], res_big_tar['fpr_at_95_tpr'], res_big_tar['aupr_in'], res_big_tar['aupr_out'], res_big_tar['f1_threshold'], res_big_tar['f1_accuracy'], res_big_tar['j_threshold'], res_big_tar['j_accuracy']
+    print(f"SRC->TAR1:      AUROC: {auroc1:.4f}, FPR95: {fpr1:.4f}, AUPR_IN: {auprin1:.4f}, AUPR_OUT: {auprout1:.4f}, F1_TH: {f1_threshold1:.4f}, F1_TH_ACC: {f1_accuracy1:.4f}, J_TH: {j_threshold1:.4f}, J_TH_ACC: {j_accuracy1:.4f}")
+    print(f"SRC->TAR2:      AUROC: {auroc2:.4f}, FPR95: {fpr2:.4f}, AUPR_IN: {auprin2:.4f}, AUPR_OUT: {auprout2:.4f}, F1_TH: {f1_threshold2:.4f}, F1_TH_ACC: {f1_accuracy2:.4f}, J_TH: {j_threshold2:.4f}, J_TH_ACC: {j_accuracy2:.4f}")
+    print(f"SRC->TAR1+TAR2: AUROC: {auroc3:.4f}, FPR95: {fpr3:.4f}, AUPR_IN: {auprin3:.4f}, AUPR_OUT: {auprout3:.4f}, F1_TH: {f1_threshold3:.4f}, F1_TH_ACC: {f1_accuracy3:.4f}, J_TH: {j_threshold3:.4f}, J_TH_ACC: {j_accuracy3:.4f}")
 
 
 def cos_sim(a, b, eps=1e-8):
@@ -431,8 +431,6 @@ def get_ood_metrics(src_scores, tar_scores, src_label=1):
         np.full(tar_scores.shape[0], tar_label, dtype=np.compat.long)
     ], axis=0)
     scores = np.concatenate([src_scores, tar_scores], axis=0)
-    print(f"Scores: {scores.shape}, Labels: {labels.shape}")
-    print(f"Scores: \n{scores[-10:]}\nLabels: \n{labels[-10:]}")
     return calc_metrics(scores, labels)
 
 

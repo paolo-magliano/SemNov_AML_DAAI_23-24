@@ -500,35 +500,41 @@ def eval_ood_md2sonn(opt, config):
     model = model.cuda().eval()
 
     src_logits, src_pred, src_labels = get_network_output(model, id_loader)
-    tar1_logits, _, _ = get_network_output(model, ood1_loader)
-    tar2_logits, _, _ = get_network_output(model, ood2_loader)
+    tar1_logits, tar1_pred, tar1_labels = get_network_output(model, ood1_loader)
+    tar2_logits, tar2_pred, tar2_labels = get_network_output(model, ood2_loader)
 
     print("MSP")
     print(f"Src logits: {src_logits.shape}, tar1 logits: {tar1_logits.shape}, tar2 logits: {tar2_logits.shape}")
+    
     if opt.src == 'SR1':
-        label_numbers = sonn_2_mdSet1
+        src_label_numbers = sonn_2_mdSet1
+        tar1_label_numbers = sonn_2_mdSet2
     elif opt.src == 'SR2':
-        label_numbers = sonn_2_mdSet2
+        src_label_numbers = sonn_2_mdSet2
+        tar1_label_numbers = sonn_2_mdSet1
     else:
         raise ValueError(f"Unknown src")
-    label_names = [k for k, v in SONN_label_dict.items() if sonn_all[v] in label_numbers]
-    print(f"Labeled names: \n{label_names}\n")
-    print(f"Src logits: \n{src_logits[:10]}\n, tar1 logits: \n{tar1_logits[:10]}\n, tar2 logits: \n{tar2_logits[:10]}")
-    print(f"Src pred: {src_pred.shape}, src labels: {src_labels.shape}")
-    print(f"Src pred: \n{src_pred[:10]}\n, src labels: \n{src_labels[:10]}")
-
+    tar2_label_numbers = sonn_ood_common
+    src_label_names = torch.tensor([k for k, v in SONN_label_dict.items() if sonn_all[v] in src_label_numbers])
+    tar1_label_names = torch.tensor([k for k, v in SONN_label_dict.items() if sonn_all[v] in tar1_label_numbers])
+    tar2_label_names = torch.tensor([k for k, v in SONN_label_dict.items() if sonn_all[v] in tar2_label_numbers])
+    print(f"Src logits: \n{src_label_names}\n{src_logits[:10]}")
+    print(f"Tar1 logits: \n{tar1_label_names}\n{tar1_logits[:10]}")
+    print(f"Tar2 logits: \n{tar2_label_names}\n{tar2_logits[:10]}")
+          
     # MSP
     print("\n" + "#" * 80)
     print("Computing OOD metrics with MSP normality score...")
     src_MSP_scores = F.softmax(src_logits, dim=1).max(1)[0]
     tar1_MSP_scores = F.softmax(tar1_logits, dim=1).max(1)[0]
     tar2_MSP_scores = F.softmax(tar2_logits, dim=1).max(1)[0]
-    eval_ood_sncore(
+    _, _, res_tar1, res_tar2, res_big_tar = eval_ood_sncore(
         scores_list=[src_MSP_scores, tar1_MSP_scores, tar2_MSP_scores],
-        preds_list=[src_pred, None, None],  # computes also MSP accuracy on ID test set
-        labels_list=[src_labels, None, None],  # computes also MSP accuracy on ID test set
+        preds_list=[src_pred, tar1_pred, tar2_pred],  # computes also MSP accuracy on ID test set
+        labels_list=[src_labels, tar1_labels, tar2_labels],  # computes also MSP accuracy on ID test set
         src_label=1)
     print("#" * 80)
+
 
     # MLS
     print("\n" + "#" * 80)
