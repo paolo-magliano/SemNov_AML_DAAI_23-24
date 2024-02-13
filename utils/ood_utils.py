@@ -431,6 +431,8 @@ def get_ood_metrics(src_scores, tar_scores, src_label=1):
         np.full(tar_scores.shape[0], tar_label, dtype=np.compat.long)
     ], axis=0)
     scores = np.concatenate([src_scores, tar_scores], axis=0)
+    print(f"Scores: {scores.shape}, Labels: {labels.shape}")
+    print(f"Scores: \n{scores[:10]}\n, Labels: \n{labels[:10]}"), 
     return calc_metrics(scores, labels)
 
 

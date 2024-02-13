@@ -505,9 +505,17 @@ def eval_ood_md2sonn(opt, config):
 
     print("MSP")
     print(f"Src logits: {src_logits.shape}, tar1 logits: {tar1_logits.shape}, tar2 logits: {tar2_logits.shape}")
-    print(f"Src logits: {src_logits[:10]}, tar1 logits: {tar1_logits[:10]}, tar2 logits: {tar2_logits[:10]}")
+    if opt.src == 'SR1':
+        label_numbers = sonn_2_mdSet1
+    elif opt.src == 'SR2':
+        label_numbers = sonn_2_mdSet2
+    else:
+        raise ValueError(f"Unknown src")
+    label_names = [k for k, v in SONN_label_dict.items() if sonn_all[v] in label_numbers]
+    print(f"Labeled names: \n{label_names}\n")
+    print(f"Src logits: \n{src_logits[:10]}\n, tar1 logits: \n{tar1_logits[:10]}\n, tar2 logits: \n{tar2_logits[:10]}")
     print(f"Src pred: {src_pred.shape}, src labels: {src_labels.shape}")
-    print(f"Src pred: {src_pred[:10]}, src labels: {src_labels[:10]}")
+    print(f"Src pred: \n{src_pred[:10]}\n, src labels: \n{src_labels[:10]}")
 
     # MSP
     print("\n" + "#" * 80)
