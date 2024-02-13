@@ -502,8 +502,8 @@ def eval_ood_sncore(scores_list, preds_list=None, labels_list=None, label_names_
               f"{res_big_tar['auroc']},{res_big_tar['fpr_at_95_tpr']},{res_big_tar['aupr_in']},{res_big_tar['aupr_out']}")
 
     if tar1_label_name is not None and src_label_name is not None:
-        f1_fail_names = [(tar1_label_name[lbl], src_label_name[pred]) for lbl, pred, conf in zip(tar1_labels, tar1_preds, tar1_conf) if conf > res_tar1['f1_threshold']]
-        j_fail_names = [(tar1_label_name[lbl], src_label_name[pred]) for lbl, pred, conf in zip(tar1_labels, tar1_preds, tar1_conf) if conf > res_tar1['j_threshold']]
+        f1_fail_names = [(tar1_label_name[lbl], src_label_name[pred]) for lbl, pred, conf in zip(tar1_labels, tar1_preds, tar1_conf) if conf < res_tar1['f1_threshold']]
+        j_fail_names = [(tar1_label_name[lbl], src_label_name[pred]) for lbl, pred, conf in zip(tar1_labels, tar1_preds, tar1_conf) if conf < res_tar1['j_threshold']]
         if not silent:
             print(f"Tar 1 F1 Test - Acc: {res_tar1['f1_accuracy']:.4f}, Th: {res_tar1['f1_threshold']:.4f}")
             print(f"Tar 1 F1 Test - Fail: {len(f1_fail_names)}")
@@ -517,8 +517,8 @@ def eval_ood_sncore(scores_list, preds_list=None, labels_list=None, label_names_
     
     if tar2_label_name is not None and src_label_name is not None:
         print(f"Labels: {len(tar2_labels)}, Preds: {len(tar2_preds)}, Conf: {len(tar2_conf)}")
-        f1_fail_names = [(tar2_label_name[lbl - 400], src_label_name[pred]) for lbl, pred, conf in zip(tar2_labels, tar2_preds, tar2_conf) if conf > res_tar2['f1_threshold']]
-        j_fail_names = [(tar2_label_name[lbl - 400], src_label_name[pred]) for lbl, pred, conf in zip(tar2_labels, tar2_preds, tar2_conf) if conf > res_tar2['j_threshold']]
+        f1_fail_names = [(tar2_label_name[lbl - 400], src_label_name[pred]) for lbl, pred, conf in zip(tar2_labels, tar2_preds, tar2_conf) if conf < res_tar2['f1_threshold']]
+        j_fail_names = [(tar2_label_name[lbl - 400], src_label_name[pred]) for lbl, pred, conf in zip(tar2_labels, tar2_preds, tar2_conf) if conf < res_tar2['j_threshold']]
         if not silent:
             print(f"Tar 2 F1 Test - Acc: {res_tar2['f1_accuracy']:.4f}, Th: {res_tar2['f1_threshold']:.4f}")
             print(f"Tar 2 F1 Test - Fail: {len(f1_fail_names)}")
