@@ -432,7 +432,7 @@ def get_ood_metrics(src_scores, tar_scores, src_names, tar_names, src_label=1):
         np.full(tar_scores.shape[0], tar_label, dtype=np.compat.long)
     ], axis=0)
     scores = np.concatenate([src_scores, tar_scores], axis=0)
-    names = np.concatenate([src_names, tar_names], axis=0)
+    names = [src_names] + [tar_names]
     res = calc_metrics(scores, labels)
 
     f1_fail_names = [names[i] for i in range(len(names)) if scores[i] < res['f1_threshold']]
