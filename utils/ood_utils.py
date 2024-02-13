@@ -9,6 +9,7 @@ from utils.dist import *
 from sklearn import metrics as skm
 from utils.ood_metrics import calc_metrics
 from tqdm import tqdm
+import collections
 
 try:
     # flag for disabling TQDM during evaluation!
@@ -418,7 +419,7 @@ def compute_sim_centroids(model, centroids, list_loaders):
     return list_scores
 
 
-def get_ood_metrics(src_scores, tar_scores, src_label=1):
+def get_ood_metrics(src_scores, tar_scores, src_names, tar_names, src_label=1):
     """
     Computes ood metrics given src_scores and tar_scores
     Scores can be distances, confidences, ..
@@ -431,7 +432,24 @@ def get_ood_metrics(src_scores, tar_scores, src_label=1):
         np.full(tar_scores.shape[0], tar_label, dtype=np.compat.long)
     ], axis=0)
     scores = np.concatenate([src_scores, tar_scores], axis=0)
-    return calc_metrics(scores, labels)
+    names = np.concatenate([src_names, tar_names], axis=0)
+    res = calc_metrics(scores, labels)
+
+    f1_fail_names = [names[i] for i in range(len(names)) if scores[i] < res['f1_threshold']]
+    f1_fail_counter = collections.Counter(f1_fail_names) 
+    j_fail_names = [names[i] for i in range(len(names)) if scores[i] < res['j_threshold']]
+    j_fail_counter = collections.Counter(j_fail_names)
+
+    print(f"OOD F1 Test - Acc: {res['f1_accuracy']:.4f}, Th: {res['f1_threshold']:.4f}, Fail: {len(f1_fail_names)}")
+    for (lbl, pred), value in f1_fail_counter.most_common(10):
+        print(f"A {lbl} predicted as {pred} - {value} times")
+
+    print()
+    print(f"OOD J Test - Acc: {res['j_accuracy']:.4f}, Th: {res['j_threshold']:.4f}, Fail: {len(j_fail_names)}")
+    for (lbl, pred), value in j_fail_counter.most_common(10):
+        print(f"A {lbl} predicted as {pred} - {value} times")
+
+    return res
 
 
 def eval_ood_sncore(scores_list, preds_list=None, labels_list=None, label_names_list=None, src_label=1, silent=False):
@@ -480,15 +498,26 @@ def eval_ood_sncore(scores_list, preds_list=None, labels_list=None, label_names_
             for lbl, pred in fail_names[:10]:
                 print(f"A {lbl} predicted as {pred}")
 
+    src_names = [(src_label_name[lbl], src_label_name[pred]) for lbl, pred in zip(src_labels, src_preds)]
+    tar1_names = [(tar1_label_name[lbl], src_label_name[pred]) for lbl, pred in zip(tar1_labels, tar1_preds)]
+    tar2_names = [(tar2_label_name[lbl - 400], src_label_name[pred]) for lbl, pred in zip(tar2_labels, tar2_preds)]
+
     # Src vs Tar 1
-    res_tar1 = get_ood_metrics(src_conf, tar1_conf, src_label)
+    if not silent:
+        print("Test Tar1")
+    res_tar1 = get_ood_metrics(src_conf, tar1_conf, src_names, tar1_names, src_label)
 
     # Src vs Tar 2
-    res_tar2 = get_ood_metrics(src_conf, tar2_conf, src_label)
+    if not silent:
+        print("Test Tar2")
+    res_tar2 = get_ood_metrics(src_conf, tar2_conf, src_names, tar2_names, src_label)
 
     # Src vs Tar 1 + Tar 2
+    if not silent:
+        print("Test Tar1+Tar2")
     big_tar_conf = np.concatenate([to_numpy(tar1_conf), to_numpy(tar2_conf)], axis=0)
-    res_big_tar = get_ood_metrics(src_conf, big_tar_conf, src_label)
+    big_tar_names = tar1_names + tar2_names
+    res_big_tar = get_ood_metrics(src_conf, big_tar_conf, src_names, big_tar_conf, src_label)
 
     # N.B. get_ood_metrics reports inverted AUPR_IN and AUPR_OUT results
     # as we use label 1 for IN-DISTRIBUTION and thus we consider it positive. 
@@ -500,37 +529,6 @@ def eval_ood_sncore(scores_list, preds_list=None, labels_list=None, label_names_
               f"{res_tar1['auroc']},{res_tar1['fpr_at_95_tpr']},{res_tar1['aupr_in']},{res_tar1['aupr_out']},"
               f"{res_tar2['auroc']},{res_tar2['fpr_at_95_tpr']},{res_tar2['aupr_in']},{res_tar2['aupr_out']},"
               f"{res_big_tar['auroc']},{res_big_tar['fpr_at_95_tpr']},{res_big_tar['aupr_in']},{res_big_tar['aupr_out']}")
-
-    if tar1_label_name is not None and src_label_name is not None:
-        f1_fail_names = [(tar1_label_name[lbl], src_label_name[pred]) for lbl, pred, conf in zip(tar1_labels, tar1_preds, tar1_conf) if conf < res_tar1['f1_threshold']]
-        preds = [1 if p >=  res_tar1['f1_threshold'] else 0 for p in tar1_conf]
-        acc = sum([1 if p == 0 else 0 for p in preds]) / len(preds)
-        j_fail_names = [(tar1_label_name[lbl], src_label_name[pred]) for lbl, pred, conf in zip(tar1_labels, tar1_preds, tar1_conf) if conf < res_tar1['j_threshold']]
-        if not silent:
-            print(f"Tar 1 F1 Test - Acc: {res_tar1['f1_accuracy']:.4f} - {acc}, Th: {res_tar1['f1_threshold']:.4f}")
-            print(f"Tar 1 F1 Test - Fail: {len(f1_fail_names)}")
-            for lbl, pred in f1_fail_names[:10]:
-                print(f"A {lbl} predicted as {pred}")
-            print()
-            print(f"Tar 1 J Test - Acc: {res_tar1['j_accuracy']:.4f}, Th: {res_tar1['j_threshold']:.4f}")
-            print(f"Tar 1 J Test - Fail: {len(j_fail_names)}")
-            for lbl, pred in j_fail_names[:10]:
-                print(f"A {lbl} predicted as {pred}")
-    
-    if tar2_label_name is not None and src_label_name is not None:
-        print(f"Labels: {len(tar2_labels)}, Preds: {len(tar2_preds)}, Conf: {len(tar2_conf)}")
-        f1_fail_names = [(tar2_label_name[lbl - 400], src_label_name[pred]) for lbl, pred, conf in zip(tar2_labels, tar2_preds, tar2_conf) if conf < res_tar2['f1_threshold']]
-        j_fail_names = [(tar2_label_name[lbl - 400], src_label_name[pred]) for lbl, pred, conf in zip(tar2_labels, tar2_preds, tar2_conf) if conf < res_tar2['j_threshold']]
-        if not silent:
-            print(f"Tar 2 F1 Test - Acc: {res_tar2['f1_accuracy']:.4f}, Th: {res_tar2['f1_threshold']:.4f}")
-            print(f"Tar 2 F1 Test - Fail: {len(f1_fail_names)}")
-            for lbl, pred in f1_fail_names[:10]:
-                print(f"A {lbl} predicted as {pred}")
-            print()
-            print(f"Tar 2 J Test - Acc: {res_tar2['j_accuracy']}, Th: {res_tar2['j_threshold']}")
-            print(f"Tar 2 J Test - Fail: {len(j_fail_names)}")
-            for lbl, pred in j_fail_names[:10]:
-                print(f"A {lbl} predicted as {pred}")
 
     return src_acc, src_bal_acc, res_tar1, res_tar2, res_big_tar
 
