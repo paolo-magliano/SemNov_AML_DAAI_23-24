@@ -515,12 +515,12 @@ def eval_ood_md2sonn(opt, config):
     else:
         raise ValueError(f"Unknown src")
     tar2_label_numbers = sonn_ood_common
-    src_label_names = torch.tensor([k for k, v in SONN_label_dict.items() if sonn_all[v] in src_label_numbers])
-    tar1_label_names = torch.tensor([k for k, v in SONN_label_dict.items() if sonn_all[v] in tar1_label_numbers])
-    tar2_label_names = torch.tensor([k for k, v in SONN_label_dict.items() if sonn_all[v] in tar2_label_numbers])
-    print(f"Src logits: \n{src_label_names}\n{src_logits[:10]}")
-    print(f"Tar1 logits: \n{tar1_label_names}\n{tar1_logits[:10]}")
-    print(f"Tar2 logits: \n{tar2_label_names}\n{tar2_logits[:10]}")
+    src_label_names = [k for k, v in SONN_label_dict.items() if sonn_all[v] in src_label_numbers]
+    tar1_label_names = [k for k, v in SONN_label_dict.items() if sonn_all[v] in tar1_label_numbers]
+    tar2_label_names = [k for k, v in SONN_label_dict.items() if sonn_all[v] in tar2_label_numbers]
+    print(f"Src logits: \n{src_label_names}\n{to_numpy(src_logits[:10])}")
+    print(f"Tar1 logits: \n{tar1_label_names}\n{to_numpy(tar1_logits[:10])}")
+    print(f"Tar2 logits: \n{tar2_label_names}\n{to_numpy(tar2_logits[:10])}")
           
     # MSP
     print("\n" + "#" * 80)
