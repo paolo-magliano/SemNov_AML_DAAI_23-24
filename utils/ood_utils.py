@@ -434,7 +434,7 @@ def get_ood_metrics(src_scores, tar_scores, src_label=1):
     return calc_metrics(scores, labels)
 
 
-def eval_ood_sncore(scores_list, preds_list=None, labels_list=None, src_label=1, silent=False):
+def eval_ood_sncore(scores_list, preds_list=None, labels_list=None, label_names_list=None, src_label=1, silent=False):
     """
     conf_list: [SRC, TAR1, TAR2]
     preds_list: [SRC, TAR1, TAR2]
@@ -448,15 +448,19 @@ def eval_ood_sncore(scores_list, preds_list=None, labels_list=None, src_label=1,
 
     if preds_list is None:
         preds_list = [None, None, None]
+    
+    if label_names_list is None:
+        label_names_list = [None, None, None]
 
     tar_label = int(not src_label)
 
     if not silent:
         print(f"AUROC - Src label: {src_label}, Tar label: {tar_label}")
 
-    src_conf, src_preds, src_labels = scores_list[0], preds_list[0], labels_list[0]
+    src_conf, src_preds, src_labels, src_label_name = scores_list[0], preds_list[0], labels_list[0], label_names_list[0]
     tar1_conf, _, _ = scores_list[1], preds_list[1], labels_list[1]
     tar2_conf, _, _ = scores_list[2], preds_list[2], labels_list[2]
+    
 
     # compute ID test accuracy
     src_acc, src_bal_acc = -1, -1
@@ -464,10 +468,17 @@ def eval_ood_sncore(scores_list, preds_list=None, labels_list=None, src_label=1,
         assert src_labels is not None
         src_labels = to_numpy(src_labels)
         src_preds = to_numpy(src_preds)
+        if src_label_name is not None:    
+            fail_names = [(src_label_name[lbl], src_label_name[pred]) for lbl, pred in zip(src_labels, src_preds) if lbl != pred]
+        else:
+            fail_names = []
         src_acc = skm.accuracy_score(src_labels, src_preds)
         src_bal_acc = skm.balanced_accuracy_score(src_labels, src_preds)
         if not silent:
             print(f"Src Test - Clf Acc: {src_acc}, Clf Bal Acc: {src_bal_acc}")
+            print(f"Src Test - Fail: {len(fail_names)}")
+            for lbl, pred in fail_names[:5]:
+                print(f"Value {lbl} predicted {pred}")
 
     # Src vs Tar 1
     res_tar1 = get_ood_metrics(src_conf, tar1_conf, src_label)
