@@ -436,9 +436,11 @@ def get_ood_metrics(src_scores, tar_scores, src_names, tar_names, src_label=1):
     res = calc_metrics(scores, labels)
 
     f1_fail_names = [names[i] for i in range(len(names)) if scores[i] < res['f1_threshold']]
+    print(f1_fail_names)
     # f1_fail_counter = collections.Counter(f1_fail_names) 
     j_fail_names = [names[i] for i in range(len(names)) if scores[i] < res['j_threshold']]
     # j_fail_counter = collections.Counter(j_fail_names)
+    print(j_fail_names)
 
     print(f"OOD F1 Test - Acc: {res['f1_accuracy']:.4f}, Th: {res['f1_threshold']:.4f}, Fail: {len(f1_fail_names)}")
     for lbl, pred in f1_fail_names[:10]:
