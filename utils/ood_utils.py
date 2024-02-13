@@ -475,7 +475,7 @@ def eval_ood_sncore(scores_list, preds_list=None, labels_list=None, label_names_
         src_acc = skm.accuracy_score(src_labels, src_preds)
         src_bal_acc = skm.balanced_accuracy_score(src_labels, src_preds)
         if not silent:
-            print(f"Src Test - Clf Acc: {src_acc}, Clf Bal Acc: {src_bal_acc}")
+            print(f"Src Test - Clf Acc: {src_acc:.4f}, Clf Bal Acc: {src_bal_acc:.4f}")
             print(f"Src Test - Fail: {len(fail_names)}")
             for lbl, pred in fail_names[:10]:
                 print(f"A {lbl} predicted as {pred}")
@@ -505,21 +505,22 @@ def eval_ood_sncore(scores_list, preds_list=None, labels_list=None, label_names_
         f1_fail_names = [(tar1_label_name[lbl], src_label_name[pred]) for lbl, pred, conf in zip(tar1_labels, tar1_preds, tar1_conf) if conf > res_tar1['f1_threshold']]
         j_fail_names = [(tar1_label_name[lbl], src_label_name[pred]) for lbl, pred, conf in zip(tar1_labels, tar1_preds, tar1_conf) if conf > res_tar1['j_threshold']]
         if not silent:
-            print(f"Tar 1 F1 Test - Acc: {res_tar1['f1_accuracy']}, Th: {res_tar1['f1_threshold']}")
+            print(f"Tar 1 F1 Test - Acc: {res_tar1['f1_accuracy']:.4f}, Th: {res_tar1['f1_threshold']:.4f}")
             print(f"Tar 1 F1 Test - Fail: {len(f1_fail_names)}")
             for lbl, pred in f1_fail_names[:10]:
                 print(f"A {lbl} predicted as {pred}")
             print()
-            print(f"Tar 1 J Test - Acc: {res_tar1['j_accuracy']}, Th: {res_tar1['j_threshold']}")
+            print(f"Tar 1 J Test - Acc: {res_tar1['j_accuracy']:.4f}, Th: {res_tar1['j_threshold']:.4f}")
             print(f"Tar 1 J Test - Fail: {len(j_fail_names)}")
             for lbl, pred in j_fail_names[:10]:
                 print(f"A {lbl} predicted as {pred}")
     
     if tar2_label_name is not None and src_label_name is not None:
+        print(f"Labels: {len(tar2_labels)}, Preds: {len(tar2_preds)}, Conf: {len(tar2_conf)}")
         f1_fail_names = [(tar2_label_name[lbl], src_label_name[pred]) for lbl, pred, conf in zip(tar2_labels, tar2_preds, tar2_conf) if conf > res_tar2['f1_threshold']]
         j_fail_names = [(tar2_label_name[lbl], src_label_name[pred]) for lbl, pred, conf in zip(tar2_labels, tar2_preds, tar2_conf) if conf > res_tar2['j_threshold']]
         if not silent:
-            print(f"Tar 2 F1 Test - Acc: {res_tar2['f1_accuracy']}, Th: {res_tar2['f1_threshold']}")
+            print(f"Tar 2 F1 Test - Acc: {res_tar2['f1_accuracy']:.4f}, Th: {res_tar2['f1_threshold']:.4f}")
             print(f"Tar 2 F1 Test - Fail: {len(f1_fail_names)}")
             for lbl, pred in f1_fail_names[:10]:
                 print(f"A {lbl} predicted as {pred}")
