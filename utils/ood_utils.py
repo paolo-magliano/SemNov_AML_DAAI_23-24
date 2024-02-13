@@ -432,15 +432,13 @@ def get_ood_metrics(src_scores, tar_scores, src_names, tar_names, src_label=1):
         np.full(tar_scores.shape[0], tar_label, dtype=np.compat.long)
     ], axis=0)
     scores = np.concatenate([src_scores, tar_scores], axis=0)
-    names = [src_names] + [tar_names]
+    names = np.concatenate([src_names, tar_names], axis=0)
     res = calc_metrics(scores, labels)
 
     f1_fail_names = [names[i] for i in range(len(names)) if scores[i] < res['f1_threshold']]
-    print(f1_fail_names)
     # f1_fail_counter = collections.Counter(f1_fail_names) 
     j_fail_names = [names[i] for i in range(len(names)) if scores[i] < res['j_threshold']]
     # j_fail_counter = collections.Counter(j_fail_names)
-    print(j_fail_names)
 
     print(f"OOD F1 Test - Acc: {res['f1_accuracy']:.4f}, Th: {res['f1_threshold']:.4f}, Fail: {len(f1_fail_names)}")
     for lbl, pred in f1_fail_names[:10]:
@@ -518,7 +516,7 @@ def eval_ood_sncore(scores_list, preds_list=None, labels_list=None, label_names_
     if not silent:
         print("Test Tar1+Tar2")
     big_tar_conf = np.concatenate([to_numpy(tar1_conf), to_numpy(tar2_conf)], axis=0)
-    big_tar_names = tar1_names + tar2_names
+    big_tar_names = np.concatenate([tar1_names, tar2_names], axis=0)
     res_big_tar = get_ood_metrics(src_conf, big_tar_conf, src_names, big_tar_conf, src_label)
 
     # N.B. get_ood_metrics reports inverted AUPR_IN and AUPR_OUT results
