@@ -517,7 +517,7 @@ def eval_ood_sncore(scores_list, preds_list=None, labels_list=None, label_names_
         print("Test Tar1+Tar2")
     big_tar_conf = np.concatenate([to_numpy(tar1_conf), to_numpy(tar2_conf)], axis=0)
     big_tar_names = np.concatenate([tar1_names, tar2_names], axis=0)
-    res_big_tar = get_ood_metrics(src_conf, big_tar_conf, src_names, big_tar_conf, src_label)
+    res_big_tar = get_ood_metrics(src_conf, big_tar_conf, src_names, big_tar_names, src_label)
 
     # N.B. get_ood_metrics reports inverted AUPR_IN and AUPR_OUT results
     # as we use label 1 for IN-DISTRIBUTION and thus we consider it positive. 
