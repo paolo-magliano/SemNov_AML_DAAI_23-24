@@ -150,5 +150,5 @@ def calc_metrics(predictions, labels, pos_label = 1):
         'aupr_in': aupr(predictions, labels, pos_label=pos_label),
         'aupr_out': aupr([-a for a in predictions], [1 - a for a in labels], pos_label=pos_label),
         'f1_threshold': f1_threshold(predictions, labels, pos_label=pos_label),
-        'h_threshold': j_threshold(predictions, labels, pos_label=pos_label)
+        'j_threshold': j_threshold(predictions, labels, pos_label=pos_label)
     }
