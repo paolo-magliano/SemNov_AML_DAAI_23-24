@@ -476,7 +476,7 @@ def eval_ood_sncore(scores_list, preds_list=None, labels_list=None, label_names_
         src_bal_acc = skm.balanced_accuracy_score(src_labels, src_preds)
         if not silent:
             print(f"Src Test - Clf Acc: {src_acc:.4f}, Clf Bal Acc: {src_bal_acc:.4f}")
-            print(f"Src Test - Fail: {len(fail_names)}")
+            print(f"Src Test - Fail: {len(fail_names)}/{len(src_labels)}")
             for lbl, pred in fail_names[:10]:
                 print(f"A {lbl} predicted as {pred}")
 
@@ -503,9 +503,11 @@ def eval_ood_sncore(scores_list, preds_list=None, labels_list=None, label_names_
 
     if tar1_label_name is not None and src_label_name is not None:
         f1_fail_names = [(tar1_label_name[lbl], src_label_name[pred]) for lbl, pred, conf in zip(tar1_labels, tar1_preds, tar1_conf) if conf < res_tar1['f1_threshold']]
+        preds = [1 if p >=  res_tar1['f1_threshold'] else 0 for p in tar1_conf]
+        acc = sum([1 if p == 0 else 0 for p in preds]) / len(preds)
         j_fail_names = [(tar1_label_name[lbl], src_label_name[pred]) for lbl, pred, conf in zip(tar1_labels, tar1_preds, tar1_conf) if conf < res_tar1['j_threshold']]
         if not silent:
-            print(f"Tar 1 F1 Test - Acc: {res_tar1['f1_accuracy']:.4f}, Th: {res_tar1['f1_threshold']:.4f}")
+            print(f"Tar 1 F1 Test - Acc: {res_tar1['f1_accuracy']:.4f} - {acc}, Th: {res_tar1['f1_threshold']:.4f}")
             print(f"Tar 1 F1 Test - Fail: {len(f1_fail_names)}")
             for lbl, pred in f1_fail_names[:10]:
                 print(f"A {lbl} predicted as {pred}")
