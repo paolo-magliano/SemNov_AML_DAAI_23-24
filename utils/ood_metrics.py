@@ -93,7 +93,38 @@ def detection_error(preds, labels, pos_label = 1):
     
     # Return the minimum detection error such that TPR >= 0.95
     return min(map(_detection_error, idxs))
-    
+
+def f1_threshold(preds, labels, pos_label = 1):
+    """Return the threshold that maximizes the F1 score.
+        
+    preds: array, shape = [n_samples]
+           Target normality scores, can either be probability estimates of the positive class, confidence values, or non-thresholded measure of decisions.
+           i.e.: an high value means sample predicted "normal", belonging to the positive class
+           
+    labels: array, shape = [n_samples]
+            True binary labels in range {0, 1} or {-1, 1}.
+
+    pos_label: label of the positive class (1 by default)
+    """
+    precision, recall, thresholds = precision_recall_curve(labels, preds, pos_label=pos_label)
+    f1 = 2 * (precision * recall) / (precision + recall)
+    return thresholds[np.argmax(f1)]
+
+def j_threshold(preds, labels, pos_label = 1):
+    """Return the threshold that maximizes the J statistic.
+        
+    preds: array, shape = [n_samples]
+           Target normality scores, can either be probability estimates of the positive class, confidence values, or non-thresholded measure of decisions.
+           i.e.: an high value means sample predicted "normal", belonging to the positive class
+           
+    labels: array, shape = [n_samples]
+            True binary labels in range {0, 1} or {-1, 1}.
+
+    pos_label: label of the positive class (1 by default)
+    """
+    fpr, tpr, thresholds = roc_curve(labels, preds, pos_label=pos_label)
+    j = tpr - fpr
+    return thresholds[np.argmax(j)]
 
 def calc_metrics(predictions, labels, pos_label = 1):
     """Using predictions and labels, return a dictionary containing all novelty
@@ -117,5 +148,7 @@ def calc_metrics(predictions, labels, pos_label = 1):
         'detection_error': detection_error(predictions, labels, pos_label=pos_label),
         'auroc': auroc(predictions, labels, pos_label=pos_label),
         'aupr_in': aupr(predictions, labels, pos_label=pos_label),
-        'aupr_out': aupr([-a for a in predictions], [1 - a for a in labels], pos_label=pos_label)
+        'aupr_out': aupr([-a for a in predictions], [1 - a for a in labels], pos_label=pos_label),
+        'f1_threshold': f1_threshold(predictions, labels, pos_label=pos_label),
+        'h_threshold': j_threshold(predictions, labels, pos_label=pos_label)
     }
