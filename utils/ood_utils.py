@@ -447,29 +447,29 @@ def get_ood_metrics(src_scores, tar_scores, src_names, tar_names, src_label=1):
     j_tar_fail_counter = collections.Counter(j_tar_fail_names)
 
     print(f"OOD F1 Test - Acc: {res['f1_accuracy']:.4f}, Th: {res['f1_threshold']:.4f}")
-    print(f"Fail src: {len(f1_src_fail_names)}")
+    print(f"Fail src: {len(f1_src_fail_names)}/{len(src_scores)}")
     for (lbl, pred), value in f1_src_fail_counter.most_common():
         if lbl != pred:
-            print(f"A {lbl} is predicted as OOD {value} times - the closest class is {pred}")
+            print(f"\tA {lbl} is predicted as OOD {value} times - the closest class is {pred}")
         else:
-            print(f"A {lbl} is predicted as ID {value} times")
+            print(f"\tA {lbl} is predicted as ID {value} times")
 
-    print(f"Fail tar: {len(f1_tar_fail_names)}")
+    print(f"Fail tar: {len(f1_tar_fail_names)}/{len(tar_scores)}")
     for (lbl, pred), value in f1_tar_fail_counter.most_common():
-        print(f"A {lbl} is predicted as OOD {value} times - the closest class is {pred}")
+        print(f"\tA {lbl} is predicted as OOD {value} times - the closest class is {pred}")
 
 
     print(f"OOD J Test - Acc: {res['j_accuracy']:.4f}, Th: {res['j_threshold']:.4f}")
-    print(f"Fail src: {len(j_src_fail_names)}")
+    print(f"Fail src: {len(j_src_fail_names)}/{len(src_scores)}")
     for (lbl, pred), value in j_src_fail_counter.most_common():
         if lbl != pred:
-            print(f"A {lbl} is predicted as OOD {value} times - the closest class is {pred}")
+            print(f"\tA {lbl} is predicted as OOD {value} times - the closest class is {pred}")
         else:
-            print(f"A {lbl} is predicted as OOD {value} times")
+            print(f"\tA {lbl} is predicted as OOD {value} times")
 
-    print(f"Fail tar: {len(j_tar_fail_names)}")
+    print(f"Fail tar: {len(j_tar_fail_names)}/{len(tar_scores)}")
     for (lbl, pred), value in j_tar_fail_counter.most_common():
-        print(f"A {lbl} is predicted as ID {value} times - the closest class is {pred}")
+        print(f"\tA {lbl} is predicted as ID {value} times - the closest class is {pred}")
 
     return res
 
@@ -510,15 +510,15 @@ def eval_ood_sncore(scores_list, preds_list=None, labels_list=None, label_names_
         src_preds = to_numpy(src_preds)
         if src_label_name is not None:    
             fail_names = [(src_label_name[lbl], src_label_name[pred]) for lbl, pred in zip(src_labels, src_preds) if lbl != pred]
-        else:
-            fail_names = []
+            fail_counter = collections.Counter(fail_names)
         src_acc = skm.accuracy_score(src_labels, src_preds)
         src_bal_acc = skm.balanced_accuracy_score(src_labels, src_preds)
         if not silent:
             print(f"Src Test - Clf Acc: {src_acc:.4f}, Clf Bal Acc: {src_bal_acc:.4f}")
-            print(f"Src Test - Fail: {len(fail_names)}/{len(src_labels)}")
-            for lbl, pred in fail_names[:10]:
-                print(f"A {lbl} predicted as {pred}")
+            if src_label_name is not None:
+                print(f"Src Test - Fail: {len(fail_names)}/{len(src_labels)}")
+                for (lbl, pred), value in fail_counter.most_common():
+                    print(f"\tA {lbl} is predicted as {pred} - {value} times")
 
     src_names = [(src_label_name[lbl], src_label_name[pred]) for lbl, pred in zip(src_labels, src_preds)]
     tar1_names = [(tar1_label_name[lbl], src_label_name[pred]) for lbl, pred in zip(tar1_labels, tar1_preds)]
