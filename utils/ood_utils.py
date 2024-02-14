@@ -459,28 +459,28 @@ def get_ood_metrics(src_scores, tar_scores, src_names, tar_names, src_label=1):
 
     print(f"OOD F1 Test - Acc: {res['f1_accuracy']:.4f}, Th: {res['f1_threshold']:.4f}")
     print(f"Fail src: {len(f1_src_fail_names)}/{len(src_scores)}")
-    for (lbl, pred), value in f1_src_fail_values.items():
+    for (lbl, pred), (count, mean) in f1_src_fail_values.items():
         if lbl != pred:
-            print(f"\tA {lbl} is predicted as OOD {value} times - the closest class is {pred}")
+            print(f"\tA {lbl} is predicted as OOD {count} times - the closest class is {pred} with mean score {mean:.4f}")
         else:
-            print(f"\tA {lbl} is predicted as OOD {value} times")
+            print(f"\tA {lbl} is predicted as OOD {count} times - mean score {mean:.4f}")
 
     print(f"Fail tar: {len(f1_tar_fail_names)}/{len(tar_scores)}")
-    for (lbl, pred), value in f1_tar_fail_values.items():
-        print(f"\tA {lbl} is predicted as ID {value} times - the closest class is {pred}")
+    for (lbl, pred), (count, mean) in f1_tar_fail_values.items():
+        print(f"\tA {lbl} is predicted as ID {count} times - the closest class is {pred} with mean score {mean:.4f}")
 
 
     print(f"OOD J Test - Acc: {res['j_accuracy']:.4f}, Th: {res['j_threshold']:.4f}")
     print(f"Fail src: {len(j_src_fail_names)}/{len(src_scores)}")
-    for (lbl, pred), value in j_src_fail_values.items():
+    for (lbl, pred), (count, mean) in j_src_fail_values.items():
         if lbl != pred:
-            print(f"\tA {lbl} is predicted as OOD {value} times - the closest class is {pred}")
+            print(f"\tA {lbl} is predicted as OOD {count} times - the closest class is {pred} with mean score {mean:.4f}")
         else:
-            print(f"\tA {lbl} is predicted as OOD {value} times")
+            print(f"\tA {lbl} is predicted as OOD {count} times - mean score {mean:.4f}")
 
     print(f"Fail tar: {len(j_tar_fail_names)}/{len(tar_scores)}")
-    for (lbl, pred), value in j_tar_fail_values.items():
-        print(f"\tA {lbl} is predicted as ID {value} times - the closest class is {pred}")
+    for (lbl, pred), (count, mean) in j_tar_fail_values.items():
+        print(f"\tA {lbl} is predicted as ID {value} times - the closest class is {pred} with mean score {mean:.4f}")
 
     return res
 
