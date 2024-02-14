@@ -419,11 +419,7 @@ def compute_sim_centroids(model, centroids, list_loaders):
     return list_scores
 
 
-def get_ood_metrics(src_scores, tar_scores, src_names, tar_names, src_label=1):
-    """
-    Computes ood metrics given src_scores and tar_scores
-    Scores can be distances, confidences, ..
-    """
+def print_fail_names(src_scores, tar_scores, src_names, tar_names, threshold):
     def count_and_mean(fail):
         values = {}
         for (lbl, pred, score) in fail:
@@ -434,6 +430,29 @@ def get_ood_metrics(src_scores, tar_scores, src_names, tar_names, src_label=1):
                 values[(lbl, pred)] = (count + 1, total*count/(count+1) + score/(count+1))
 
         return dict(sorted(values.items(), key=lambda item: item[1], reverse=True))
+    
+    src_fail_names = [(src_names[i][0], src_names[i][1], src_scores[i]) for i in range(len(src_names)) if src_scores[i] < threshold]
+    tar_fail_names = [(tar_names[i][0], tar_names[i][1], tar_scores[i]) for i in range(len(tar_names)) if tar_scores[i] >= threshold]
+
+    src_fail_values = count_and_mean(src_fail_names)
+    tar_fail_values = count_and_mean(tar_fail_names)
+
+    print(f"Fail src: {len(src_fail_names)}/{len(src_scores)}")
+    for (lbl, pred), (count, mean) in src_fail_values.items():
+        if lbl != pred:
+            print(f"\tA {lbl} is predicted as OOD {count} times - the closest class is {pred} with mean score {mean:.4f}")
+        else:
+            print(f"\tA {lbl} is predicted as OOD {count} times - mean score {mean:.4f}")
+
+    print(f"Fail tar: {len(tar_fail_names)}/{len(tar_scores)}")
+    for (lbl, pred), (count, mean) in tar_fail_values.items():
+        print(f"\tA {lbl} is predicted as ID {count} times - the closest class is {pred} with mean score {mean:.4f}")
+
+def get_ood_metrics(src_scores, tar_scores, src_names, tar_names, src_label=1):
+    """
+    Computes ood metrics given src_scores and tar_scores
+    Scores can be distances, confidences, ..
+    """
 
     tar_label = int(not src_label)
     src_scores = to_numpy(src_scores)
@@ -445,42 +464,11 @@ def get_ood_metrics(src_scores, tar_scores, src_names, tar_names, src_label=1):
     scores = np.concatenate([src_scores, tar_scores], axis=0)
     res = calc_metrics(scores, labels)
 
-    f1_src_fail_names = [(src_names[i][0], src_names[i][1], src_scores[i]) for i in range(len(src_names)) if src_scores[i] < res['f1_threshold']]
-    f1_tar_fail_names = [(tar_names[i][0], tar_names[i][1], tar_scores[i]) for i in range(len(tar_names)) if tar_scores[i] >= res['f1_threshold']]
-
-    f1_src_fail_values = count_and_mean(f1_src_fail_names)
-    f1_tar_fail_values = count_and_mean(f1_tar_fail_names)
-    
-    j_src_fail_names = [(src_names[i][0], src_names[i][1], src_scores[i]) for i in range(len(src_names)) if src_scores[i] < res['j_threshold']]
-    j_tar_fail_names = [(tar_names[i][0], tar_names[i][1], tar_scores[i]) for i in range(len(tar_names)) if tar_scores[i] >= res['j_threshold']]
-
-    j_src_fail_values = count_and_mean(j_src_fail_names)
-    j_tar_fail_values = count_and_mean(j_tar_fail_names)
-
     print(f"OOD F1 Test - Acc: {res['f1_accuracy']:.4f}, Th: {res['f1_threshold']:.4f}")
-    print(f"Fail src: {len(f1_src_fail_names)}/{len(src_scores)}")
-    for (lbl, pred), (count, mean) in f1_src_fail_values.items():
-        if lbl != pred:
-            print(f"\tA {lbl} is predicted as OOD {count} times - the closest class is {pred} with mean score {mean:.4f}")
-        else:
-            print(f"\tA {lbl} is predicted as OOD {count} times - mean score {mean:.4f}")
-
-    print(f"Fail tar: {len(f1_tar_fail_names)}/{len(tar_scores)}")
-    for (lbl, pred), (count, mean) in f1_tar_fail_values.items():
-        print(f"\tA {lbl} is predicted as ID {count} times - the closest class is {pred} with mean score {mean:.4f}")
-
+    print_fail_names(src_scores, tar_scores, src_names, tar_names, res['f1_threshold'])
 
     print(f"OOD J Test - Acc: {res['j_accuracy']:.4f}, Th: {res['j_threshold']:.4f}")
-    print(f"Fail src: {len(j_src_fail_names)}/{len(src_scores)}")
-    for (lbl, pred), (count, mean) in j_src_fail_values.items():
-        if lbl != pred:
-            print(f"\tA {lbl} is predicted as OOD {count} times - the closest class is {pred} with mean score {mean:.4f}")
-        else:
-            print(f"\tA {lbl} is predicted as OOD {count} times - mean score {mean:.4f}")
-
-    print(f"Fail tar: {len(j_tar_fail_names)}/{len(tar_scores)}")
-    for (lbl, pred), (count, mean) in j_tar_fail_values.items():
-        print(f"\tA {lbl} is predicted as ID {value} times - the closest class is {pred} with mean score {mean:.4f}")
+    print_fail_names(src_scores, tar_scores, src_names, tar_names, res['j_threshold'])
 
     return res
 
