@@ -438,14 +438,14 @@ def print_fail_names(src_scores, tar_scores, src_names, tar_names, threshold):
     tar_fail_values = count_and_mean(tar_fail_names)
 
     print(f"Fail src: {len(src_fail_names)}/{len(src_scores)}")
-    print(f"\tClass\t|\tPrediction\t|\tTimes\t|\tMean score\t|\tClosest class")
+    print(f"\tClass\t| Pred\t| Times\t| Mean score\t| Closest class")
     for (lbl, pred), (count, mean) in src_fail_values.items():
-        print(f"\t{lbl}\t|\tOOD\t|\t{count}\t|\t{mean:.4f}\t|\t{pred}")
+        print(f"\t{lbl}\t| OOD\t| {count}\t| {mean:.4f}\t| {pred}")
 
     print(f"Fail tar: {len(tar_fail_names)}/{len(tar_scores)}")
-    print(f"\tClass\t|\tPrediction\t|\tTimes\t|\tMean score\t|\tClosest class")
+    print(f"\tClass\t| Pred\t| Times\t| Mean score\t| Closest class")
     for (lbl, pred), (count, mean) in tar_fail_values.items():
-        print(f"\t{lbl}\t|\tOOD\t|\t{count}\t|\t{mean:.4f}\t|\t{pred}")
+        print(f"\t{lbl}\t| ID\t| {count}\t| {mean:.4f}\t| {pred}")
 
     return src_fail_values, tar_fail_values
 
