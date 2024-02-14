@@ -434,42 +434,42 @@ def get_ood_metrics(src_scores, tar_scores, src_names, tar_names, src_label=1):
     scores = np.concatenate([src_scores, tar_scores], axis=0)
     res = calc_metrics(scores, labels)
 
-    f1_src_fail_names = [(src_names[i][0], src_names[i][1]) for i in range(len(src_names)) if src_scores[i] >= res['f1_threshold']]
-    f1_tar_fail_names = [(tar_names[i][0], tar_names[i][1]) for i in range(len(tar_names)) if tar_scores[i] < res['f1_threshold']]
+    f1_src_fail_names = [(src_names[i][0], src_names[i][1], src_scores[i]) for i in range(len(src_names)) if src_scores[i] >= res['f1_threshold']]
+    f1_tar_fail_names = [(tar_names[i][0], tar_names[i][1], tar_scores[i]) for i in range(len(tar_names)) if tar_scores[i] < res['f1_threshold']]
 
     f1_src_fail_counter = collections.Counter(f1_src_fail_names)
     f1_tar_fail_counter = collections.Counter(f1_tar_fail_names)
     
-    j_src_fail_names = [(src_names[i][0], src_names[i][1]) for i in range(len(src_names)) if src_scores[i] >= res['j_threshold']]
-    j_tar_fail_names = [(tar_names[i][0], tar_names[i][1]) for i in range(len(tar_names)) if tar_scores[i] < res['j_threshold']]
+    j_src_fail_names = [(src_names[i][0], src_names[i][1], src_scores[i]) for i in range(len(src_names)) if src_scores[i] >= res['j_threshold']]
+    j_tar_fail_names = [(tar_names[i][0], tar_names[i][1], tar_scores[i]) for i in range(len(tar_names)) if tar_scores[i] < res['j_threshold']]
 
     j_src_fail_counter = collections.Counter(j_src_fail_names)
     j_tar_fail_counter = collections.Counter(j_tar_fail_names)
 
     print(f"OOD F1 Test - Acc: {res['f1_accuracy']:.4f}, Th: {res['f1_threshold']:.4f}")
     print(f"Fail src: {len(f1_src_fail_names)}")
-    for (lbl, pred), value in f1_src_fail_counter.most_common():
+    for (lbl, pred, score), value in f1_src_fail_counter.most_common():
         if lbl != pred:
-            print(f"A {lbl} is predicted as OOD {value} times - the closest class is {pred}")
+            print(f"A {lbl} is predicted as OOD {value} times with score {score:.4f} - the closest class is {pred}")
         else:
-            print(f"A {lbl} is predicted as ID {value} times")
+            print(f"A {lbl} is predicted as ID {value} times with score {score:.4f}")
 
     print(f"Fail tar: {len(f1_tar_fail_names)}")
-    for (lbl, pred), value in f1_tar_fail_counter.most_common():
-        print(f"A {lbl} is predicted as OOD {value} times - the closest class is {pred}")
+    for (lbl, pred, score), value in f1_tar_fail_counter.most_common():
+        print(f"A {lbl} is predicted as OOD {value} times with score {score:.4f} - the closest class is {pred}")
 
 
     print(f"OOD J Test - Acc: {res['j_accuracy']:.4f}, Th: {res['j_threshold']:.4f}")
     print(f"Fail src: {len(j_src_fail_names)}")
-    for (lbl, pred), value in j_src_fail_counter.most_common():
+    for (lbl, pred, score), value in j_src_fail_counter.most_common():
         if lbl != pred:
-            print(f"A {lbl} is predicted as OOD {value} times - the closest class is {pred}")
+            print(f"A {lbl} is predicted as OOD {value} times with score {score:.4f} - the closest class is {pred}")
         else:
-            print(f"A {lbl} is predicted as OOD {value} times")
+            print(f"A {lbl} is predicted as OOD {value} times with score {score:.4f}")
 
     print(f"Fail tar: {len(j_tar_fail_names)}")
-    for (lbl, pred), value in j_tar_fail_counter.most_common():
-        print(f"A {lbl} is predicted as ID {value} times - the closest class is {pred}")
+    for (lbl, pred, score), value in j_tar_fail_counter.most_common():
+        print(f"A {lbl} is predicted as ID {value} times with score {score:.4f} - the closest class is {pred}")
 
     return res
 
