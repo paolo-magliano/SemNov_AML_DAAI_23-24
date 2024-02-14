@@ -438,14 +438,14 @@ def print_fail_names(src_scores, tar_scores, src_names, tar_names, threshold):
     tar_fail_values = fail_metrics(tar_fail_names)
 
     print(f"Fail src: {len(src_fail_names)}/{len(src_scores)}")
-    print(f"\tClass\t| Pred\t| Times\t| Close class\t| Min score\t| Max score\t| Mean score")
+    print(f"\tClass\t| Pred\t| Times\t| Close class\t| Mean\t| Min\t| Max")
     for (lbl, pred), (count, mean, min, max) in src_fail_values.items():
-        print(f"\t{lbl}\t| OOD\t| {count}\t| {pred}\t| {min:.5f}\t| {max:.5f}\t| {mean:.5f}")
+        print(f"\t{lbl}\t| OOD\t| {count}\t| {pred}\t| {mean:.3f}\t| {min:.3f}\t| {max:.3f}")
 
     print(f"Fail tar: {len(tar_fail_names)}/{len(tar_scores)}")
-    print(f"\tClass\t| Pred\t| Times\t| Close class\t| Min score\t| Max score\t| Mean score")
+    print(f"\tClass\t| Pred\t| Times\t| Close class\t| Mean\t| Min\t| Max")
     for (lbl, pred), (count, mean, min, max) in tar_fail_values.items():
-        print(f"\t{lbl}\t| ID\t| {count}\t| {pred}\t| {min:.5f}\t| {max:.5f}\t| {mean:.5f}")
+        print(f"\t{lbl}\t| ID\t| {count}\t| {pred}\t| {mean:.3f}\t| {min:.3f}\t| {max:.3f}")
 
     return src_fail_values, tar_fail_values
 
