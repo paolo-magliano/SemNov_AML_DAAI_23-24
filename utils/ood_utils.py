@@ -432,30 +432,51 @@ def get_ood_metrics(src_scores, tar_scores, src_names, tar_names, src_label=1):
         np.full(tar_scores.shape[0], tar_label, dtype=np.compat.long)
     ], axis=0)
     scores = np.concatenate([src_scores, tar_scores], axis=0)
-    names = np.concatenate([src_names, tar_names], axis=0)
     res = calc_metrics(scores, labels)
 
-    f1_fail_names = [names[i] for i in range(len(names)) if scores[i] < res['f1_threshold']]
-    #f1_fail_names = [(names[i][0], names[i][1]) for i in range(len(names)) if scores[i] < res['f1_threshold']]
-    f1_fail_counter = collections.Counter(f1_fail_names)
-    f1_fail_counter.sort(key=lambda x: x[1], reverse=True)
+    f1_src_fail_names = [(src_names[i][0], src_names[i][1]) for i in range(len(src_names)) if src_scores[i] >= res['f1_threshold']]
+    f1_tar_fail_names = [(tar_names[i][0], tar_names[i][1]) for i in range(len(tar_names)) if tar_scores[i] < res['f1_threshold']]
+
+    f1_src_fail_counter = collections.Counter(f1_src_fail_names)
+    f1_tar_fail_counter = collections.Counter(f1_tar_fail_names)
     
-    j_fail_names = [names[i] for i in range(len(names)) if scores[i] < res['j_threshold']]
-    #j_fail_names = [(names[i][0], names[i][1]) for i in range(len(names)) if scores[i] < res['j_threshold']]
-    j_fail_counter = collections.Counter(j_fail_names)
-    j_fail_counter.sort(key=lambda x: x[1], reverse=True)
+    f1_src_fail_counter.sort(key=lambda x: x[1], reverse=True)
+    f1_tar_fail_counter.sort(key=lambda x: x[1], reverse=True)
+    
+    j_src_fail_names = [(src_names[i][0], src_names[i][1]) for i in range(len(src_names)) if src_scores[i] >= res['j_threshold']]
+    j_tar_fail_names = [(tar_names[i][0], tar_names[i][1]) for i in range(len(tar_names)) if tar_scores[i] < res['j_threshold']]
 
-    print(f"OOD F1 Test - Acc: {res['f1_accuracy']:.4f}, Th: {res['f1_threshold']:.4f}, Fail: {len(f1_fail_names)}")
-    #for lbl, pred in f1_fail_names[:10]:
-    #    print(f"A {lbl} predicted as {pred}")
-    for (lbl, pred), value in f1_fail_counter.items():
-        print(f"A {lbl} predicted as {pred} - {value} times")
+    j_src_fail_counter = collections.Counter(j_src_fail_names)
+    j_tar_fail_counter = collections.Counter(j_tar_fail_names)
 
-    print(f"OOD J Test - Acc: {res['j_accuracy']:.4f}, Th: {res['j_threshold']:.4f}, Fail: {len(j_fail_names)}")
-    #for lbl, pred in j_fail_names[:10]:
-    #    print(f"A {lbl} predicted as {pred}")
-    for (lbl, pred), value in f1_fail_counter.items():
-        print(f"A {lbl} predicted as {pred} - {value} times")
+    j_src_fail_counter.sort(key=lambda x: x[1], reverse=True)
+    j_tar_fail_counter.sort(key=lambda x: x[1], reverse=True)
+
+
+    print(f"OOD F1 Test - Acc: {res['f1_accuracy']:.4f}, Th: {res['f1_threshold']:.4f}")
+    print(f"Fail src: {len(f1_src_fail_names)}")
+    for (lbl, pred), value in f1_src_fail_counter.items():
+        if lbl != pred:
+            print(f"A {lbl} is predicted as OOD {value} times - the closest class is {pred}")
+        else:
+            print(f"A {lbl} is predicted as ID {value} times")
+
+    print(f"Fail tar: {len(f1_tar_fail_names)}")
+    for (lbl, pred), value in f1_tar_fail_counter.items():
+        print(f"A {lbl} is predicted as OOD {value} times - the closest class is {pred}")
+
+
+    print(f"OOD J Test - Acc: {res['j_accuracy']:.4f}, Th: {res['j_threshold']:.4f}")
+    print(f"Fail src: {len(j_src_fail_names)}")
+    for (lbl, pred), value in j_src_fail_counter.items():
+        if lbl != pred:
+            print(f"A {lbl} is predicted as OOD {value} times - the closest class is {pred}")
+        else:
+            print(f"A {lbl} is predicted as ID {value} times")
+
+    print(f"Fail tar: {len(j_tar_fail_names)}")
+    for (lbl, pred), value in j_tar_fail_counter.items():
+        print(f"A {lbl} is predicted as OOD {value} times - the closest class is {pred}")
 
     return res
 
