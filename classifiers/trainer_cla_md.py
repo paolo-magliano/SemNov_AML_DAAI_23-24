@@ -702,19 +702,24 @@ def eval_OOD_with_feats(model, train_loader, src_loader, tar1_loader, tar2_loade
     src_pred = np.asarray([train_labels[i] for i in src_ids])  # pred is label of nearest training sample
 
     # OOD tar1
-    tar1_dist, _ = knn(prototypes.unsqueeze(0), tar1_feats.unsqueeze(0))
+    tar1_dist, tar1_ids = knn(prototypes.unsqueeze(0), tar1_feats.unsqueeze(0))
     tar1_dist = tar1_dist.squeeze().cpu()
+    tar1_ids = tar1_ids.squeeze().cpu()  # index of nearest training sample
     tar1_scores = 1 / tar1_dist
+    tar1_pred = np.asarray([train_labels[i] for i in tar1_ids])  # pred is label of nearest training sample
 
     # OOD tar2
-    tar2_dist, _ = knn(prototypes.unsqueeze(0), tar2_feats.unsqueeze(0))
+    tar2_dist, tar2_ids = knn(prototypes.unsqueeze(0), tar2_feats.unsqueeze(0))
     tar2_dist = tar2_dist.squeeze().cpu()
+    tar2_ids = tar2_ids.squeeze().cpu()  # index of nearest training sample
     tar2_scores = 1 / tar2_dist
+    tar2_pred = np.asarray([train_labels[i] for i in tar2_ids])  # pred is label of nearest training sample
 
     eval_ood_sncore(
         scores_list=[src_scores, tar1_scores, tar2_scores],
-        preds_list=[src_pred, None, None],
-        labels_list=[src_labels, None, None],
+        preds_list=[src_pred, tar1_pred, tar2_pred],
+        labels_list=[src_labels, tar1_labels, tar2_labels],
+        label_names_list=[src_label_names, tar1_label_names, tar2_label_names],
         src_label=1  # confidence should be higher for ID samples
     )
 
@@ -726,14 +731,17 @@ def eval_OOD_with_feats(model, train_loader, src_loader, tar1_loader, tar2_loade
     tar1_feats = F.normalize(tar1_feats, p=2, dim=1)
     tar2_feats = F.normalize(tar2_feats, p=2, dim=1)
     src_scores, src_ids = torch.mm(src_feats, train_feats.t()).max(1)
-    tar1_scores, _ = torch.mm(tar1_feats, train_feats.t()).max(1)
-    tar2_scores, _ = torch.mm(tar2_feats, train_feats.t()).max(1)
+    tar1_scores, tar1_ids = torch.mm(tar1_feats, train_feats.t()).max(1)
+    tar2_scores, tar2_ids = torch.mm(tar2_feats, train_feats.t()).max(1)
     src_pred = np.asarray([train_labels[i] for i in src_ids])  # pred is label of nearest training sample
+    tar1_pred = np.asarray([train_labels[i] for i in tar1_ids])  # pred is label of nearest training sample
+    tar2_pred = np.asarray([train_labels[i] for i in tar2_ids])  # pred is label of nearest training sample
 
     eval_ood_sncore(
         scores_list=[(0.5 * src_scores + 0.5).cpu(), (0.5 * tar1_scores + 0.5).cpu(), (0.5 * tar2_scores + 0.5).cpu()],
-        preds_list=[src_pred, None, None],  # [src_pred, None, None],
-        labels_list=[src_labels, None, None],  # [src_labels, None, None],
+        preds_list=[src_pred, tar1_pred, tar2_pred],
+        labels_list=[src_labels, tar1_labels, tar2_labels],
+        label_names_list=[src_label_names, tar1_label_names, tar2_label_names],
         src_label=1  # confidence should be higher for ID samples
     )
     print("\nCosine similarities with prototypes:")
@@ -743,13 +751,17 @@ def eval_OOD_with_feats(model, train_loader, src_loader, tar1_loader, tar2_loade
     tar1_feats = F.normalize(tar1_feats, p=2, dim=1)
     tar2_feats = F.normalize(tar2_feats, p=2, dim=1)
     src_scores, src_ids = torch.mm(src_feats, prototypes.t()).max(1)
-    tar1_scores, _ = torch.mm(tar1_feats, prototypes.t()).max(1)
-    tar2_scores, _ = torch.mm(tar2_feats, prototypes.t()).max(1)
+    tar1_scores, tar1_ids = torch.mm(tar1_feats, prototypes.t()).max(1)
+    tar2_scores, tar2_ids = torch.mm(tar2_feats, prototypes.t()).max(1)
     src_pred = np.asarray([train_labels[i] for i in src_ids])  # pred is label of nearest training sample
+    tar1_pred = np.asarray([train_labels[i] for i in tar1_ids])  # pred is label of nearest training sample
+    tar2_pred = np.asarray([train_labels[i] for i in tar2_ids])  # pred is label of nearest training sample
+
     eval_ood_sncore(
         scores_list=[(0.5 * src_scores + 0.5).cpu(), (0.5 * tar1_scores + 0.5).cpu(), (0.5 * tar2_scores + 0.5).cpu()],
-        preds_list=[src_pred, None, None],
-        labels_list=[src_labels, None, None],
+        preds_list=[src_pred, tar1_pred, tar2_pred],
+        labels_list=[src_labels, tar1_labels, tar2_labels],
+        label_names_list=[src_label_names, tar1_label_names, tar2_label_names],
         src_label=1  # confidence should be higher for ID samples
     )
     print("#" * 80)
