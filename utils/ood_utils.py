@@ -472,11 +472,11 @@ def get_ood_metrics(src_scores, tar_scores, src_names, tar_names, src_label=1):
         if lbl != pred:
             print(f"A {lbl} is predicted as OOD {value} times - the closest class is {pred}")
         else:
-            print(f"A {lbl} is predicted as ID {value} times")
+            print(f"A {lbl} is predicted as OOD {value} times")
 
     print(f"Fail tar: {len(j_tar_fail_names)}")
     for (lbl, pred), value in j_tar_fail_counter.items():
-        print(f"A {lbl} is predicted as OOD {value} times - the closest class is {pred}")
+        print(f"A {lbl} is predicted as ID {value} times - the closest class is {pred}")
 
     return res
 
