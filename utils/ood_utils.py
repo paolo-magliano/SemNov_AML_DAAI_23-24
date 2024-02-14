@@ -443,12 +443,12 @@ def print_fail_names(src_scores, tar_scores, src_names, tar_names, threshold):
     print(f"Fail src: {len(src_fail_names)}/{len(src_scores)}")
     print(f" True class\t| Pred\t| Times\t| Closest class\t| Mean score\t| Min score\t| Max score")
     for (lbl, pred), (count, mean, min, max) in src_fail_values.items():
-        print(f" {lbl}   \t| OOD\t| {count}\t| {pred}   \t| {mean:.4f}\t| {min:.4f}\t| {max:.4f}")
+        print(f" {lbl}    \t| OOD\t| {count}\t| {pred}    \t| {mean:.4f}\t| {min:.4f}\t| {max:.4f}")
 
     print(f"Fail tar: {len(tar_fail_names)}/{len(tar_scores)}")
     print(f" True class\t| Pred\t| Times\t| Close class\t| Mean score\t| Min score\t| Max score")
     for (lbl, pred), (count, mean, min, max) in tar_fail_values.items():
-        print(f" {lbl}   \t| ID\t| {count}\t| {pred}   \t| {mean:.4f}\t| {min:.4f}\t| {max:.4f}")
+        print(f" {lbl}    \t| ID\t| {count}\t| {pred}    \t| {mean:.4f}\t| {min:.4f}\t| {max:.4f}")
 
     return src_fail_values, tar_fail_values
 
