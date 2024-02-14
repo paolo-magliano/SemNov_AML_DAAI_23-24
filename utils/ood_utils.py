@@ -446,7 +446,7 @@ def print_fail_names(src_scores, tar_scores, src_names, tar_names, threshold):
         print(f" {lbl}    \t| OOD\t| {count}\t| {pred}    \t| {mean:.4f}\t| {min:.4f}\t| {max:.4f}")
 
     print(f"Fail tar: {len(tar_fail_names)}/{len(tar_scores)}")
-    print(f" True class\t| Pred\t| Times\t| Close class\t| Mean score\t| Min score\t| Max score")
+    print(f" True class\t| Pred\t| Times\t| Closest class\t| Mean score\t| Min score\t| Max score")
     for (lbl, pred), (count, mean, min, max) in tar_fail_values.items():
         print(f" {lbl}    \t| ID\t| {count}\t| {pred}    \t| {mean:.4f}\t| {min:.4f}\t| {max:.4f}")
 
@@ -524,9 +524,9 @@ def eval_ood_sncore(scores_list, preds_list=None, labels_list=None, label_names_
                 for (lbl, pred), value in fail_counter.most_common():
                     print(f"\tA {lbl} is predicted as {pred} - {value} times")
 
-    src_names = [(src_label_name[lbl], src_label_name[pred]) for lbl, pred in zip(src_labels, src_preds)]
-    tar1_names = [(tar1_label_name[lbl], src_label_name[pred]) for lbl, pred in zip(tar1_labels, tar1_preds)]
-    tar2_names = [(tar2_label_name[lbl - 400], src_label_name[pred]) for lbl, pred in zip(tar2_labels, tar2_preds)]
+    src_names = [(src_label_name[lbl], src_label_name[pred]) for lbl, pred in zip(src_labels, src_preds)] if src_preds is not None and src_label_name is not None else None
+    tar1_names = [(tar1_label_name[lbl], src_label_name[pred]) for lbl, pred in zip(tar1_labels, tar1_preds)] if tar1_preds is not None and tar1_label_name is not None else None
+    tar2_names = [(tar2_label_name[lbl - 400], src_label_name[pred]) for lbl, pred in zip(tar2_labels, tar2_preds)] if tar2_preds is not None and tar2_label_name is not None else None
 
     # Src vs Tar 1
     if not silent:
