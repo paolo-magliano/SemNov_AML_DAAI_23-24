@@ -420,32 +420,32 @@ def compute_sim_centroids(model, centroids, list_loaders):
 
 
 def print_fail_names(src_scores, tar_scores, src_names, tar_names, threshold):
-    def count_and_mean(fail):
+    def fail_metrics(fail):
         values = {}
         for (lbl, pred, score) in fail:
             if (lbl, pred) not in values:
-                values[(lbl, pred)] = (1, score)
+                values[(lbl, pred)] = (1, score, score, score)
             else:
-                count, total = values[(lbl, pred)]
-                values[(lbl, pred)] = (count + 1, total*count/(count+1) + score/(count+1))
+                count, mean, min, max = values[(lbl, pred)]
+                values[(lbl, pred)] = (count + 1, mean*count/(count+1) + score/(count+1), score if score < min else min, score if score > max else max)
 
         return dict(sorted(values.items(), key=lambda item: item[1], reverse=True))
     
     src_fail_names = [(src_names[i][0], src_names[i][1], src_scores[i]) for i in range(len(src_names)) if src_scores[i] < threshold]
     tar_fail_names = [(tar_names[i][0], tar_names[i][1], tar_scores[i]) for i in range(len(tar_names)) if tar_scores[i] >= threshold]
 
-    src_fail_values = count_and_mean(src_fail_names)
-    tar_fail_values = count_and_mean(tar_fail_names)
+    src_fail_values = fail_metrics(src_fail_names)
+    tar_fail_values = fail_metrics(tar_fail_names)
 
     print(f"Fail src: {len(src_fail_names)}/{len(src_scores)}")
-    print(f"\tClass\t| Pred\t| Times\t| Mean score\t| Closest class")
-    for (lbl, pred), (count, mean) in src_fail_values.items():
-        print(f"\t{lbl}\t| OOD\t| {count}\t| {mean:.4f}\t| {pred}")
+    print(f"\tClass\t| Pred\t| Times\t| Close class\t| Min score\t| Max score\t| Mean score")
+    for (lbl, pred), (count, mean, min, max) in src_fail_values.items():
+        print(f"\t{lbl}\t| OOD\t| {count}\t| {pred}\t| {min:.5f}\t| {max:.5f}\t| {mean:.5f}")
 
     print(f"Fail tar: {len(tar_fail_names)}/{len(tar_scores)}")
-    print(f"\tClass\t| Pred\t| Times\t| Mean score\t| Closest class")
-    for (lbl, pred), (count, mean) in tar_fail_values.items():
-        print(f"\t{lbl}\t| ID\t| {count}\t| {mean:.4f}\t| {pred}")
+    print(f"\tClass\t| Pred\t| Times\t| Close class\t| Min score\t| Max score\t| Mean score")
+    for (lbl, pred), (count, mean, min, max) in tar_fail_values.items():
+        print(f"\t{lbl}\t| ID\t| {count}\t| {pred}\t| {min:.5f}\t| {max:.5f}\t| {mean:.5f}")
 
     return src_fail_values, tar_fail_values
 
