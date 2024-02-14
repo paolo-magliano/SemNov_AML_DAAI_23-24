@@ -567,7 +567,7 @@ def eval_ood_md2sonn(opt, config):
 
 
     # FEATURES EVALUATION
-    eval_OOD_with_feats(model, train_loader, id_loader, ood1_loader, ood2_loader, save_feats=opt.save_feats)
+    eval_OOD_with_feats(model, train_loader, id_loader, ood1_loader, ood2_loader, src_label_names, tar1_label_names, tar2_label_names, save_feats=opt.save_feats)
 
     # ODIN
     print("\n" + "#" * 80)
@@ -575,7 +575,11 @@ def eval_ood_md2sonn(opt, config):
     src_odin = iterate_data_odin(model, id_loader)
     tar1_odin = iterate_data_odin(model, ood1_loader)
     tar2_odin = iterate_data_odin(model, ood2_loader)
-    eval_ood_sncore(scores_list=[src_odin, tar1_odin, tar2_odin], src_label=1)
+    eval_ood_sncore(scores_list=[src_odin, tar1_odin, tar2_odin],
+        preds_list=[src_pred, tar1_pred, tar2_pred],
+        labels_list=[src_labels, tar1_labels, tar2_labels],
+        label_names_list=[src_label_names, tar1_label_names, tar2_label_names],
+        src_label=1)
     print("#" * 80)
 
     # Energy
@@ -584,7 +588,11 @@ def eval_ood_md2sonn(opt, config):
     src_energy = iterate_data_energy(model, id_loader)
     tar1_energy = iterate_data_energy(model, ood1_loader)
     tar2_energy = iterate_data_energy(model, ood2_loader)
-    eval_ood_sncore(scores_list=[src_energy, tar1_energy, tar2_energy], src_label=1)
+    eval_ood_sncore(scores_list=[src_energy, tar1_energy, tar2_energy],
+        preds_list=[src_pred, tar1_pred, tar2_pred],
+        labels_list=[src_labels, tar1_labels, tar2_labels],
+        label_names_list=[src_label_names, tar1_label_names, tar2_label_names],
+        src_label=1)
     print("#" * 80)
 
     # GradNorm
@@ -593,7 +601,11 @@ def eval_ood_md2sonn(opt, config):
     src_gradnorm = iterate_data_gradnorm(model, id_loader)
     tar1_gradnorm = iterate_data_gradnorm(model, ood1_loader)
     tar2_gradnorm = iterate_data_gradnorm(model, ood2_loader)
-    eval_ood_sncore(scores_list=[src_gradnorm, tar1_gradnorm, tar2_gradnorm], src_label=1)
+    eval_ood_sncore(scores_list=[src_gradnorm, tar1_gradnorm, tar2_gradnorm],
+        preds_list=[src_pred, tar1_pred, tar2_pred],
+        labels_list=[src_labels, tar1_labels, tar2_labels], 
+        label_names_list=[src_label_names, tar1_label_names, tar2_label_names],
+        src_label=1)
     print("#" * 80)
 
     # React with id-dependent threshold
@@ -605,12 +617,16 @@ def eval_ood_md2sonn(opt, config):
     src_react = iterate_data_react(model, id_loader, threshold=threshold)
     tar1_react = iterate_data_react(model, ood1_loader, threshold=threshold)
     tar2_react = iterate_data_react(model, ood2_loader, threshold=threshold)
-    eval_ood_sncore(scores_list=[src_react, tar1_react, tar2_react], src_label=1)
+    eval_ood_sncore(scores_list=[src_react, tar1_react, tar2_react], 
+        preds_list=[src_pred, tar1_pred, tar2_pred],
+        labels_list=[src_labels, tar1_labels, tar2_labels],
+        label_names_list=[src_label_names, tar1_label_names, tar2_label_names],
+        src_label=1)
     print("#" * 80)
     return
 
 
-def eval_OOD_with_feats(model, train_loader, src_loader, tar1_loader, tar2_loader, save_feats=None):
+def eval_OOD_with_feats(model, train_loader, src_loader, tar1_loader, tar2_loader, src_label_names, tar1_label_names, tar2_label_names, save_feats=None):
     from knn_cuda import KNN
     knn = KNN(k=1, transpose_mode=True)
 
@@ -656,19 +672,24 @@ def eval_OOD_with_feats(model, train_loader, src_loader, tar1_loader, tar2_loade
     src_pred = np.asarray([train_labels[i] for i in src_ids])  # pred is label of nearest training sample
 
     # OOD tar1
-    tar1_dist, _ = knn(train_feats.unsqueeze(0), tar1_feats.unsqueeze(0))
+    tar1_dist, tar1_ids = knn(train_feats.unsqueeze(0), tar1_feats.unsqueeze(0))
     tar1_dist = tar1_dist.squeeze().cpu()
+    tar1_ids = tar1_ids.squeeze().cpu()  # index of nearest training sample
     tar1_scores = 1 / tar1_dist
+    tar1_pred = np.asarray([train_labels[i] for i in tar1_ids])  # pred is label of nearest training sample
 
     # OOD tar2
-    tar2_dist, _ = knn(train_feats.unsqueeze(0), tar2_feats.unsqueeze(0))
+    tar2_dist, tar2_ids = knn(train_feats.unsqueeze(0), tar2_feats.unsqueeze(0))
     tar2_dist = tar2_dist.squeeze().cpu()
+    tar2_ids = tar2_ids.squeeze().cpu()  # index of nearest training sample
     tar2_scores = 1 / tar2_dist
+    tar2_pred = np.asarray([train_labels[i] for i in tar2_ids])  # pred is label of nearest training sample
 
     eval_ood_sncore(
         scores_list=[src_scores, tar1_scores, tar2_scores],
-        preds_list=[src_pred, None, None],  # [src_pred, None, None],
-        labels_list=[src_labels, None, None],  # [src_labels, None, None],
+        preds_list=[src_pred, tar1_pred, tar2_pred],
+        labels_list=[src_labels, tar1_labels, tar2_labels],
+        label_names_list=[src_label_names, tar1_label_names, tar2_label_names],
         src_label=1  # confidence should be higher for ID samples
     )
 
