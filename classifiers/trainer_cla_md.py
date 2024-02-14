@@ -28,6 +28,7 @@ from models.common import convert_model_state, logits_entropy_loss
 from models.ARPL_utils import Generator, Discriminator
 from classifiers.common import train_epoch_cla, train_epoch_rsmix_exposure, train_epoch_cs
 
+import openshape
 
 def get_args():
     parser = argparse.ArgumentParser("OOD on point clouds via contrastive learning")
@@ -53,6 +54,7 @@ def get_args():
     parser.add_argument("--cs_gan_lr", type=float, default=0.0002, help="Confusing samples GAN lr")
     parser.add_argument("--cs_beta", type=float, default=0.1, help="Beta loss weight for CS")
     parser.add_argument("--save_feats", type=str, default=None, help="Path where to save feats of penultimate layer")
+    parser.add_argument("--open_shape", type=str, default=None, help="Name of OpenShape model to use")
 
     # Adopt Corrupted data
     # this flag should be set also during evaluation if testing Synth->Real Corr/LIDAR Augmented models
@@ -491,7 +493,10 @@ def eval_ood_md2sonn(opt, config):
 
     classes_dict = eval(opt.src)
     n_classes = len(set(classes_dict.values()))
-    model = Classifier(args=DotConfig(config['model']), num_classes=n_classes, loss=opt.loss, cs=opt.cs)
+    if opt.open_shape is not None:
+        model = openshape.load_pc_encoder(opt.open_shape)
+    else:
+        model = Classifier(args=DotConfig(config['model']), num_classes=n_classes, loss=opt.loss, cs=opt.cs)
     ckt_weights = torch.load(opt.ckpt_path, map_location='cpu')['model']
     ckt_weights = sanitize_model_dict(ckt_weights)
     ckt_weights = convert_model_state(ckt_weights, model.state_dict())
