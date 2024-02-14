@@ -500,11 +500,8 @@ def eval_ood_md2sonn(opt, config):
 
     print(model)
     ckt_weights = torch.load(opt.ckpt_path, map_location='cpu')['model']
-    print(ckt_weights)
     ckt_weights = sanitize_model_dict(ckt_weights)
-    print(ckt_weights)
     ckt_weights = convert_model_state(ckt_weights, model.state_dict())
-    print(ckt_weights)
 
     print(f"Model params count: {count_parameters(model) / 1000000 :.4f} M")
     print("Load weights: ", model.load_state_dict(ckt_weights, strict=True))
