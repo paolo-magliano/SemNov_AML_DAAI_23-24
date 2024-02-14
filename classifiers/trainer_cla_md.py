@@ -766,7 +766,6 @@ def eval_OOD_with_feats(model, train_loader, src_loader, tar1_loader, tar2_loade
     )
     print("#" * 80)
 
-
 def main():
     args = get_args()
     config = load_yaml(args.config)
