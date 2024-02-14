@@ -431,6 +431,9 @@ def print_fail_names(src_scores, tar_scores, src_names, tar_names, threshold):
 
         return dict(sorted(values.items(), key=lambda item: item[1], reverse=True))
     
+    if src_scores is None or tar_scores is None:
+        return None, None
+    
     src_fail_names = [(src_names[i][0], src_names[i][1], src_scores[i]) for i in range(len(src_names)) if src_scores[i] < threshold]
     tar_fail_names = [(tar_names[i][0], tar_names[i][1], tar_scores[i]) for i in range(len(tar_names)) if tar_scores[i] >= threshold]
 
@@ -438,14 +441,14 @@ def print_fail_names(src_scores, tar_scores, src_names, tar_names, threshold):
     tar_fail_values = fail_metrics(tar_fail_names)
 
     print(f"Fail src: {len(src_fail_names)}/{len(src_scores)}")
-    print(f"      Class\t| Pred\t| Times\t| Closest class\t| Mean\t| Min\t| Max")
+    print(f" Class\t| Pred\t| Times\t| Closest class\t| Mean\t| Min\t| Max")
     for (lbl, pred), (count, mean, min, max) in src_fail_values.items():
-        print(f"      {lbl}\t| OOD\t| {count}\t| {pred}\t\t| {mean:.3f}\t| {min:.3f}\t| {max:.3f}")
+        print(f" {lbl}\t| OOD\t| {count}\t| {pred}     \t| {mean:.3f}\t| {min:.3f}\t| {max:.3f}")
 
     print(f"Fail tar: {len(tar_fail_names)}/{len(tar_scores)}")
-    print(f"      Class\t| Pred\t| Times\t| Close class\t| Mean\t| Min\t| Max")
+    print(f" Class\t| Pred\t| Times\t| Close class\t| Mean\t| Min\t| Max")
     for (lbl, pred), (count, mean, min, max) in tar_fail_values.items():
-        print(f"      {lbl}\t| ID\t| {count}\t| {pred}\t\t| {mean:.3f}\t| {min:.3f}\t| {max:.3f}")
+        print(f" {lbl}\t| ID\t| {count}\t| {pred}     \t| {mean:.3f}\t| {min:.3f}\t| {max:.3f}")
 
     return src_fail_values, tar_fail_values
 
@@ -539,7 +542,7 @@ def eval_ood_sncore(scores_list, preds_list=None, labels_list=None, label_names_
     if not silent:
         print("Test Tar1+Tar2")
     big_tar_conf = np.concatenate([to_numpy(tar1_conf), to_numpy(tar2_conf)], axis=0)
-    big_tar_names = np.concatenate([tar1_names, tar2_names], axis=0)
+    big_tar_names = np.concatenate([tar1_names, tar2_names], axis=0) if tar1_names is not None else None
     res_big_tar = get_ood_metrics(src_conf, big_tar_conf, src_names, big_tar_names, src_label)
 
     # N.B. get_ood_metrics reports inverted AUPR_IN and AUPR_OUT results

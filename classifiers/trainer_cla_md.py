@@ -545,8 +545,9 @@ def eval_ood_md2sonn(opt, config):
     tar2_MLS_scores = tar2_logits.max(1)[0]
     eval_ood_sncore(
         scores_list=[src_MLS_scores, tar1_MLS_scores, tar2_MLS_scores],
-        preds_list=[src_pred, None, None],  # computes also MSP accuracy on ID test set
-        labels_list=[src_labels, None, None],  # computes also MSP accuracy on ID test set
+        preds_list=[src_pred, tar1_pred, tar2_pred],  # computes also MSP accuracy on ID test set
+        labels_list=[src_labels, tar1_labels, tar2_labels],  # computes also MSP accuracy on ID test set
+        label_names_list=[src_label_names, tar1_label_names, tar2_label_names],
         src_label=1)
     print("#" * 80)
 
@@ -558,8 +559,9 @@ def eval_ood_md2sonn(opt, config):
     print("Computing OOD metrics with entropy normality score...")
     eval_ood_sncore(
         scores_list=[src_entropy_scores, tar1_entropy_scores, tar2_entropy_scores],
-        preds_list=[src_pred, None, None],  # computes also MSP accuracy on ID test set
-        labels_list=[src_labels, None, None],  # computes also MSP accuracy on ID test set
+        preds_list=[src_pred, tar1_pred, tar2_pred],  # computes also MSP accuracy on ID test set
+        labels_list=[src_labels, tar1_labels, tar2_labels],  # computes also MSP accuracy on ID test set
+        label_names_list=[src_label_names, tar1_label_names, tar2_label_names],
         src_label=1)
     print("#" * 80)
 
