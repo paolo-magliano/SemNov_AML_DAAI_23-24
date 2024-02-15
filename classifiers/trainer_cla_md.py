@@ -525,9 +525,9 @@ def eval_ood_md2sonn(opt, config):
     src_label_names = [k for k, v in SONN_label_dict.items() if sonn_all[v] in src_label_numbers]
     tar1_label_names = [k for k, v in SONN_label_dict.items() if sonn_all[v] in tar1_label_numbers]
     tar2_label_names = [k for k, v in SONN_label_dict.items() if sonn_all[v] in tar2_label_numbers]
-    print(f"Src logits: \n{src_label_names}\n{to_numpy(src_logits[:10])}")
-    print(f"Tar1 logits: \n{tar1_label_names}\n{to_numpy(tar1_logits[:10])}")
-    print(f"Tar2 logits: \n{tar2_label_names}\n{to_numpy(tar2_logits[:10])}")
+    # print(f"Src logits: \n{src_label_names}\n{to_numpy(src_logits[:10])}")
+    # print(f"Tar1 logits: \n{tar1_label_names}\n{to_numpy(tar1_logits[:10])}")
+    # print(f"Tar2 logits: \n{tar2_label_names}\n{to_numpy(tar2_logits[:10])}")
 
     if opt.open_shape is not None:
         src_pred, src_labels, src_label_names = None, None, None
