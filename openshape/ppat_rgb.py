@@ -90,7 +90,7 @@ class PointPatchTransformer(nn.Module):
         self.cls_token = nn.Parameter(torch.randn(dim))
         self.transformer = Transformer(dim, depth, heads, dim_head, mlp_dim, 0.0, rel_pe)
 
-    def forward(self, features):
+    def forward(self, features, return_penultimate=True):
         self.sa.npoint = self.patches
         if self.training:
             self.sa.npoint -= self.patch_dropout
@@ -114,5 +114,5 @@ class Projected(nn.Module):
         self.ppat = ppat
         self.proj = proj
 
-    def forward(self, features: torch.Tensor):
+    def forward(self, features: torch.Tensor, return_penultimate=False):
         return self.proj(self.ppat(features))

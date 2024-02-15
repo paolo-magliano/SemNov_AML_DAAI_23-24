@@ -534,107 +534,109 @@ def eval_ood_md2sonn(opt, config):
         tar1_pred, tar1_labels, tar1_label_names = None, None, None
         tar2_pred, tar2_labels, tar2_label_names = None, None, None
 
-    # MSP
-    print("\n" + "#" * 80)
-    print("Computing OOD metrics with MSP normality score...")
-    src_MSP_scores = F.softmax(src_logits, dim=1).max(1)[0]
-    tar1_MSP_scores = F.softmax(tar1_logits, dim=1).max(1)[0]
-    tar2_MSP_scores = F.softmax(tar2_logits, dim=1).max(1)[0]
-    eval_ood_sncore(
-        scores_list=[src_MSP_scores, tar1_MSP_scores, tar2_MSP_scores],
-        preds_list=[src_pred, tar1_pred, tar2_pred],  # computes also MSP accuracy on ID test set
-        labels_list=[src_labels, tar1_labels, tar2_labels],  # computes also MSP accuracy on ID test set
-        label_names_list=[src_label_names, tar1_label_names, tar2_label_names],
-        src_label=1)
-    print("#" * 80)
+    if opt.open_shape is None:
+        # MSP
+        print("\n" + "#" * 80)
+        print("Computing OOD metrics with MSP normality score...")
+        src_MSP_scores = F.softmax(src_logits, dim=1).max(1)[0]
+        tar1_MSP_scores = F.softmax(tar1_logits, dim=1).max(1)[0]
+        tar2_MSP_scores = F.softmax(tar2_logits, dim=1).max(1)[0]
+        eval_ood_sncore(
+            scores_list=[src_MSP_scores, tar1_MSP_scores, tar2_MSP_scores],
+            preds_list=[src_pred, tar1_pred, tar2_pred],  # computes also MSP accuracy on ID test set
+            labels_list=[src_labels, tar1_labels, tar2_labels],  # computes also MSP accuracy on ID test set
+            label_names_list=[src_label_names, tar1_label_names, tar2_label_names],
+            src_label=1)
+        print("#" * 80)
 
 
-    # MLS
-    print("\n" + "#" * 80)
-    print("Computing OOD metrics with MLS normality score...")
-    src_MLS_scores = src_logits.max(1)[0]
-    tar1_MLS_scores = tar1_logits.max(1)[0]
-    tar2_MLS_scores = tar2_logits.max(1)[0]
-    eval_ood_sncore(
-        scores_list=[src_MLS_scores, tar1_MLS_scores, tar2_MLS_scores],
-        preds_list=[src_pred, tar1_pred, tar2_pred],  # computes also MSP accuracy on ID test set
-        labels_list=[src_labels, tar1_labels, tar2_labels],  # computes also MSP accuracy on ID test set
-        label_names_list=[src_label_names, tar1_label_names, tar2_label_names],
-        src_label=1)
-    print("#" * 80)
+        # MLS
+        print("\n" + "#" * 80)
+        print("Computing OOD metrics with MLS normality score...")
+        src_MLS_scores = src_logits.max(1)[0]
+        tar1_MLS_scores = tar1_logits.max(1)[0]
+        tar2_MLS_scores = tar2_logits.max(1)[0]
+        eval_ood_sncore(
+            scores_list=[src_MLS_scores, tar1_MLS_scores, tar2_MLS_scores],
+            preds_list=[src_pred, tar1_pred, tar2_pred],  # computes also MSP accuracy on ID test set
+            labels_list=[src_labels, tar1_labels, tar2_labels],  # computes also MSP accuracy on ID test set
+            label_names_list=[src_label_names, tar1_label_names, tar2_label_names],
+            src_label=1)
+        print("#" * 80)
 
-    # entropy
-    print("\n" + "#" * 80)
-    src_entropy_scores = 1 / logits_entropy_loss(src_logits)
-    tar1_entropy_scores = 1 / logits_entropy_loss(tar1_logits)
-    tar2_entropy_scores = 1 / logits_entropy_loss(tar2_logits)
-    print("Computing OOD metrics with entropy normality score...")
-    eval_ood_sncore(
-        scores_list=[src_entropy_scores, tar1_entropy_scores, tar2_entropy_scores],
-        preds_list=[src_pred, tar1_pred, tar2_pred],  # computes also MSP accuracy on ID test set
-        labels_list=[src_labels, tar1_labels, tar2_labels],  # computes also MSP accuracy on ID test set
-        label_names_list=[src_label_names, tar1_label_names, tar2_label_names],
-        src_label=1)
-    print("#" * 80)
+        # entropy
+        print("\n" + "#" * 80)
+        src_entropy_scores = 1 / logits_entropy_loss(src_logits)
+        tar1_entropy_scores = 1 / logits_entropy_loss(tar1_logits)
+        tar2_entropy_scores = 1 / logits_entropy_loss(tar2_logits)
+        print("Computing OOD metrics with entropy normality score...")
+        eval_ood_sncore(
+            scores_list=[src_entropy_scores, tar1_entropy_scores, tar2_entropy_scores],
+            preds_list=[src_pred, tar1_pred, tar2_pred],  # computes also MSP accuracy on ID test set
+            labels_list=[src_labels, tar1_labels, tar2_labels],  # computes also MSP accuracy on ID test set
+            label_names_list=[src_label_names, tar1_label_names, tar2_label_names],
+            src_label=1)
+        print("#" * 80)
 
 
     # FEATURES EVALUATION
     eval_OOD_with_feats(model, train_loader, id_loader, ood1_loader, ood2_loader, src_label_names, tar1_label_names, tar2_label_names, save_feats=opt.save_feats)
 
-    # ODIN
-    print("\n" + "#" * 80)
-    print("Computing OOD metrics with ODIN normality score...")
-    src_odin = iterate_data_odin(model, id_loader)
-    tar1_odin = iterate_data_odin(model, ood1_loader)
-    tar2_odin = iterate_data_odin(model, ood2_loader)
-    eval_ood_sncore(scores_list=[src_odin, tar1_odin, tar2_odin],
-        preds_list=[src_pred, tar1_pred, tar2_pred],
-        labels_list=[src_labels, tar1_labels, tar2_labels],
-        label_names_list=[src_label_names, tar1_label_names, tar2_label_names],
-        src_label=1)
-    print("#" * 80)
+    if opt.open_shape is None:
+        # ODIN
+        print("\n" + "#" * 80)
+        print("Computing OOD metrics with ODIN normality score...")
+        src_odin = iterate_data_odin(model, id_loader)
+        tar1_odin = iterate_data_odin(model, ood1_loader)
+        tar2_odin = iterate_data_odin(model, ood2_loader)
+        eval_ood_sncore(scores_list=[src_odin, tar1_odin, tar2_odin],
+            preds_list=[src_pred, tar1_pred, tar2_pred],
+            labels_list=[src_labels, tar1_labels, tar2_labels],
+            label_names_list=[src_label_names, tar1_label_names, tar2_label_names],
+            src_label=1)
+        print("#" * 80)
 
-    # Energy
-    print("\n" + "#" * 80)
-    print("Computing OOD metrics with Energy normality score...")
-    src_energy = iterate_data_energy(model, id_loader)
-    tar1_energy = iterate_data_energy(model, ood1_loader)
-    tar2_energy = iterate_data_energy(model, ood2_loader)
-    eval_ood_sncore(scores_list=[src_energy, tar1_energy, tar2_energy],
-        preds_list=[src_pred, tar1_pred, tar2_pred],
-        labels_list=[src_labels, tar1_labels, tar2_labels],
-        label_names_list=[src_label_names, tar1_label_names, tar2_label_names],
-        src_label=1)
-    print("#" * 80)
+        # Energy
+        print("\n" + "#" * 80)
+        print("Computing OOD metrics with Energy normality score...")
+        src_energy = iterate_data_energy(model, id_loader)
+        tar1_energy = iterate_data_energy(model, ood1_loader)
+        tar2_energy = iterate_data_energy(model, ood2_loader)
+        eval_ood_sncore(scores_list=[src_energy, tar1_energy, tar2_energy],
+            preds_list=[src_pred, tar1_pred, tar2_pred],
+            labels_list=[src_labels, tar1_labels, tar2_labels],
+            label_names_list=[src_label_names, tar1_label_names, tar2_label_names],
+            src_label=1)
+        print("#" * 80)
 
-    # GradNorm
-    print("\n" + "#" * 80)
-    print("Computing OOD metrics with GradNorm normality score...")
-    src_gradnorm = iterate_data_gradnorm(model, id_loader)
-    tar1_gradnorm = iterate_data_gradnorm(model, ood1_loader)
-    tar2_gradnorm = iterate_data_gradnorm(model, ood2_loader)
-    eval_ood_sncore(scores_list=[src_gradnorm, tar1_gradnorm, tar2_gradnorm],
-        preds_list=[src_pred, tar1_pred, tar2_pred],
-        labels_list=[src_labels, tar1_labels, tar2_labels], 
-        label_names_list=[src_label_names, tar1_label_names, tar2_label_names],
-        src_label=1)
-    print("#" * 80)
+        # GradNorm
+        print("\n" + "#" * 80)
+        print("Computing OOD metrics with GradNorm normality score...")
+        src_gradnorm = iterate_data_gradnorm(model, id_loader)
+        tar1_gradnorm = iterate_data_gradnorm(model, ood1_loader)
+        tar2_gradnorm = iterate_data_gradnorm(model, ood2_loader)
+        eval_ood_sncore(scores_list=[src_gradnorm, tar1_gradnorm, tar2_gradnorm],
+            preds_list=[src_pred, tar1_pred, tar2_pred],
+            labels_list=[src_labels, tar1_labels, tar2_labels], 
+            label_names_list=[src_label_names, tar1_label_names, tar2_label_names],
+            src_label=1)
+        print("#" * 80)
 
-    # React with id-dependent threshold
-    print("\n" + "#" * 80)
-    val_loader = get_md_react_val_loader(opt)
-    threshold = estimate_react_thres(model, val_loader)
-    print(f"Computing OOD metrics with React (+Energy) normality score, ID-dependent threshold (={threshold:.4f})...")
-    print(f"React - using {opt.src} test to compute threshold")
-    src_react = iterate_data_react(model, id_loader, threshold=threshold)
-    tar1_react = iterate_data_react(model, ood1_loader, threshold=threshold)
-    tar2_react = iterate_data_react(model, ood2_loader, threshold=threshold)
-    eval_ood_sncore(scores_list=[src_react, tar1_react, tar2_react], 
-        preds_list=[src_pred, tar1_pred, tar2_pred],
-        labels_list=[src_labels, tar1_labels, tar2_labels],
-        label_names_list=[src_label_names, tar1_label_names, tar2_label_names],
-        src_label=1)
-    print("#" * 80)
+        # React with id-dependent threshold
+        print("\n" + "#" * 80)
+        val_loader = get_md_react_val_loader(opt)
+        threshold = estimate_react_thres(model, val_loader)
+        print(f"Computing OOD metrics with React (+Energy) normality score, ID-dependent threshold (={threshold:.4f})...")
+        print(f"React - using {opt.src} test to compute threshold")
+        src_react = iterate_data_react(model, id_loader, threshold=threshold)
+        tar1_react = iterate_data_react(model, ood1_loader, threshold=threshold)
+        tar2_react = iterate_data_react(model, ood2_loader, threshold=threshold)
+        eval_ood_sncore(scores_list=[src_react, tar1_react, tar2_react], 
+            preds_list=[src_pred, tar1_pred, tar2_pred],
+            labels_list=[src_labels, tar1_labels, tar2_labels],
+            label_names_list=[src_label_names, tar1_label_names, tar2_label_names],
+            src_label=1)
+        print("#" * 80)
     return
 
 
