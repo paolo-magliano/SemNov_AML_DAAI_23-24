@@ -437,7 +437,7 @@ def print_fail_names(src_scores, tar_scores, src_names, tar_names, threshold):
 
         return dict(sorted(values.items(), key=lambda item: item[1], reverse=True))
     
-    if src_scores is None or tar_scores is None:
+    if src_scores is None or tar_scores is None or src_names is None or tar_names is None:
         return None, None
     
     src_fail_names = [(src_names[i][0], src_names[i][1], src_scores[i]) for i in range(len(src_names)) if src_scores[i] < threshold]
