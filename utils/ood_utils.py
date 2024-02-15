@@ -161,9 +161,7 @@ def get_network_output(model, loader, softmax=True, openshape=False):
         if openshape:
             rgb = torch.full((points.shape[0], points.shape[1], 3), 0.4).cuda()
             points_rgb = torch.cat([points, rgb], dim=-1)
-            print(f"points_rgb: {points_rgb.shape}")
             points_perm = points_rgb.permute(0, 2, 1)
-            print(f"points_perm: {points_perm.shape}")
             logits = model(points_perm)
         else:
             logits = model(points)
