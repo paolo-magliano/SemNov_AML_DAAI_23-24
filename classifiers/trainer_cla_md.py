@@ -28,7 +28,7 @@ from models.common import convert_model_state, logits_entropy_loss
 from models.ARPL_utils import Generator, Discriminator
 from classifiers.common import train_epoch_cla, train_epoch_rsmix_exposure, train_epoch_cs
 
-from openshape import load_pc_encoder
+import openshape
 
 def get_args():
     parser = argparse.ArgumentParser("OOD on point clouds via contrastive learning")
