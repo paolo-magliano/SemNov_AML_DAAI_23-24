@@ -208,7 +208,7 @@ def get_confidence(model, loader, softmax=True):
 
 
 @torch.no_grad()
-def get_penultimate_feats(model, loader):
+def get_penultimate_feats(model, loader, openshape=False):
     """ DDP impl """
     all_feats = []
     all_labels = []
@@ -218,7 +218,13 @@ def get_penultimate_feats(model, loader):
         assert torch.is_tensor(points), "expected BNC tensor as batch[0]"
         points = points.cuda(non_blocking=True)
         labels = labels.cuda(non_blocking=True)
-        feats = model(points, return_penultimate=True)
+        if openshape:
+            rgb = torch.full((points.shape[0], points.shape[1], 3), 0.4).cuda()
+            points_rgb = torch.cat([points, rgb], dim=-1)
+            points_perm = points_rgb.permute(0, 2, 1)
+            feats = model(points_perm)
+        else:
+            feats = model(points, return_penultimate=True)
         if is_dist() and get_ws() > 1:
             feats = gather(feats, dim=0)
             labels = gather(labels, dim=0)

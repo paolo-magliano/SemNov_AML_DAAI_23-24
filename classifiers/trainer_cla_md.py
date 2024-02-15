@@ -580,7 +580,7 @@ def eval_ood_md2sonn(opt, config):
 
 
     # FEATURES EVALUATION
-    eval_OOD_with_feats(model, train_loader, id_loader, ood1_loader, ood2_loader, src_label_names, tar1_label_names, tar2_label_names, save_feats=opt.save_feats)
+    eval_OOD_with_feats(model, train_loader, id_loader, ood1_loader, ood2_loader, src_label_names, tar1_label_names, tar2_label_names, save_feats=opt.save_feats, open_shape=opt.open_shape is not None)
 
     if opt.open_shape is None:
         # ODIN
@@ -640,7 +640,7 @@ def eval_ood_md2sonn(opt, config):
     return
 
 
-def eval_OOD_with_feats(model, train_loader, src_loader, tar1_loader, tar2_loader, src_label_names, tar1_label_names, tar2_label_names, save_feats=None):
+def eval_OOD_with_feats(model, train_loader, src_loader, tar1_loader, tar2_loader, src_label_names, tar1_label_names, tar2_label_names, save_feats=None, open_shape=False):
     from knn_cuda import KNN
     knn = KNN(k=1, transpose_mode=True)
 
@@ -648,10 +648,10 @@ def eval_OOD_with_feats(model, train_loader, src_loader, tar1_loader, tar2_loade
     print("Computing OOD metrics with distance from train features...")
 
     # extract penultimate features, compute distances
-    train_feats, train_labels = get_penultimate_feats(model, train_loader)
-    src_feats, src_labels = get_penultimate_feats(model, src_loader)
-    tar1_feats, tar1_labels = get_penultimate_feats(model, tar1_loader)
-    tar2_feats, tar2_labels = get_penultimate_feats(model, tar2_loader)
+    train_feats, train_labels = get_penultimate_feats(model, train_loader, open_shape=open_shape)
+    src_feats, src_labels = get_penultimate_feats(model, src_loader, open_shape=open_shape)
+    tar1_feats, tar1_labels = get_penultimate_feats(model, tar1_loader, open_shape=open_shape)
+    tar2_feats, tar2_labels = get_penultimate_feats(model, tar2_loader, open_shape=open_shape)
     train_labels = train_labels.cpu().numpy()
 
     labels_set = set(train_labels)
