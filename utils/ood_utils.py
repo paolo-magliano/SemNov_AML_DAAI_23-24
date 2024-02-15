@@ -160,6 +160,8 @@ def get_network_output(model, loader, softmax=True, openshape=False):
         labels = labels.cuda(non_blocking=True)
         if openshape:
             print(f"Openshape shape: {points.shape}")
+            for point in points:
+                print(f"Openshape item shape: {point.shape}")
             logits = model(points)
         else:
             logits = model(points)
