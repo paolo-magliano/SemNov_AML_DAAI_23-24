@@ -498,13 +498,13 @@ def eval_ood_md2sonn(opt, config):
     else:
         model = Classifier(args=DotConfig(config['model']), num_classes=n_classes, loss=opt.loss, cs=opt.cs)
 
-    print(model)
-    ckt_weights = torch.load(opt.ckpt_path, map_location='cpu')['model']
-    ckt_weights = sanitize_model_dict(ckt_weights)
-    ckt_weights = convert_model_state(ckt_weights, model.state_dict())
+        print(model)
+        ckt_weights = torch.load(opt.ckpt_path, map_location='cpu')['model']
+        ckt_weights = sanitize_model_dict(ckt_weights)
+        ckt_weights = convert_model_state(ckt_weights, model.state_dict())
 
-    print(f"Model params count: {count_parameters(model) / 1000000 :.4f} M")
-    print("Load weights: ", model.load_state_dict(ckt_weights, strict=True))
+        print(f"Model params count: {count_parameters(model) / 1000000 :.4f} M")
+        print("Load weights: ", model.load_state_dict(ckt_weights, strict=True))
     model = model.cuda().eval()
 
     src_logits, src_pred, src_labels = get_network_output(model, id_loader)
