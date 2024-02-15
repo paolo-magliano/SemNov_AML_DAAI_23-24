@@ -324,7 +324,6 @@ def convert_model_state(old_state_dict, new_state_dict):
         old_state_dict: model state dict following old structure
         new_state_dict: model state dict following new structure 
     """
-    print("\n*****\n", old_state_dict, "\n*****\n")
     # first of all we check if there is something to do
     good = True
     for k in old_state_dict.keys():
