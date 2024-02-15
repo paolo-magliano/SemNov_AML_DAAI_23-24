@@ -147,7 +147,7 @@ def get_simclr_proj(model, loader):
 
 
 @torch.no_grad()
-def get_network_output(model, loader, softmax=True):
+def get_network_output(model, loader, softmax=True, openshape=False):
     """ DDP impl """
     all_logits = []
     all_pred = []
@@ -158,7 +158,11 @@ def get_network_output(model, loader, softmax=True):
         assert torch.is_tensor(points), "expected BNC tensor as batch[0]"
         points = points.cuda(non_blocking=True)
         labels = labels.cuda(non_blocking=True)
-        logits = model(points)
+        if openshape:
+            print(f"Openshape shape: {points.shape}")
+            logits = model(points)
+        else:
+            logits = model(points)
         if is_dist() and get_ws() > 1:
             logits = gather(logits, dim=0)
             labels = gather(labels, dim=0)
