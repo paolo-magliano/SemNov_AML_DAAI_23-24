@@ -498,7 +498,6 @@ def eval_ood_md2sonn(opt, config):
     else:
         model = Classifier(args=DotConfig(config['model']), num_classes=n_classes, loss=opt.loss, cs=opt.cs)
 
-        print(model)
         ckt_weights = torch.load(opt.ckpt_path, map_location='cpu')['model']
         ckt_weights = sanitize_model_dict(ckt_weights)
         ckt_weights = convert_model_state(ckt_weights, model.state_dict())
