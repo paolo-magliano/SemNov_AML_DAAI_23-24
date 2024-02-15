@@ -158,10 +158,10 @@ def get_network_output(model, loader, softmax=True, openshape=False):
         assert torch.is_tensor(points), "expected BNC tensor as batch[0]"
         points = points.cuda(non_blocking=True)
         labels = labels.cuda(non_blocking=True)
+        print(f"Points shape: {points.shape}")
+        for point in points:
+            print(f"item shape: {point.shape}")
         if openshape:
-            print(f"Openshape shape: {points.shape}")
-            for point in points:
-                print(f"Openshape item shape: {point.shape}")
             logits = model(points)
         else:
             logits = model(points)
