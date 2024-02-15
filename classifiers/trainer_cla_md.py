@@ -528,7 +528,12 @@ def eval_ood_md2sonn(opt, config):
     print(f"Src logits: \n{src_label_names}\n{to_numpy(src_logits[:10])}")
     print(f"Tar1 logits: \n{tar1_label_names}\n{to_numpy(tar1_logits[:10])}")
     print(f"Tar2 logits: \n{tar2_label_names}\n{to_numpy(tar2_logits[:10])}")
-          
+
+    if opt.open_shape is not None:
+        src_pred, src_labels, src_label_names = None, None, None
+        tar1_pred, tar1_labels, tar1_label_names = None, None, None
+        tar2_pred, tar2_labels, tar2_label_names = None, None, None
+
     # MSP
     print("\n" + "#" * 80)
     print("Computing OOD metrics with MSP normality score...")
