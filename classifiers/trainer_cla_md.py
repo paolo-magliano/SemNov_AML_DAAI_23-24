@@ -510,7 +510,6 @@ def eval_ood_md2sonn(opt, config):
     tar1_logits, tar1_pred, tar1_labels = get_network_output(model, ood1_loader, openshape=opt.open_shape is not None)
     tar2_logits, tar2_pred, tar2_labels = get_network_output(model, ood2_loader, openshape=opt.open_shape is not None)
 
-    print("MSP")
     print(f"Src logits: {src_logits.shape}, tar1 logits: {tar1_logits.shape}, tar2 logits: {tar2_logits.shape}")
     
     if opt.src == 'SR1':
