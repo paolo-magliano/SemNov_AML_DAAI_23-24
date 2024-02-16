@@ -23,9 +23,6 @@ Src logits: torch.Size([1255, 1280]), tar1 logits: torch.Size([788, 1280]), tar2
 ################################################################################
 Computing OOD metrics with distance from train features...
 
-/usr/local/lib/python3.10/dist-packages/torch/utils/data/dataloader.py:557: UserWarning: This DataLoader will create 4 worker processes in total. Our suggested max number of worker in current system is 2, which is smaller than what this DataLoader is going to create. Please be aware that excessive worker creation might get DataLoader running slow or even freeze, lower the worker number to avoid potential slowness/freeze if necessary.
-  warnings.warn(_create_warning_msg(
-
 Euclidean distances in a non-normalized space:
 AUROC - Src label: 1, Tar label: 0
 Src Test - Clf Acc: 0.4430, Clf Bal Acc: 0.4141

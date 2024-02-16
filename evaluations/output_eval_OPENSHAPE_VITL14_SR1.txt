@@ -22,19 +22,10 @@ ScanObject - num_points: 2048, sonn_split: main_split, h5_suffix: objectdataset.
 ScanObject - num_points: 2048, sonn_split: main_split, h5_suffix: objectdataset.h5, split: all, class_choice: {10: 0, 14: 1, 5: 2, 6: 3, 9: 2}, num samples: 788
 ScanObject - num_points: 2048, sonn_split: main_split, h5_suffix: objectdataset.h5, split: all, class_choice: {0: 400, 1: 401, 2: 402, 3: 403, 11: 404}, num samples: 847
 
-
-
-
-MSP
 Src logits: torch.Size([1255, 768]), tar1 logits: torch.Size([788, 768]), tar2 logits: torch.Size([847, 768])
 
 ################################################################################
 Computing OOD metrics with distance from train features...
-
-  warnings.warn(_create_warning_msg(
-
-
-
 
 Euclidean distances in a non-normalized space:
 AUROC - Src label: 1, Tar label: 0

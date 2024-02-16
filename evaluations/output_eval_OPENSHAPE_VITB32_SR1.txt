@@ -18,29 +18,11 @@ ScanObject - num_points: 2048, sonn_split: main_split, h5_suffix: objectdataset.
 ScanObject - num_points: 2048, sonn_split: main_split, h5_suffix: objectdataset.h5, split: all, class_choice: {10: 0, 14: 1, 5: 2, 6: 3, 9: 2}, num samples: 788
 ScanObject - num_points: 2048, sonn_split: main_split, h5_suffix: objectdataset.h5, split: all, class_choice: {0: 400, 1: 401, 2: 402, 3: 403, 11: 404}, num samples: 847
 
-model.pt:   0%|          | 0.00/101M [00:00<?, ?B/s]
-
-  0%|          | 0/1255 [00:00<?, ?it/s]
-  0%|          | 1/1255 [00:02<47:23,  2.27s/it]
-
-  0%|          | 0/788 [00:00<?, ?it/s]
-
-  0%|          | 0/847 [00:00<?, ?it/s]
-MSP
 Src logits: torch.Size([1255, 512]), tar1 logits: torch.Size([788, 512]), tar2 logits: torch.Size([847, 512])
 
 ################################################################################
 Computing OOD metrics with distance from train features...
 
-  0%|          | 0/2378 [00:00<?, ?it/s]/usr/local/lib/python3.10/dist-packages/torch/utils/data/dataloader.py:557: UserWarning: This DataLoader will create 4 worker processes in total. Our suggested max number of worker in current system is 2, which is smaller than what this DataLoader is going to create. Please be aware that excessive worker creation might get DataLoader running slow or even freeze, lower the worker number to avoid potential slowness/freeze if necessary.
-  warnings.warn(_create_warning_msg(
-
-
-  0%|          | 0/1255 [00:00<?, ?it/s]
-
-  0%|          | 0/788 [00:00<?, ?it/s]
-
-  0%|          | 0/847 [00:00<?, ?it/s]
 Euclidean distances in a non-normalized space:
 AUROC - Src label: 1, Tar label: 0
 Src Test - Clf Acc: 0.8135, Clf Bal Acc: 0.7646

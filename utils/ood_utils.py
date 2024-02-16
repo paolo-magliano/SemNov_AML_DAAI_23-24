@@ -481,12 +481,11 @@ def get_ood_metrics(src_scores, tar_scores, src_names, tar_names, src_label=1):
     scores = np.concatenate([src_scores, tar_scores], axis=0)
     res = calc_metrics(scores, labels)
     
-    if src_scores is None or tar_scores is None or src_names is None or tar_names is None:
-        print(f"OOD F1 Test - Acc: {res['f1_accuracy']:.4f}, Th: {res['f1_threshold']:.4f}")
-        print_fail_names(src_scores, tar_scores, src_names, tar_names, res['f1_threshold'])
+    print(f"OOD F1 Test - Acc: {res['f1_accuracy']:.4f}, Th: {res['f1_threshold']:.4f}")
+    print_fail_names(src_scores, tar_scores, src_names, tar_names, res['f1_threshold'])
 
-        print(f"OOD J Test - Acc: {res['j_accuracy']:.4f}, Th: {res['j_threshold']:.4f}")
-        print_fail_names(src_scores, tar_scores, src_names, tar_names, res['j_threshold'])
+    print(f"OOD J Test - Acc: {res['j_accuracy']:.4f}, Th: {res['j_threshold']:.4f}")
+    print_fail_names(src_scores, tar_scores, src_names, tar_names, res['j_threshold'])
 
     return res
 
