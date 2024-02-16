@@ -533,7 +533,7 @@ def eval_ood_sncore(scores_list, preds_list=None, labels_list=None, label_names_
             print(f"Src Test - Clf Acc: {src_acc:.4f}, Clf Bal Acc: {src_bal_acc:.4f}")
             if src_label_name is not None:
                 print(f"Src Test - Fail: {len(fail_names)}/{len(src_labels)}")
-                for (lbl, pred), value in fail_counter.most_common():
+                for (lbl, pred), value in fail_counter.most_common(5):
                     print(f"\tA {lbl} is predicted as {pred} - {value} times")
 
     src_names = [(src_label_name[lbl], src_label_name[pred]) for lbl, pred in zip(src_labels, src_preds)] if src_preds is not None and src_label_name is not None else None
