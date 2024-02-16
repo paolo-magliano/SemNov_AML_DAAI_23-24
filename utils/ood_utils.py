@@ -454,12 +454,12 @@ def print_fail_names(src_scores, tar_scores, src_names, tar_names, threshold):
 
     print(f"Fail src: {len(src_fail_names)}/{len(src_scores)}")
     print(f" True class\t| Pred\t| Times\t| Closest class\t| Mean score\t| Min score\t| Max score")
-    for (lbl, pred), (count, mean, min, max) in list(src_fail_values.items())[:2]:
+    for (lbl, pred), (count, mean, min, max) in list(src_fail_values.items())[:5]:
         print(f" {lbl}    \t| OOD\t| {count}\t| {pred}    \t| {mean:.4f}\t| {min:.4f}\t| {max:.4f}")
 
     print(f"Fail tar: {len(tar_fail_names)}/{len(tar_scores)}")
     print(f" True class\t| Pred\t| Times\t| Closest class\t| Mean score\t| Min score\t| Max score")
-    for (lbl, pred), (count, mean, min, max) in list(tar_fail_values.items())[:2]:
+    for (lbl, pred), (count, mean, min, max) in list(tar_fail_values.items())[:5]:
         print(f" {lbl}    \t| ID\t| {count}\t| {pred}    \t| {mean:.4f}\t| {min:.4f}\t| {max:.4f}")
 
     return src_fail_values, tar_fail_values
@@ -544,12 +544,12 @@ def eval_ood_sncore(scores_list, preds_list=None, labels_list=None, label_names_
     # Src vs Tar 1
     if not silent:
         print("Test Tar1")
-    res_tar1 = get_ood_metrics(src_conf, tar1_conf, src_names, tar1_names, src_label)
+    res_tar1 = get_ood_metrics(src_conf, tar1_conf, None, None, src_label)
 
     # Src vs Tar 2
     if not silent:
         print("Test Tar2")
-    res_tar2 = get_ood_metrics(src_conf, tar2_conf, src_names, tar2_names, src_label)
+    res_tar2 = get_ood_metrics(src_conf, tar2_conf, None, None, src_label)
 
     # Src vs Tar 1 + Tar 2
     if not silent:
