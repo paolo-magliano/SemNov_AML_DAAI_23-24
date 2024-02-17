@@ -1,0 +1,662 @@
+Cannot import torchlars
+Cannot load RSCNN: No module named 'pointnet2_ops'
+Cannot load PCT: No module named 'pointnet2_ops'
+Cannot load PointMLP: No module named 'pointnet2_ops'
+Cannot load PointNet2: No module named 'pointnet2_ops'
+/content/SemNov_AML_DAAI_23-24/utils/rsmix_provider.py:157: SyntaxWarning: "is" with a literal. Did you mean "=="?
+  if len(label_batch.shape) is 1:
+DGL backend not selected or invalid.  Assuming PyTorch for now.
+Setting the default backend to "pytorch". You can change it in the ~/.dgl/config.json file or export the DGLBACKEND environment variable.  Valid options are: pytorch, mxnet, tensorflow (all lowercase)
+out-of-distribution eval - Modelnet -> SONN ..
+Arguments: Namespace(local_rank=None, use_sync_bn=False, use_amp=False, script_mode='eval', config='cfgs/pn2-msg.yaml', seed=1, epochs=250, batch_size=1, num_workers=4, resume=None, apply_fix_cellphone=True, data_root='/content/3D_OS_release_data', checkpoints_dir='outputs', exp_name='PN2_SUBCENTER_SR1', eval_step=1, save_step=10, ckpt_path='/content/SemNov_AML_DAAI_23-24/trained_models/PN2_SUBCENTER_SR1.pth', src='SR1', sonn_split='main_split', sonn_h5_name='objectdataset.h5', augm_set='rw', grad_norm_clip=-1, num_points=1024, num_points_test=2048, wandb_name=None, wandb_group='md-2-sonn-augmCorr', wandb_proj='benchmark-3d-ood-cla', wandb_api=None, loss='subcenter_arcface', cs=False, cs_gan_lr=0.0002, cs_beta=0.1, save_feats=None, open_shape=None, corruption=None, tar1='none', tar2='none')
+ModelNet40_OOD - Reading data from h5py file: /content/3D_OS_release_data/modelnet40_normal_resampled/ood_sets_cache/SR1_train.h5
+ModelNet40_OOD - split: train, categories: {'chair': 0, 'bookshelf': 1, 'door': 2, 'sink': 3, 'sofa': 4}
+SR1 train data len: 2378
+ModelNet40_OOD - Reading data from h5py file: /content/3D_OS_release_data/modelnet40_normal_resampled/ood_sets_cache/SR1_test.h5
+ModelNet40_OOD - split: test, categories: {'chair': 0, 'bookshelf': 1, 'door': 2, 'sink': 3, 'sofa': 4}
+/usr/local/lib/python3.10/dist-packages/torch/utils/data/dataloader.py:557: UserWarning: This DataLoader will create 4 worker processes in total. Our suggested max number of worker in current system is 2, which is smaller than what this DataLoader is going to create. Please be aware that excessive worker creation might get DataLoader running slow or even freeze, lower the worker number to avoid potential slowness/freeze if necessary.
+  warnings.warn(_create_warning_msg(
+Src is SR1
+
+ScanObject - num_points: 2048, sonn_split: main_split, h5_suffix: objectdataset.h5, split: all, class_choice: {4: 0, 8: 1, 7: 2, 12: 3, 13: 4}, num samples: 1255
+ScanObject - num_points: 2048, sonn_split: main_split, h5_suffix: objectdataset.h5, split: all, class_choice: {10: 0, 14: 1, 5: 2, 6: 3, 9: 2}, num samples: 788
+ScanObject - num_points: 2048, sonn_split: main_split, h5_suffix: objectdataset.h5, split: all, class_choice: {0: 400, 1: 401, 2: 402, 3: 403, 11: 404}, num samples: 847
+Clf - feature encoder: pn2-msg
+Clf Head - num classes: 5, input dim: 1024, act: relu, dropout: 0.5
+Model params count: 1.7399 M
+Load weights:  <All keys matched successfully>
+
+
+
+Src logits: torch.Size([1255, 5]), tar1 logits: torch.Size([788, 5]), tar2 logits: torch.Size([847, 5])
+
+################################################################################
+Computing OOD metrics with MSP normality score...
+AUROC - Src label: 1, Tar label: 0
+Src Test - Clf Acc: 0.8064, Clf Bal Acc: 0.7798
+Src Test - Fail: 243/1255
+	A toilet is predicted as chair - 100 times
+	A toilet is predicted as sofa - 42 times
+	A sofa is predicted as toilet - 25 times
+	A door is predicted as sofa - 13 times
+	A door is predicted as toilet - 12 times
+Test Tar1
+/content/SemNov_AML_DAAI_23-24/utils/ood_metrics.py:110: RuntimeWarning: invalid value encountered in divide
+  f1 = 2 * (precision * recall) / (precision + recall)
+/content/SemNov_AML_DAAI_23-24/utils/ood_metrics.py:110: RuntimeWarning: invalid value encountered in divide
+  f1 = 2 * (precision * recall) / (precision + recall)
+OOD F1 Test - Acc: 0.3852, Th: 0.3654
+OOD J Test - Acc: 0.6926, Th: 0.3380
+Test Tar2
+/content/SemNov_AML_DAAI_23-24/utils/ood_metrics.py:110: RuntimeWarning: invalid value encountered in divide
+  f1 = 2 * (precision * recall) / (precision + recall)
+/content/SemNov_AML_DAAI_23-24/utils/ood_metrics.py:110: RuntimeWarning: invalid value encountered in divide
+  f1 = 2 * (precision * recall) / (precision + recall)
+OOD F1 Test - Acc: 0.4020, Th: 0.3649
+OOD J Test - Acc: 0.6556, Th: 0.3456
+Test Tar1+Tar2
+/content/SemNov_AML_DAAI_23-24/utils/ood_metrics.py:110: RuntimeWarning: invalid value encountered in divide
+  f1 = 2 * (precision * recall) / (precision + recall)
+/content/SemNov_AML_DAAI_23-24/utils/ood_metrics.py:110: RuntimeWarning: invalid value encountered in divide
+  f1 = 2 * (precision * recall) / (precision + recall)
+OOD F1 Test - Acc: 0.5647, Th: 0.3649
+Fail src: 1255/1255
+ True class	| Pred	| Times	| Closest class	| Mean score	| Min score	| Max score
+ chair    	| OOD	| 379	| chair    	| 0.3510	| 0.2134	| 0.3630
+ door    	| OOD	| 225	| door    	| 0.3015	| 0.2378	| 0.3125
+ shelf    	| OOD	| 217	| shelf    	| 0.3601	| 0.2651	| 0.3649
+ toilet    	| OOD	| 111	| toilet    	| 0.3325	| 0.2411	| 0.3583
+ toilet    	| OOD	| 100	| chair    	| 0.3386	| 0.2450	| 0.3627
+Fail tar: 3/1635
+ True class	| Pred	| Times	| Closest class	| Mean score	| Min score	| Max score
+ cabinet    	| ID	| 2	| shelf    	| 0.3650	| 0.3649	| 0.3652
+ bed    	| ID	| 1	| shelf    	| 0.3654	| 0.3654	| 0.3654
+OOD J Test - Acc: 0.7263, Th: 0.3404
+Fail src: 560/1255
+ True class	| Pred	| Times	| Closest class	| Mean score	| Min score	| Max score
+ door    	| OOD	| 225	| door    	| 0.3015	| 0.2378	| 0.3125
+ sofa    	| OOD	| 78	| sofa    	| 0.3118	| 0.2409	| 0.3390
+ toilet    	| OOD	| 48	| toilet    	| 0.3077	| 0.2411	| 0.3390
+ toilet    	| OOD	| 42	| sofa    	| 0.2961	| 0.2392	| 0.3369
+ chair    	| OOD	| 40	| chair    	| 0.2996	| 0.2134	| 0.3386
+Fail tar: 231/1635
+ True class	| Pred	| Times	| Closest class	| Mean score	| Min score	| Max score
+ cabinet    	| ID	| 62	| shelf    	| 0.3580	| 0.3421	| 0.3652
+ display    	| ID	| 28	| chair    	| 0.3520	| 0.3406	| 0.3621
+ bed    	| ID	| 21	| shelf    	| 0.3578	| 0.3414	| 0.3654
+ bag    	| ID	| 21	| chair    	| 0.3528	| 0.3415	| 0.3612
+ box    	| ID	| 18	| chair    	| 0.3486	| 0.3409	| 0.3617
+SRC->TAR1:      AUROC: 0.7643, FPR95: 0.8629, AUPR_IN: 0.8499, AUPR_OUT: 0.5960, F1_TH: 0.3654, F1_TH_ACC: 0.3852, J_TH: 0.3380, J_TH_ACC: 0.6926
+SRC->TAR2:      AUROC: 0.7206, FPR95: 0.8477, AUPR_IN: 0.7788, AUPR_OUT: 0.5991, F1_TH: 0.3649, F1_TH_ACC: 0.4020, J_TH: 0.3456, J_TH_ACC: 0.6556
+SRC->TAR1+TAR2: AUROC: 0.7416, FPR95: 0.8550, AUPR_IN: 0.6965, AUPR_OUT: 0.7460, F1_TH: 0.3649, F1_TH_ACC: 0.5647, J_TH: 0.3404, J_TH_ACC: 0.7263
+to spreadsheet: 0.7642657795215079,0.8629441624365483,0.8499142922305818,0.595987385011578,0.7205755490434955,0.8476977567886659,0.7788032394552441,0.5990726047475913,0.7416323696041522,0.8550458715596331,0.6965204753711238,0.7459554874254045
+################################################################################
+
+################################################################################
+Computing OOD metrics with MLS normality score...
+AUROC - Src label: 1, Tar label: 0
+Src Test - Clf Acc: 0.8064, Clf Bal Acc: 0.7798
+Src Test - Fail: 243/1255
+	A toilet is predicted as chair - 100 times
+	A toilet is predicted as sofa - 42 times
+	A sofa is predicted as toilet - 25 times
+	A door is predicted as sofa - 13 times
+	A door is predicted as toilet - 12 times
+Test Tar1
+/content/SemNov_AML_DAAI_23-24/utils/ood_metrics.py:110: RuntimeWarning: invalid value encountered in divide
+  f1 = 2 * (precision * recall) / (precision + recall)
+/content/SemNov_AML_DAAI_23-24/utils/ood_metrics.py:110: RuntimeWarning: invalid value encountered in divide
+  f1 = 2 * (precision * recall) / (precision + recall)
+OOD F1 Test - Acc: 0.3852, Th: 0.9992
+OOD J Test - Acc: 0.6167, Th: 0.8153
+Test Tar2
+/content/SemNov_AML_DAAI_23-24/utils/ood_metrics.py:110: RuntimeWarning: invalid value encountered in divide
+  f1 = 2 * (precision * recall) / (precision + recall)
+/content/SemNov_AML_DAAI_23-24/utils/ood_metrics.py:110: RuntimeWarning: invalid value encountered in divide
+  f1 = 2 * (precision * recall) / (precision + recall)
+OOD F1 Test - Acc: 0.4015, Th: 0.9989
+OOD J Test - Acc: 0.6208, Th: 0.8512
+Test Tar1+Tar2
+/content/SemNov_AML_DAAI_23-24/utils/ood_metrics.py:110: RuntimeWarning: invalid value encountered in divide
+  f1 = 2 * (precision * recall) / (precision + recall)
+/content/SemNov_AML_DAAI_23-24/utils/ood_metrics.py:110: RuntimeWarning: invalid value encountered in divide
+  f1 = 2 * (precision * recall) / (precision + recall)
+OOD F1 Test - Acc: 0.5644, Th: 0.9989
+Fail src: 1255/1255
+ True class	| Pred	| Times	| Closest class	| Mean score	| Min score	| Max score
+ chair    	| OOD	| 379	| chair    	| 0.9147	| 0.7637	| 0.9929
+ door    	| OOD	| 225	| door    	| 0.9761	| 0.8166	| 0.9989
+ shelf    	| OOD	| 217	| shelf    	| 0.8628	| 0.7089	| 0.9937
+ toilet    	| OOD	| 111	| toilet    	| 0.9352	| 0.8413	| 0.9958
+ toilet    	| OOD	| 100	| chair    	| 0.9317	| 0.8039	| 0.9879
+Fail tar: 4/1635
+ True class	| Pred	| Times	| Closest class	| Mean score	| Min score	| Max score
+ cabinet    	| ID	| 2	| door    	| 0.9993	| 0.9989	| 0.9997
+ bed    	| ID	| 1	| door    	| 0.9992	| 0.9992	| 0.9992
+ bin    	| ID	| 1	| door    	| 0.9990	| 0.9990	| 0.9990
+OOD J Test - Acc: 0.4623, Th: 0.8418
+Fail src: 31/1255
+ True class	| Pred	| Times	| Closest class	| Mean score	| Min score	| Max score
+ shelf    	| OOD	| 6	| shelf    	| 0.7989	| 0.7089	| 0.8408
+ sofa    	| OOD	| 5	| sofa    	| 0.7939	| 0.6778	| 0.8347
+ chair    	| OOD	| 3	| chair    	| 0.8001	| 0.7637	| 0.8358
+ sofa    	| OOD	| 2	| toilet    	| 0.8244	| 0.8206	| 0.8281
+ toilet    	| OOD	| 2	| sofa    	| 0.8231	| 0.8153	| 0.8309
+Fail tar: 1523/1635
+ True class	| Pred	| Times	| Closest class	| Mean score	| Min score	| Max score
+ table    	| ID	| 179	| sofa    	| 0.9625	| 0.8521	| 0.9986
+ cabinet    	| ID	| 118	| door    	| 0.9612	| 0.8532	| 0.9997
+ table    	| ID	| 115	| door    	| 0.9642	| 0.8495	| 0.9970
+ bin    	| ID	| 97	| sofa    	| 0.9595	| 0.8447	| 0.9976
+ bed    	| ID	| 89	| door    	| 0.9771	| 0.8579	| 0.9992
+SRC->TAR1:      AUROC: 0.3295, FPR95: 0.9632, AUPR_IN: 0.4997, AUPR_OUT: 0.3044, F1_TH: 0.9992, F1_TH_ACC: 0.3852, J_TH: 0.8153, J_TH_ACC: 0.6167
+SRC->TAR2:      AUROC: 0.4628, FPR95: 0.8713, AUPR_IN: 0.5514, AUPR_OUT: 0.4461, F1_TH: 0.9989, F1_TH_ACC: 0.4015, J_TH: 0.8512, J_TH_ACC: 0.6208
+SRC->TAR1+TAR2: AUROC: 0.3986, FPR95: 0.9156, AUPR_IN: 0.3581, AUPR_OUT: 0.5405, F1_TH: 0.9989, F1_TH_ACC: 0.5644, J_TH: 0.8418, J_TH_ACC: 0.4623
+to spreadsheet: 0.32946892632515623,0.9631979695431472,0.49972026831807403,0.30443628492600994,0.4628324952845055,0.8713105076741441,0.5513824656040396,0.44608452918566577,0.39855696480134506,0.9155963302752294,0.35812583918014107,0.5404965913149788
+################################################################################
+
+################################################################################
+Computing OOD metrics with entropy normality score...
+AUROC - Src label: 1, Tar label: 0
+Src Test - Clf Acc: 0.8064, Clf Bal Acc: 0.7798
+Src Test - Fail: 243/1255
+	A toilet is predicted as chair - 100 times
+	A toilet is predicted as sofa - 42 times
+	A sofa is predicted as toilet - 25 times
+	A door is predicted as sofa - 13 times
+	A door is predicted as toilet - 12 times
+Test Tar1
+/content/SemNov_AML_DAAI_23-24/utils/ood_metrics.py:110: RuntimeWarning: invalid value encountered in divide
+  f1 = 2 * (precision * recall) / (precision + recall)
+/content/SemNov_AML_DAAI_23-24/utils/ood_metrics.py:110: RuntimeWarning: invalid value encountered in divide
+  f1 = 2 * (precision * recall) / (precision + recall)
+OOD F1 Test - Acc: 0.3852, Th: 3.2662
+OOD J Test - Acc: 0.6941, Th: 3.2125
+Test Tar2
+OOD F1 Test - Acc: 0.6589, Th: 3.1608
+OOD J Test - Acc: 0.6513, Th: 3.2294
+Test Tar1+Tar2
+/content/SemNov_AML_DAAI_23-24/utils/ood_metrics.py:110: RuntimeWarning: invalid value encountered in divide
+  f1 = 2 * (precision * recall) / (precision + recall)
+/content/SemNov_AML_DAAI_23-24/utils/ood_metrics.py:110: RuntimeWarning: invalid value encountered in divide
+  f1 = 2 * (precision * recall) / (precision + recall)
+OOD F1 Test - Acc: 0.5654, Th: 3.2662
+Fail src: 1255/1255
+ True class	| Pred	| Times	| Closest class	| Mean score	| Min score	| Max score
+ chair    	| OOD	| 379	| chair    	| 3.2359	| 3.1117	| 3.2514
+ door    	| OOD	| 225	| door    	| 3.1697	| 3.1281	| 3.1844
+ shelf    	| OOD	| 217	| shelf    	| 3.2541	| 3.1501	| 3.2658
+ toilet    	| OOD	| 111	| toilet    	| 3.2165	| 3.1391	| 3.2447
+ toilet    	| OOD	| 100	| chair    	| 3.2238	| 3.1448	| 3.2515
+Fail tar: 1/1635
+ True class	| Pred	| Times	| Closest class	| Mean score	| Min score	| Max score
+ bed    	| ID	| 1	| shelf    	| 3.2662	| 3.2662	| 3.2662
+OOD J Test - Acc: 0.7260, Th: 3.2294
+Fail src: 613/1255
+ True class	| Pred	| Times	| Closest class	| Mean score	| Min score	| Max score
+ door    	| OOD	| 225	| door    	| 3.1697	| 3.1281	| 3.1844
+ sofa    	| OOD	| 80	| sofa    	| 3.1900	| 3.1322	| 3.2176
+ chair    	| OOD	| 67	| chair    	| 3.1981	| 3.1117	| 3.2284
+ toilet    	| OOD	| 60	| toilet    	| 3.1978	| 3.1391	| 3.2286
+ toilet    	| OOD	| 42	| sofa    	| 3.1749	| 3.1408	| 3.2103
+Fail tar: 179/1635
+ True class	| Pred	| Times	| Closest class	| Mean score	| Min score	| Max score
+ cabinet    	| ID	| 59	| shelf    	| 3.2522	| 3.2298	| 3.2658
+ bed    	| ID	| 25	| shelf    	| 3.2508	| 3.2297	| 3.2662
+ display    	| ID	| 19	| chair    	| 3.2397	| 3.2298	| 3.2506
+ bag    	| ID	| 15	| chair    	| 3.2411	| 3.2304	| 3.2484
+ bin    	| ID	| 10	| shelf    	| 3.2501	| 3.2324	| 3.2593
+SRC->TAR1:      AUROC: 0.7577, FPR95: 0.8426, AUPR_IN: 0.8360, AUPR_OUT: 0.6023, F1_TH: 3.2662, F1_TH_ACC: 0.3852, J_TH: 3.2125, J_TH_ACC: 0.6941
+SRC->TAR2:      AUROC: 0.7018, FPR95: 0.8229, AUPR_IN: 0.7551, AUPR_OUT: 0.5896, F1_TH: 3.1608, F1_TH_ACC: 0.6589, J_TH: 3.2294, J_TH_ACC: 0.6513
+SRC->TAR1+TAR2: AUROC: 0.7287, FPR95: 0.8324, AUPR_IN: 0.6669, AUPR_OUT: 0.7434, F1_TH: 3.2662, F1_TH_ACC: 0.5654, J_TH: 3.2294, J_TH_ACC: 0.7260
+to spreadsheet: 0.757689546382996,0.8426395939086294,0.8359743695577659,0.6022575797757148,0.7018189344158197,0.8229043683589138,0.7551405545524255,0.5895726571100988,0.7287461773700306,0.8324159021406727,0.6669143135844198,0.743395272026071
+################################################################################
+
+################################################################################
+Computing OOD metrics with distance from train features...
+
+  warnings.warn(_create_warning_msg(
+
+
+
+
+Euclidean distances in a non-normalized space:
+AUROC - Src label: 1, Tar label: 0
+Src Test - Clf Acc: 0.7992, Clf Bal Acc: 0.7722
+Src Test - Fail: 252/1255
+	A toilet is predicted as chair - 89 times
+	A toilet is predicted as sofa - 49 times
+	A sofa is predicted as toilet - 22 times
+	A chair is predicted as door - 21 times
+	A sofa is predicted as door - 17 times
+Test Tar1
+OOD F1 Test - Acc: 0.6148, Th: 0.0416
+OOD J Test - Acc: 0.5820, Th: 0.3693
+Test Tar2
+OOD F1 Test - Acc: 0.6189, Th: 0.0994
+OOD J Test - Acc: 0.6332, Th: 0.3067
+Test Tar1+Tar2
+OOD F1 Test - Acc: 0.4796, Th: 0.1068
+Fail src: 82/1255
+ True class	| Pred	| Times	| Closest class	| Mean score	| Min score	| Max score
+ chair    	| OOD	| 22	| chair    	| 0.0754	| 0.0416	| 0.1047
+ toilet    	| OOD	| 16	| chair    	| 0.0805	| 0.0312	| 0.1015
+ chair    	| OOD	| 6	| sofa    	| 0.0852	| 0.0765	| 0.1051
+ toilet    	| OOD	| 5	| sofa    	| 0.0942	| 0.0841	| 0.1012
+ shelf    	| OOD	| 5	| shelf    	| 0.0862	| 0.0798	| 0.0982
+Fail tar: 1422/1635
+ True class	| Pred	| Times	| Closest class	| Mean score	| Min score	| Max score
+ cabinet    	| ID	| 188	| door    	| 0.3353	| 0.1082	| 1.1447
+ table    	| ID	| 174	| door    	| 0.3821	| 0.1274	| 1.3389
+ table    	| ID	| 146	| sofa    	| 0.5164	| 0.1119	| 1.9323
+ bed    	| ID	| 134	| door    	| 0.4417	| 0.1069	| 1.9729
+ bin    	| ID	| 108	| sofa    	| 0.4483	| 0.1102	| 2.1911
+OOD J Test - Acc: 0.6266, Th: 0.3693
+Fail src: 582/1255
+ True class	| Pred	| Times	| Closest class	| Mean score	| Min score	| Max score
+ chair    	| OOD	| 193	| chair    	| 0.2249	| 0.0416	| 0.3649
+ toilet    	| OOD	| 68	| toilet    	| 0.2111	| 0.0532	| 0.3620
+ toilet    	| OOD	| 67	| chair    	| 0.1698	| 0.0312	| 0.3572
+ door    	| OOD	| 62	| door    	| 0.2344	| 0.0567	| 0.3625
+ sofa    	| OOD	| 36	| sofa    	| 0.2070	| 0.0802	| 0.3557
+Fail tar: 497/1635
+ True class	| Pred	| Times	| Closest class	| Mean score	| Min score	| Max score
+ table    	| ID	| 76	| sofa    	| 0.7725	| 0.3698	| 1.9323
+ table    	| ID	| 63	| door    	| 0.6026	| 0.3714	| 1.3389
+ bed    	| ID	| 61	| door    	| 0.7083	| 0.3713	| 1.9729
+ cabinet    	| ID	| 55	| door    	| 0.5608	| 0.3726	| 1.1447
+ bin    	| ID	| 52	| sofa    	| 0.7009	| 0.3793	| 2.1911
+SRC->TAR1:      AUROC: 0.6170, FPR95: 0.9226, AUPR_IN: 0.7393, AUPR_OUT: 0.4619, F1_TH: 0.0416, F1_TH_ACC: 0.6148, J_TH: 0.3693, J_TH_ACC: 0.5820
+SRC->TAR2:      AUROC: 0.6694, FPR95: 0.8760, AUPR_IN: 0.7567, AUPR_OUT: 0.5320, F1_TH: 0.0994, F1_TH_ACC: 0.6189, J_TH: 0.3067, J_TH_ACC: 0.6332
+SRC->TAR1+TAR2: AUROC: 0.6441, FPR95: 0.8985, AUPR_IN: 0.6082, AUPR_OUT: 0.6641, F1_TH: 0.1068, F1_TH_ACC: 0.4796, J_TH: 0.3693, J_TH_ACC: 0.6266
+to spreadsheet: 0.6169555281412422,0.9225888324873096,0.7393073218047206,0.4618685636015657,0.6694468877735811,0.8760330578512396,0.7566790791525505,0.5320230604610776,0.6441482997672917,0.8984709480122324,0.6082318590150935,0.6641241581733037
+
+Euclidean distances with prototypes:
+AUROC - Src label: 1, Tar label: 0
+Src Test - Clf Acc: 0.2127, Clf Bal Acc: 0.2000
+Src Test - Fail: 988/1255
+	A chair is predicted as door - 395 times
+	A toilet is predicted as door - 254 times
+	A shelf is predicted as door - 221 times
+	A sofa is predicted as door - 118 times
+Test Tar1
+OOD F1 Test - Acc: 0.6143, Th: 0.0162
+OOD J Test - Acc: 0.5286, Th: 0.0774
+Test Tar2
+OOD F1 Test - Acc: 0.5971, Th: 0.0162
+OOD J Test - Acc: 0.5019, Th: 0.1115
+Test Tar1+Tar2
+OOD F1 Test - Acc: 0.4343, Th: 0.0162
+Fail src: 0/1255
+ True class	| Pred	| Times	| Closest class	| Mean score	| Min score	| Max score
+Fail tar: 1635/1635
+ True class	| Pred	| Times	| Closest class	| Mean score	| Min score	| Max score
+ table    	| ID	| 390	| door    	| 0.0586	| 0.0198	| 0.5952
+ cabinet    	| ID	| 347	| door    	| 0.0759	| 0.0218	| 1.1168
+ bin    	| ID	| 201	| door    	| 0.0666	| 0.0208	| 0.3849
+ bed    	| ID	| 181	| door    	| 0.0467	| 0.0218	| 0.2476
+ desk    	| ID	| 135	| door    	| 0.0546	| 0.0268	| 0.1071
+OOD J Test - Acc: 0.6294, Th: 0.0854
+Fail src: 935/1255
+ True class	| Pred	| Times	| Closest class	| Mean score	| Min score	| Max score
+ chair    	| OOD	| 344	| door    	| 0.0379	| 0.0162	| 0.0814
+ door    	| OOD	| 242	| door    	| 0.0458	| 0.0223	| 0.0844
+ toilet    	| OOD	| 232	| door    	| 0.0406	| 0.0207	| 0.0827
+ sofa    	| OOD	| 90	| door    	| 0.0592	| 0.0257	| 0.0828
+ shelf    	| OOD	| 27	| door    	| 0.0572	| 0.0394	| 0.0774
+Fail tar: 136/1635
+ True class	| Pred	| Times	| Closest class	| Mean score	| Min score	| Max score
+ cabinet    	| ID	| 41	| door    	| 0.2733	| 0.0880	| 1.1168
+ bin    	| ID	| 38	| door    	| 0.1248	| 0.0858	| 0.3849
+ table    	| ID	| 25	| door    	| 0.1543	| 0.0859	| 0.5952
+ box    	| ID	| 13	| door    	| 0.1125	| 0.0899	| 0.1877
+ display    	| ID	| 7	| door    	| 0.1984	| 0.0945	| 0.6658
+SRC->TAR1:      AUROC: 0.5029, FPR95: 0.9886, AUPR_IN: 0.7100, AUPR_OUT: 0.3483, F1_TH: 0.0162, F1_TH_ACC: 0.6143, J_TH: 0.0774, J_TH_ACC: 0.5286
+SRC->TAR2:      AUROC: 0.4828, FPR95: 0.9870, AUPR_IN: 0.6675, AUPR_OUT: 0.3559, F1_TH: 0.0162, F1_TH_ACC: 0.5971, J_TH: 0.1115, J_TH_ACC: 0.5019
+SRC->TAR1+TAR2: AUROC: 0.4925, FPR95: 0.9878, AUPR_IN: 0.5460, AUPR_OUT: 0.5128, F1_TH: 0.0162, F1_TH_ACC: 0.4343, J_TH: 0.0854, J_TH_ACC: 0.6294
+to spreadsheet: 0.5028717616842275,0.9885786802030457,0.7100373323399662,0.34828984519572714,0.4827641029741718,0.987012987012987,0.6675340437824241,0.3559020692626924,0.49245513359406407,0.9877675840978594,0.5460271801510233,0.5128263740103937
+
+Cosine similarities on the hypersphere:
+AUROC - Src label: 1, Tar label: 0
+Src Test - Clf Acc: 0.8096, Clf Bal Acc: 0.7846
+Src Test - Fail: 239/1255
+	A toilet is predicted as chair - 96 times
+	A toilet is predicted as sofa - 49 times
+	A sofa is predicted as toilet - 26 times
+	A chair is predicted as door - 11 times
+	A door is predicted as chair - 10 times
+Test Tar1
+OOD F1 Test - Acc: 0.6579, Th: 0.9474
+OOD J Test - Acc: 0.7019, Th: 0.9995
+Test Tar2
+OOD F1 Test - Acc: 0.7169, Th: 0.9955
+OOD J Test - Acc: 0.7188, Th: 0.9995
+Test Tar1+Tar2
+OOD F1 Test - Acc: 0.7505, Th: 0.9992
+Fail src: 465/1255
+ True class	| Pred	| Times	| Closest class	| Mean score	| Min score	| Max score
+ chair    	| OOD	| 87	| chair    	| 0.9790	| 0.8782	| 0.9991
+ door    	| OOD	| 66	| door    	| 0.9736	| 0.8828	| 0.9992
+ sofa    	| OOD	| 60	| sofa    	| 0.9643	| 0.8873	| 0.9991
+ toilet    	| OOD	| 57	| toilet    	| 0.9716	| 0.8526	| 0.9991
+ toilet    	| OOD	| 51	| chair    	| 0.9755	| 0.8655	| 0.9991
+Fail tar: 256/1635
+ True class	| Pred	| Times	| Closest class	| Mean score	| Min score	| Max score
+ cabinet    	| ID	| 39	| shelf    	| 0.9998	| 0.9992	| 1.0000
+ bed    	| ID	| 38	| door    	| 0.9998	| 0.9993	| 1.0000
+ table    	| ID	| 20	| door    	| 0.9997	| 0.9992	| 1.0000
+ table    	| ID	| 18	| sofa    	| 0.9996	| 0.9992	| 0.9999
+ display    	| ID	| 17	| chair    	| 0.9998	| 0.9995	| 1.0000
+OOD J Test - Acc: 0.7592, Th: 0.9995
+Fail src: 506/1255
+ True class	| Pred	| Times	| Closest class	| Mean score	| Min score	| Max score
+ chair    	| OOD	| 102	| chair    	| 0.9820	| 0.8782	| 0.9995
+ door    	| OOD	| 72	| door    	| 0.9757	| 0.8828	| 0.9995
+ toilet    	| OOD	| 63	| toilet    	| 0.9742	| 0.8526	| 0.9995
+ sofa    	| OOD	| 63	| sofa    	| 0.9659	| 0.8873	| 0.9995
+ toilet    	| OOD	| 55	| chair    	| 0.9773	| 0.8655	| 0.9995
+Fail tar: 190/1635
+ True class	| Pred	| Times	| Closest class	| Mean score	| Min score	| Max score
+ bed    	| ID	| 33	| door    	| 0.9998	| 0.9996	| 1.0000
+ cabinet    	| ID	| 31	| shelf    	| 0.9999	| 0.9996	| 1.0000
+ display    	| ID	| 16	| chair    	| 0.9998	| 0.9996	| 1.0000
+ table    	| ID	| 16	| door    	| 0.9998	| 0.9996	| 1.0000
+ table    	| ID	| 13	| sofa    	| 0.9997	| 0.9996	| 0.9999
+SRC->TAR1:      AUROC: 0.7727, FPR95: 0.8807, AUPR_IN: 0.8678, AUPR_OUT: 0.5919, F1_TH: 0.9474, F1_TH_ACC: 0.6579, J_TH: 0.9995, J_TH_ACC: 0.7019
+SRC->TAR2:      AUROC: 0.7813, FPR95: 0.8808, AUPR_IN: 0.8665, AUPR_OUT: 0.6210, F1_TH: 0.9955, F1_TH_ACC: 0.7169, J_TH: 0.9995, J_TH_ACC: 0.7188
+SRC->TAR1+TAR2: AUROC: 0.7772, FPR95: 0.8807, AUPR_IN: 0.7872, AUPR_OUT: 0.7549, F1_TH: 0.9992, F1_TH_ACC: 0.7505, J_TH: 0.9995, J_TH_ACC: 0.7592
+to spreadsheet: 0.7727425324084374,0.8807106598984772,0.8678268101689344,0.591873216965403,0.7813106487862012,0.8807556080283353,0.8665093371752637,0.6209506345367577,0.7771811835227895,0.8807339449541285,0.7871525153341754,0.7548930602205952
+
+Cosine similarities with prototypes:
+AUROC - Src label: 1, Tar label: 0
+Src Test - Clf Acc: 0.2127, Clf Bal Acc: 0.2000
+Src Test - Fail: 988/1255
+	A chair is predicted as door - 395 times
+	A toilet is predicted as door - 254 times
+	A shelf is predicted as door - 221 times
+	A sofa is predicted as door - 118 times
+Test Tar1
+OOD F1 Test - Acc: 0.6544, Th: 0.9138
+OOD J Test - Acc: 0.6931, Th: 0.9957
+Test Tar2
+OOD F1 Test - Acc: 0.7108, Th: 0.9853
+OOD J Test - Acc: 0.7098, Th: 0.9958
+Test Tar1+Tar2
+OOD F1 Test - Acc: 0.7173, Th: 0.9916
+Fail src: 398/1255
+ True class	| Pred	| Times	| Closest class	| Mean score	| Min score	| Max score
+ toilet    	| OOD	| 140	| door    	| 0.9376	| 0.8073	| 0.9913
+ chair    	| OOD	| 87	| door    	| 0.9508	| 0.8081	| 0.9911
+ sofa    	| OOD	| 82	| door    	| 0.9323	| 0.8224	| 0.9915
+ door    	| OOD	| 76	| door    	| 0.9421	| 0.8266	| 0.9910
+ shelf    	| OOD	| 13	| door    	| 0.9264	| 0.8432	| 0.9889
+Fail tar: 419/1635
+ True class	| Pred	| Times	| Closest class	| Mean score	| Min score	| Max score
+ table    	| ID	| 108	| door    	| 0.9965	| 0.9917	| 0.9997
+ cabinet    	| ID	| 97	| door    	| 0.9972	| 0.9918	| 0.9999
+ bed    	| ID	| 62	| door    	| 0.9979	| 0.9928	| 0.9999
+ bin    	| ID	| 37	| door    	| 0.9965	| 0.9917	| 0.9998
+ display    	| ID	| 26	| door    	| 0.9964	| 0.9925	| 0.9993
+OOD J Test - Acc: 0.7381, Th: 0.9957
+Fail src: 480/1255
+ True class	| Pred	| Times	| Closest class	| Mean score	| Min score	| Max score
+ toilet    	| OOD	| 165	| door    	| 0.9461	| 0.8073	| 0.9955
+ chair    	| OOD	| 117	| door    	| 0.9619	| 0.8081	| 0.9955
+ sofa    	| OOD	| 91	| door    	| 0.9383	| 0.8224	| 0.9949
+ door    	| OOD	| 90	| door    	| 0.9501	| 0.8266	| 0.9951
+ shelf    	| OOD	| 17	| door    	| 0.9420	| 0.8432	| 0.9941
+Fail tar: 277/1635
+ True class	| Pred	| Times	| Closest class	| Mean score	| Min score	| Max score
+ cabinet    	| ID	| 70	| door    	| 0.9983	| 0.9957	| 0.9999
+ table    	| ID	| 68	| door    	| 0.9979	| 0.9959	| 0.9997
+ bed    	| ID	| 50	| door    	| 0.9988	| 0.9963	| 0.9999
+ bin    	| ID	| 23	| door    	| 0.9981	| 0.9959	| 0.9998
+ display    	| ID	| 15	| door    	| 0.9979	| 0.9964	| 0.9993
+SRC->TAR1:      AUROC: 0.7568, FPR95: 0.8731, AUPR_IN: 0.8451, AUPR_OUT: 0.5874, F1_TH: 0.9138, F1_TH_ACC: 0.6544, J_TH: 0.9957, J_TH_ACC: 0.6931
+SRC->TAR2:      AUROC: 0.7692, FPR95: 0.8819, AUPR_IN: 0.8497, AUPR_OUT: 0.6089, F1_TH: 0.9853, F1_TH_ACC: 0.7108, J_TH: 0.9958, J_TH_ACC: 0.7098
+SRC->TAR1+TAR2: AUROC: 0.7632, FPR95: 0.8777, AUPR_IN: 0.7526, AUPR_OUT: 0.7477, F1_TH: 0.9916, F1_TH_ACC: 0.7173, J_TH: 0.9957, J_TH_ACC: 0.7381
+to spreadsheet: 0.7567678524480757,0.8730964467005076,0.8451355143548696,0.5874110578558444,0.7691514932007508,0.8819362455726092,0.8497408144012846,0.6089396666027165,0.7631831085444156,0.8776758409785933,0.7525512064469948,0.7477164056162479
+################################################################################
+
+################################################################################
+Computing OOD metrics with ODIN normality score...
+
+  warnings.warn(_create_warning_msg(
+
+
+
+AUROC - Src label: 1, Tar label: 0
+Src Test - Clf Acc: 0.8064, Clf Bal Acc: 0.7798
+Src Test - Fail: 243/1255
+	A toilet is predicted as chair - 100 times
+	A toilet is predicted as sofa - 42 times
+	A sofa is predicted as toilet - 25 times
+	A door is predicted as sofa - 13 times
+	A door is predicted as toilet - 12 times
+Test Tar1
+OOD F1 Test - Acc: 0.7068, Th: 0.2001
+OOD J Test - Acc: 0.6960, Th: 0.2001
+Test Tar2
+OOD F1 Test - Acc: 0.6803, Th: 0.2001
+OOD J Test - Acc: 0.6556, Th: 0.2001
+Test Tar1+Tar2
+OOD F1 Test - Acc: 0.6353, Th: 0.2001
+Fail src: 210/1255
+ True class	| Pred	| Times	| Closest class	| Mean score	| Min score	| Max score
+ door    	| OOD	| 66	| door    	| 0.2001	| 0.2000	| 0.2001
+ sofa    	| OOD	| 20	| sofa    	| 0.2001	| 0.2001	| 0.2001
+ toilet    	| OOD	| 19	| sofa    	| 0.2001	| 0.2000	| 0.2001
+ chair    	| OOD	| 19	| chair    	| 0.2001	| 0.2000	| 0.2001
+ toilet    	| OOD	| 17	| toilet    	| 0.2001	| 0.2000	| 0.2001
+Fail tar: 844/1635
+ True class	| Pred	| Times	| Closest class	| Mean score	| Min score	| Max score
+ table    	| ID	| 100	| sofa    	| 0.2001	| 0.2001	| 0.2001
+ bin    	| ID	| 78	| sofa    	| 0.2001	| 0.2001	| 0.2001
+ cabinet    	| ID	| 77	| shelf    	| 0.2001	| 0.2001	| 0.2001
+ bin    	| ID	| 42	| chair    	| 0.2001	| 0.2001	| 0.2001
+ desk    	| ID	| 40	| sofa    	| 0.2001	| 0.2001	| 0.2001
+OOD J Test - Acc: 0.7204, Th: 0.2001
+Fail src: 527/1255
+ True class	| Pred	| Times	| Closest class	| Mean score	| Min score	| Max score
+ door    	| OOD	| 224	| door    	| 0.2001	| 0.2000	| 0.2001
+ sofa    	| OOD	| 69	| sofa    	| 0.2001	| 0.2001	| 0.2001
+ toilet    	| OOD	| 41	| sofa    	| 0.2001	| 0.2000	| 0.2001
+ toilet    	| OOD	| 39	| toilet    	| 0.2001	| 0.2000	| 0.2001
+ chair    	| OOD	| 37	| chair    	| 0.2001	| 0.2000	| 0.2001
+Fail tar: 281/1635
+ True class	| Pred	| Times	| Closest class	| Mean score	| Min score	| Max score
+ cabinet    	| ID	| 66	| shelf    	| 0.2001	| 0.2001	| 0.2001
+ display    	| ID	| 29	| chair    	| 0.2001	| 0.2001	| 0.2001
+ bed    	| ID	| 23	| shelf    	| 0.2001	| 0.2001	| 0.2001
+ bag    	| ID	| 22	| chair    	| 0.2001	| 0.2001	| 0.2001
+ table    	| ID	| 17	| chair    	| 0.2001	| 0.2001	| 0.2001
+SRC->TAR1:      AUROC: 0.7741, FPR95: 0.8401, AUPR_IN: 0.8469, AUPR_OUT: 0.6240, F1_TH: 0.2001, F1_TH_ACC: 0.7068, J_TH: 0.2001, J_TH_ACC: 0.6960
+SRC->TAR2:      AUROC: 0.7136, FPR95: 0.8418, AUPR_IN: 0.7706, AUPR_OUT: 0.5942, F1_TH: 0.2001, F1_TH_ACC: 0.6803, J_TH: 0.2001, J_TH_ACC: 0.6556
+SRC->TAR1+TAR2: AUROC: 0.7428, FPR95: 0.8410, AUPR_IN: 0.6868, AUPR_OUT: 0.7534, F1_TH: 0.2001, F1_TH_ACC: 0.6353, J_TH: 0.2001, J_TH_ACC: 0.7204
+to spreadsheet: 0.7741177422290533,0.8401015228426396,0.846877965127268,0.6240133342414256,0.7136154320145628,0.8417945690672963,0.7705511056025308,0.5941853159605397,0.7427749552249716,0.8409785932721713,0.6868306828751305,0.7534372048906299
+################################################################################
+
+################################################################################
+Computing OOD metrics with Energy normality score...
+
+  warnings.warn(_create_warning_msg(
+
+
+
+AUROC - Src label: 1, Tar label: 0
+Src Test - Clf Acc: 0.8064, Clf Bal Acc: 0.7798
+Src Test - Fail: 243/1255
+	A toilet is predicted as chair - 100 times
+	A toilet is predicted as sofa - 42 times
+	A sofa is predicted as toilet - 25 times
+	A door is predicted as sofa - 13 times
+	A door is predicted as toilet - 12 times
+Test Tar1
+OOD F1 Test - Acc: 0.6143, Th: 1.8563
+OOD J Test - Acc: 0.3862, Th: 2.3098
+Test Tar2
+/content/SemNov_AML_DAAI_23-24/utils/ood_metrics.py:110: RuntimeWarning: invalid value encountered in divide
+  f1 = 2 * (precision * recall) / (precision + recall)
+/content/SemNov_AML_DAAI_23-24/utils/ood_metrics.py:110: RuntimeWarning: invalid value encountered in divide
+  f1 = 2 * (precision * recall) / (precision + recall)
+OOD F1 Test - Acc: 0.4020, Th: 2.3119
+OOD J Test - Acc: 0.5975, Th: 1.8563
+Test Tar1+Tar2
+/content/SemNov_AML_DAAI_23-24/utils/ood_metrics.py:110: RuntimeWarning: invalid value encountered in divide
+  f1 = 2 * (precision * recall) / (precision + recall)
+/content/SemNov_AML_DAAI_23-24/utils/ood_metrics.py:110: RuntimeWarning: invalid value encountered in divide
+  f1 = 2 * (precision * recall) / (precision + recall)
+OOD F1 Test - Acc: 0.5651, Th: 2.3119
+Fail src: 1255/1255
+ True class	| Pred	| Times	| Closest class	| Mean score	| Min score	| Max score
+ chair    	| OOD	| 379	| chair    	| 1.9619	| 1.8969	| 2.2835
+ door    	| OOD	| 225	| door    	| 2.1775	| 2.1386	| 2.2988
+ shelf    	| OOD	| 217	| shelf    	| 1.8862	| 1.8563	| 2.2511
+ toilet    	| OOD	| 111	| toilet    	| 2.0391	| 1.9145	| 2.2437
+ toilet    	| OOD	| 100	| chair    	| 2.0212	| 1.9170	| 2.2491
+Fail tar: 2/1635
+ True class	| Pred	| Times	| Closest class	| Mean score	| Min score	| Max score
+ cabinet    	| ID	| 1	| door    	| 2.3165	| 2.3165	| 2.3165
+ box    	| ID	| 1	| sofa    	| 2.3119	| 2.3119	| 2.3119
+OOD J Test - Acc: 0.4346, Th: 1.8563
+Fail src: 0/1255
+ True class	| Pred	| Times	| Closest class	| Mean score	| Min score	| Max score
+Fail tar: 1634/1635
+ True class	| Pred	| Times	| Closest class	| Mean score	| Min score	| Max score
+ table    	| ID	| 182	| sofa    	| 2.1622	| 2.0338	| 2.2931
+ cabinet    	| ID	| 121	| door    	| 2.2219	| 2.0840	| 2.3165
+ table    	| ID	| 115	| door    	| 2.2136	| 2.1304	| 2.3025
+ cabinet    	| ID	| 101	| shelf    	| 1.9961	| 1.8631	| 2.2835
+ bin    	| ID	| 97	| sofa    	| 2.1127	| 2.0383	| 2.2759
+SRC->TAR1:      AUROC: 0.2201, FPR95: 1.0000, AUPR_IN: 0.4606, AUPR_OUT: 0.2559, F1_TH: 1.8563, F1_TH_ACC: 0.6143, J_TH: 2.3098, J_TH_ACC: 0.3862
+SRC->TAR2:      AUROC: 0.3151, FPR95: 0.9882, AUPR_IN: 0.4820, AUPR_OUT: 0.2996, F1_TH: 2.3119, F1_TH_ACC: 0.4020, J_TH: 1.8563, J_TH_ACC: 0.5975
+SRC->TAR1+TAR2: AUROC: 0.2694, FPR95: 0.9939, AUPR_IN: 0.3120, AUPR_OUT: 0.4245, F1_TH: 2.3119, F1_TH_ACC: 0.5651, J_TH: 1.8563, J_TH_ACC: 0.4346
+to spreadsheet: 0.22014328472910388,1.0,0.4605641026992866,0.2559144611559766,0.3151469682074536,0.9881936245572609,0.48198876317584805,0.2996326605144525,0.2693592602068789,0.9938837920489296,0.31201287659678434,0.42453864719303536
+################################################################################
+
+################################################################################
+Computing OOD metrics with GradNorm normality score...
+
+  warnings.warn(_create_warning_msg(
+
+
+
+AUROC - Src label: 1, Tar label: 0
+Src Test - Clf Acc: 0.8064, Clf Bal Acc: 0.7798
+Src Test - Fail: 243/1255
+	A toilet is predicted as chair - 100 times
+	A toilet is predicted as sofa - 42 times
+	A sofa is predicted as toilet - 25 times
+	A door is predicted as sofa - 13 times
+	A door is predicted as toilet - 12 times
+Test Tar1
+OOD F1 Test - Acc: 0.6657, Th: 4.3223
+OOD J Test - Acc: 0.6094, Th: 11.0613
+Test Tar2
+OOD F1 Test - Acc: 0.6284, Th: 4.0536
+OOD J Test - Acc: 0.5966, Th: 11.0613
+Test Tar1+Tar2
+OOD F1 Test - Acc: 0.5166, Th: 4.3223
+Fail src: 62/1255
+ True class	| Pred	| Times	| Closest class	| Mean score	| Min score	| Max score
+ door    	| OOD	| 36	| door    	| 3.8888	| 2.4895	| 4.3002
+ chair    	| OOD	| 5	| door    	| 3.7338	| 3.1137	| 4.2591
+ door    	| OOD	| 4	| toilet    	| 4.0177	| 3.7576	| 4.3096
+ chair    	| OOD	| 4	| chair    	| 3.4803	| 2.6149	| 4.1505
+ sofa    	| OOD	| 4	| door    	| 2.9091	| 1.5202	| 3.5620
+Fail tar: 1335/1635
+ True class	| Pred	| Times	| Closest class	| Mean score	| Min score	| Max score
+ table    	| ID	| 163	| sofa    	| 9.4788	| 4.3895	| 13.4714
+ cabinet    	| ID	| 100	| shelf    	| 9.2732	| 4.8409	| 11.5403
+ bin    	| ID	| 94	| sofa    	| 9.9498	| 4.3286	| 14.1343
+ cabinet    	| ID	| 68	| door    	| 5.2249	| 4.3286	| 9.1672
+ table    	| ID	| 65	| chair    	| 10.7611	| 4.3745	| 15.3471
+OOD J Test - Acc: 0.6495, Th: 11.0613
+Fail src: 633/1255
+ True class	| Pred	| Times	| Closest class	| Mean score	| Min score	| Max score
+ door    	| OOD	| 225	| door    	| 4.6390	| 2.4895	| 10.7094
+ chair    	| OOD	| 168	| chair    	| 9.1807	| 2.6149	| 10.8351
+ toilet    	| OOD	| 55	| toilet    	| 7.7793	| 3.8922	| 10.6690
+ sofa    	| OOD	| 44	| sofa    	| 9.1526	| 4.0621	| 10.9875
+ shelf    	| OOD	| 28	| shelf    	| 9.8575	| 4.3338	| 11.0483
+Fail tar: 380/1635
+ True class	| Pred	| Times	| Closest class	| Mean score	| Min score	| Max score
+ table    	| ID	| 42	| chair    	| 12.8644	| 11.2800	| 15.3471
+ bin    	| ID	| 37	| chair    	| 13.1972	| 11.1206	| 14.1515
+ display    	| ID	| 33	| chair    	| 13.2136	| 11.6233	| 14.9526
+ table    	| ID	| 28	| sofa    	| 12.0108	| 11.0945	| 13.4714
+ box    	| ID	| 27	| chair    	| 12.5981	| 11.2445	| 15.2050
+SRC->TAR1:      AUROC: 0.6710, FPR95: 0.7881, AUPR_IN: 0.7656, AUPR_OUT: 0.5492, F1_TH: 4.3223, F1_TH_ACC: 0.6657, J_TH: 11.0613, J_TH_ACC: 0.6094
+SRC->TAR2:      AUROC: 0.6384, FPR95: 0.8430, AUPR_IN: 0.7393, AUPR_OUT: 0.5305, F1_TH: 4.0536, F1_TH_ACC: 0.6284, J_TH: 11.0613, J_TH_ACC: 0.5966
+SRC->TAR1+TAR2: AUROC: 0.6541, FPR95: 0.8165, AUPR_IN: 0.6142, AUPR_OUT: 0.6961, F1_TH: 4.3223, F1_TH_ACC: 0.5166, J_TH: 11.0613, J_TH_ACC: 0.6495
+to spreadsheet: 0.6710316096022003,0.7880710659898477,0.7656027403772583,0.5492410181240625,0.6384003537208898,0.8429752066115702,0.7393324831503424,0.5304805935976888,0.6541272219988548,0.8165137614678899,0.6142412676571358,0.6961200064480231
+################################################################################
+
+################################################################################
+Building React validation loader...
+ModelNet40_OOD - Reading data from h5py file: /content/3D_OS_release_data/modelnet40_normal_resampled/ood_sets_cache/SR1_test.h5
+ModelNet40_OOD - split: test, categories: {'chair': 0, 'bookshelf': 1, 'door': 2, 'sink': 3, 'sofa': 4}
+React Val - SR1 data len: 340
+/usr/local/lib/python3.10/dist-packages/torch/utils/data/dataloader.py:557: UserWarning: This DataLoader will create 4 worker processes in total. Our suggested max number of worker in current system is 2, which is smaller than what this DataLoader is going to create. Please be aware that excessive worker creation might get DataLoader running slow or even freeze, lower the worker number to avoid potential slowness/freeze if necessary.
+  warnings.warn(_create_warning_msg(
+Estimating react threshold...
+t = 5.8533
+Computing OOD metrics with React (+Energy) normality score, ID-dependent threshold (=5.8533)...
+React - using SR1 test to compute threshold
+
+
+
+AUROC - Src label: 1, Tar label: 0
+Src Test - Clf Acc: 0.8064, Clf Bal Acc: 0.7798
+Src Test - Fail: 243/1255
+	A toilet is predicted as chair - 100 times
+	A toilet is predicted as sofa - 42 times
+	A sofa is predicted as toilet - 25 times
+	A door is predicted as sofa - 13 times
+	A door is predicted as toilet - 12 times
+Test Tar1
+/content/SemNov_AML_DAAI_23-24/utils/ood_metrics.py:110: RuntimeWarning: invalid value encountered in divide
+  f1 = 2 * (precision * recall) / (precision + recall)
+/content/SemNov_AML_DAAI_23-24/utils/ood_metrics.py:110: RuntimeWarning: invalid value encountered in divide
+  f1 = 2 * (precision * recall) / (precision + recall)
+OOD F1 Test - Acc: 0.3852, Th: 2.3134
+OOD J Test - Acc: 0.3857, Th: 3.3134
+Test Tar2
+/content/SemNov_AML_DAAI_23-24/utils/ood_metrics.py:110: RuntimeWarning: invalid value encountered in divide
+  f1 = 2 * (precision * recall) / (precision + recall)
+/content/SemNov_AML_DAAI_23-24/utils/ood_metrics.py:110: RuntimeWarning: invalid value encountered in divide
+  f1 = 2 * (precision * recall) / (precision + recall)
+OOD F1 Test - Acc: 0.4025, Th: 2.3093
+OOD J Test - Acc: 0.4029, Th: 3.3093
+Test Tar1+Tar2
+/content/SemNov_AML_DAAI_23-24/utils/ood_metrics.py:110: RuntimeWarning: invalid value encountered in divide
+  f1 = 2 * (precision * recall) / (precision + recall)
+/content/SemNov_AML_DAAI_23-24/utils/ood_metrics.py:110: RuntimeWarning: invalid value encountered in divide
+  f1 = 2 * (precision * recall) / (precision + recall)
+OOD F1 Test - Acc: 0.5651, Th: 2.3093
+Fail src: 1255/1255
+ True class	| Pred	| Times	| Closest class	| Mean score	| Min score	| Max score
+ chair    	| OOD	| 379	| chair    	| 1.9597	| 1.8915	| 2.2970
+ door    	| OOD	| 225	| door    	| 2.1780	| 2.1402	| 2.3040
+ shelf    	| OOD	| 217	| shelf    	| 1.8847	| 1.8533	| 2.2142
+ toilet    	| OOD	| 111	| toilet    	| 2.0349	| 1.9205	| 2.2729
+ toilet    	| OOD	| 100	| chair    	| 2.0151	| 1.8966	| 2.2497
+Fail tar: 2/1635
+ True class	| Pred	| Times	| Closest class	| Mean score	| Min score	| Max score
+ desk    	| ID	| 1	| chair    	| 2.3134	| 2.3134	| 2.3134
+ sink    	| ID	| 1	| door    	| 2.3093	| 2.3093	| 2.3093
+OOD J Test - Acc: 0.5657, Th: 3.3134
+Fail src: 1255/1255
+ True class	| Pred	| Times	| Closest class	| Mean score	| Min score	| Max score
+ chair    	| OOD	| 379	| chair    	| 1.9597	| 1.8915	| 2.2970
+ door    	| OOD	| 225	| door    	| 2.1780	| 2.1402	| 2.3040
+ shelf    	| OOD	| 217	| shelf    	| 1.8847	| 1.8533	| 2.2142
+ toilet    	| OOD	| 111	| toilet    	| 2.0349	| 1.9205	| 2.2729
+ toilet    	| OOD	| 100	| chair    	| 2.0151	| 1.8966	| 2.2497
+Fail tar: 0/1635
+ True class	| Pred	| Times	| Closest class	| Mean score	| Min score	| Max score
+SRC->TAR1:      AUROC: 0.2186, FPR95: 1.0000, AUPR_IN: 0.4626, AUPR_OUT: 0.2557, F1_TH: 2.3134, F1_TH_ACC: 0.3852, J_TH: 3.3134, J_TH_ACC: 0.3857
+SRC->TAR2:      AUROC: 0.3085, FPR95: 0.9847, AUPR_IN: 0.4791, AUPR_OUT: 0.2971, F1_TH: 2.3093, F1_TH_ACC: 0.4025, J_TH: 3.3093, J_TH_ACC: 0.4029
+SRC->TAR1+TAR2: AUROC: 0.2652, FPR95: 0.9920, AUPR_IN: 0.3117, AUPR_OUT: 0.4227, F1_TH: 2.3093, F1_TH_ACC: 0.5651, J_TH: 3.3134, J_TH_ACC: 0.5657
+to spreadsheet: 0.21861791413028092,1.0,0.462558110609061,0.2556637791429195,0.3085466869240864,0.9846517119244392,0.47914325890180864,0.2971202492377446,0.2652048685989985,0.9920489296636086,0.31174865685452424,0.42269240429359234
+################################################################################
