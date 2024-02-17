@@ -1,0 +1,113 @@
+Cannot import torchlars
+Cannot load RSCNN: No module named 'pointnet2_ops'
+Cannot load PCT: No module named 'pointnet2_ops'
+Cannot load PointMLP: No module named 'pointnet2_ops'
+Cannot load PointNet2: No module named 'pointnet2_ops'
+/content/SemNov_AML_DAAI_23-24/utils/rsmix_provider.py:157: SyntaxWarning: "is" with a literal. Did you mean "=="?
+  if len(label_batch.shape) is 1:
+DGL backend not selected or invalid.  Assuming PyTorch for now.
+Setting the default backend to "pytorch". You can change it in the ~/.dgl/config.json file or export the DGLBACKEND environment variable.  Valid options are: pytorch, mxnet, tensorflow (all lowercase)
+out-of-distribution eval - Modelnet -> SONN ..
+Arguments: Namespace(local_rank=None, use_sync_bn=False, use_amp=False, script_mode='eval', config='cfgs/dgcnn-cla.yaml', seed=1, epochs=250, batch_size=1, num_workers=4, resume=None, apply_fix_cellphone=True, data_root='/content/3D_OS_release_data', checkpoints_dir='outputs', exp_name='DGCNN_SUBCENTER_SR2', eval_step=1, save_step=10, ckpt_path='/content/SemNov_AML_DAAI_23-24/trained_models/DGCNN_SUBCENTER_SR2.pth', src='SR2', sonn_split='main_split', sonn_h5_name='objectdataset.h5', augm_set='rw', grad_norm_clip=-1, num_points=1024, num_points_test=2048, wandb_name=None, wandb_group='md-2-sonn-augmCorr', wandb_proj='benchmark-3d-ood-cla', wandb_api=None, loss='subcenter_arcface', cs=False, cs_gan_lr=0.0002, cs_beta=0.1, save_feats=None, open_shape='openshape-pointbert-vitg14-rgb', corruption=None, tar1='none', tar2='none')
+ModelNet40_OOD - Reading data from h5py file: /content/3D_OS_release_data/modelnet40_normal_resampled/ood_sets_cache/SR2_train.h5
+ModelNet40_OOD - split: train, categories: {'bed': 0, 'toilet': 1, 'desk': 2, 'monitor': 3, 'table': 2}
+SR2 train data len: 1916
+ModelNet40_OOD - Reading data from h5py file: /content/3D_OS_release_data/modelnet40_normal_resampled/ood_sets_cache/SR2_test.h5
+ModelNet40_OOD - split: test, categories: {'bed': 0, 'toilet': 1, 'desk': 2, 'monitor': 3, 'table': 2}
+/usr/local/lib/python3.10/dist-packages/torch/utils/data/dataloader.py:557: UserWarning: This DataLoader will create 4 worker processes in total. Our suggested max number of worker in current system is 2, which is smaller than what this DataLoader is going to create. Please be aware that excessive worker creation might get DataLoader running slow or even freeze, lower the worker number to avoid potential slowness/freeze if necessary.
+  warnings.warn(_create_warning_msg(
+Src is SR2
+
+ScanObject - num_points: 2048, sonn_split: main_split, h5_suffix: objectdataset.h5, split: all, class_choice: {10: 0, 14: 1, 5: 2, 6: 3, 9: 2}, num samples: 788
+ScanObject - num_points: 2048, sonn_split: main_split, h5_suffix: objectdataset.h5, split: all, class_choice: {4: 0, 8: 1, 7: 2, 12: 3, 13: 4}, num samples: 1255
+ScanObject - num_points: 2048, sonn_split: main_split, h5_suffix: objectdataset.h5, split: all, class_choice: {0: 400, 1: 401, 2: 402, 3: 403, 11: 404}, num samples: 847
+
+
+
+
+Src logits: torch.Size([788, 1280]), tar1 logits: torch.Size([1255, 1280]), tar2 logits: torch.Size([847, 1280])
+
+################################################################################
+Computing OOD metrics with distance from train features...
+
+  warnings.warn(_create_warning_msg(
+
+
+
+
+Euclidean distances in a non-normalized space:
+AUROC - Src label: 1, Tar label: 0
+Src Test - Clf Acc: 0.3452, Clf Bal Acc: 0.5381
+Test Tar1
+OOD F1 Test - Acc: 0.4302, Th: 0.0014
+OOD J Test - Acc: 0.4846, Th: 0.0017
+Test Tar2
+OOD F1 Test - Acc: 0.4832, Th: 0.0012
+OOD J Test - Acc: 0.5651, Th: 0.0019
+Test Tar1+Tar2
+OOD F1 Test - Acc: 0.3107, Th: 0.0014
+OOD J Test - Acc: 0.5841, Th: 0.0019
+SRC->TAR1:      AUROC: 0.5526, FPR95: 0.8916, AUPR_IN: 0.4424, AUPR_OUT: 0.6758, F1_TH: 0.0014, F1_TH_ACC: 0.4302, J_TH: 0.0017, J_TH_ACC: 0.4846
+SRC->TAR2:      AUROC: 0.5648, FPR95: 0.9469, AUPR_IN: 0.5722, AUPR_OUT: 0.5499, F1_TH: 0.0012, F1_TH_ACC: 0.4832, J_TH: 0.0019, J_TH_ACC: 0.5651
+SRC->TAR1+TAR2: AUROC: 0.5575, FPR95: 0.9139, AUPR_IN: 0.3368, AUPR_OUT: 0.7678, F1_TH: 0.0014, F1_TH_ACC: 0.3107, J_TH: 0.0019, J_TH_ACC: 0.5841
+to spreadsheet: 0.5526482900883776,0.8916334661354581,0.44241918302705086,0.6757873075956362,0.5647567706866277,0.9468713105076741,0.5721568506639644,0.549850838189004,0.5575273971610311,0.9138915318744053,0.3367824639336777,0.7678067694019529
+
+Euclidean distances with prototypes:
+AUROC - Src label: 1, Tar label: 0
+Src Test - Clf Acc: 0.1713, Clf Bal Acc: 0.2500
+Test Tar1
+OOD F1 Test - Acc: 0.4116, Th: 0.0012
+OOD J Test - Acc: 0.5056, Th: 0.0015
+Test Tar2
+OOD F1 Test - Acc: 0.4832, Th: 0.0011
+OOD J Test - Acc: 0.5859, Th: 0.0017
+Test Tar1+Tar2
+OOD F1 Test - Acc: 0.2986, Th: 0.0012
+OOD J Test - Acc: 0.6073, Th: 0.0016
+SRC->TAR1:      AUROC: 0.5279, FPR95: 0.9203, AUPR_IN: 0.4103, AUPR_OUT: 0.6478, F1_TH: 0.0012, F1_TH_ACC: 0.4116, J_TH: 0.0015, J_TH_ACC: 0.5056
+SRC->TAR2:      AUROC: 0.5706, FPR95: 0.9540, AUPR_IN: 0.5999, AUPR_OUT: 0.5448, F1_TH: 0.0011, F1_TH_ACC: 0.4832, J_TH: 0.0017, J_TH_ACC: 0.5859
+SRC->TAR1+TAR2: AUROC: 0.5451, FPR95: 0.9339, AUPR_IN: 0.3220, AUPR_OUT: 0.7521, F1_TH: 0.0012, F1_TH_ACC: 0.2986, J_TH: 0.0016, J_TH_ACC: 0.6073
+to spreadsheet: 0.5279314215220338,0.9203187250996016,0.41032837406808154,0.6478170664005464,0.5706135120071437,0.9539551357733176,0.5999128161882135,0.5448032085044252,0.545130151608089,0.933872502378687,0.3219874921025491,0.7521403913988025
+
+Cosine similarities on the hypersphere:
+AUROC - Src label: 1, Tar label: 0
+Src Test - Clf Acc: 0.3503, Clf Bal Acc: 0.5170
+Test Tar1
+/content/SemNov_AML_DAAI_23-24/utils/ood_metrics.py:110: RuntimeWarning: invalid value encountered in divide
+  f1 = 2 * (precision * recall) / (precision + recall)
+/content/SemNov_AML_DAAI_23-24/utils/ood_metrics.py:110: RuntimeWarning: invalid value encountered in divide
+  f1 = 2 * (precision * recall) / (precision + recall)
+OOD F1 Test - Acc: 0.6133, Th: 0.9484
+OOD J Test - Acc: 0.4753, Th: 0.8542
+Test Tar2
+OOD F1 Test - Acc: 0.4862, Th: 0.8190
+OOD J Test - Acc: 0.5713, Th: 0.8954
+Test Tar1+Tar2
+/content/SemNov_AML_DAAI_23-24/utils/ood_metrics.py:110: RuntimeWarning: invalid value encountered in divide
+  f1 = 2 * (precision * recall) / (precision + recall)
+/content/SemNov_AML_DAAI_23-24/utils/ood_metrics.py:110: RuntimeWarning: invalid value encountered in divide
+  f1 = 2 * (precision * recall) / (precision + recall)
+OOD F1 Test - Acc: 0.7266, Th: 0.9484
+OOD J Test - Acc: 0.5595, Th: 0.8853
+SRC->TAR1:      AUROC: 0.5685, FPR95: 0.8542, AUPR_IN: 0.4377, AUPR_OUT: 0.6966, F1_TH: 0.9484, F1_TH_ACC: 0.6133, J_TH: 0.8542, J_TH_ACC: 0.4753
+SRC->TAR2:      AUROC: 0.5709, FPR95: 0.9374, AUPR_IN: 0.5771, AUPR_OUT: 0.5624, F1_TH: 0.8190, F1_TH_ACC: 0.4862, J_TH: 0.8954, J_TH_ACC: 0.5713
+SRC->TAR1+TAR2: AUROC: 0.5694, FPR95: 0.8877, AUPR_IN: 0.3321, AUPR_OUT: 0.7809, F1_TH: 0.9484, F1_TH_ACC: 0.7266, J_TH: 0.8853, J_TH_ACC: 0.5595
+to spreadsheet: 0.5684687645357656,0.8541832669322709,0.43765551290750293,0.6965919328175134,0.5708704654828327,0.9374262101534829,0.577149859157021,0.5623955429787268,0.5694365289040653,0.8877259752616555,0.33208927960224205,0.7808801893827861
+
+Cosine similarities with prototypes:
+AUROC - Src label: 1, Tar label: 0
+Src Test - Clf Acc: 0.1713, Clf Bal Acc: 0.2500
+Test Tar1
+OOD F1 Test - Acc: 0.4249, Th: 0.7733
+OOD J Test - Acc: 0.5507, Th: 0.8308
+Test Tar2
+OOD F1 Test - Acc: 0.4893, Th: 0.7613
+OOD J Test - Acc: 0.5688, Th: 0.8514
+Test Tar1+Tar2
+OOD F1 Test - Acc: 0.3163, Th: 0.7737
+OOD J Test - Acc: 0.5661, Th: 0.8305
+SRC->TAR1:      AUROC: 0.5464, FPR95: 0.9036, AUPR_IN: 0.4247, AUPR_OUT: 0.6642, F1_TH: 0.7733, F1_TH_ACC: 0.4249, J_TH: 0.8308, J_TH_ACC: 0.5507
+SRC->TAR2:      AUROC: 0.5676, FPR95: 0.9339, AUPR_IN: 0.5826, AUPR_OUT: 0.5594, F1_TH: 0.7613, F1_TH_ACC: 0.4893, J_TH: 0.8514, J_TH_ACC: 0.5688
+SRC->TAR1+TAR2: AUROC: 0.5549, FPR95: 0.9158, AUPR_IN: 0.3269, AUPR_OUT: 0.7643, F1_TH: 0.7737, F1_TH_ACC: 0.3163, J_TH: 0.8305, J_TH_ACC: 0.5661
+to spreadsheet: 0.5463556939753675,0.9035856573705179,0.424651229036357,0.664206071187904,0.5676319527265535,0.9338842975206612,0.582592340080174,0.5593601620368602,0.5549289533294373,0.9157944814462416,0.3268848693627111,0.7643190981301339
+################################################################################
