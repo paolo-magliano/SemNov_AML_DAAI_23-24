@@ -513,17 +513,23 @@ def eval_ood_md2sonn(opt, config):
     print(f"Src logits: {src_logits.shape}, tar1 logits: {tar1_logits.shape}, tar2 logits: {tar2_logits.shape}")
     
     if opt.src == 'SR1':
-        src_label_numbers = sonn_2_mdSet1
-        tar1_label_numbers = sonn_2_mdSet2
+        # src_label_numbers = sonn_2_mdSet1
+        # tar1_label_numbers = sonn_2_mdSet2
+        src_label_names = ['chair', 'shelf', 'door', 'sink', 'sofa']
+        tar1_label_names = ['bed', 'toilet', 'desk', 'display', 'table']
     elif opt.src == 'SR2':
-        src_label_numbers = sonn_2_mdSet2
-        tar1_label_numbers = sonn_2_mdSet1
+        # src_label_numbers = sonn_2_mdSet2
+        # tar1_label_numbers = sonn_2_mdSet1
+        src_label_names = ['bed', 'toilet', 'desk', 'display', 'table']
+        tar1_label_names = ['chair', 'shelf', 'door', 'sink', 'sofa']
     else:
         raise ValueError(f"Unknown src")
-    tar2_label_numbers = sonn_ood_common
-    src_label_names = [k for k, v in SONN_label_dict.items() if sonn_all[v] in src_label_numbers]
-    tar1_label_names = [k for k, v in SONN_label_dict.items() if sonn_all[v] in tar1_label_numbers]
-    tar2_label_names = [k for k, v in SONN_label_dict.items() if sonn_all[v] in tar2_label_numbers]
+
+    tar2_label_names = ['bag', 'bin', 'box', 'cabinet', 'pillow']
+    # tar2_label_numbers = sonn_ood_common
+    # src_label_names = [k for k, v in SONN_label_dict.items() if sonn_all[v] in src_label_numbers]
+    # tar1_label_names = [k for k, v in SONN_label_dict.items() if sonn_all[v] in tar1_label_numbers]
+    # tar2_label_names = [k for k, v in SONN_label_dict.items() if sonn_all[v] in tar2_label_numbers]
     print(f"Src: {src_label_names}")
     print(f"Tar1: {tar1_label_names}")
     print(f"Tar2: {tar2_label_names}")
