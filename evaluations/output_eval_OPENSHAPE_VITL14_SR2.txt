@@ -1,0 +1,111 @@
+Cannot import torchlars
+Cannot load RSCNN: No module named 'pointnet2_ops'
+Cannot load PCT: No module named 'pointnet2_ops'
+Cannot load PointMLP: No module named 'pointnet2_ops'
+Cannot load PointNet2: No module named 'pointnet2_ops'
+/content/SemNov_AML_DAAI_23-24/utils/rsmix_provider.py:157: SyntaxWarning: "is" with a literal. Did you mean "=="?
+  if len(label_batch.shape) is 1:
+out-of-distribution eval - Modelnet -> SONN ..
+Arguments: Namespace(local_rank=None, use_sync_bn=False, use_amp=False, script_mode='eval', config='cfgs/dgcnn-cla.yaml', seed=1, epochs=250, batch_size=1, num_workers=4, resume=None, apply_fix_cellphone=True, data_root='/content/3D_OS_release_data', checkpoints_dir='outputs', exp_name='DGCNN_SUBCENTER_SR2', eval_step=1, save_step=10, ckpt_path='/content/SemNov_AML_DAAI_23-24/trained_models/DGCNN_SUBCENTER_SR2.pth', src='SR2', sonn_split='main_split', sonn_h5_name='objectdataset.h5', augm_set='rw', grad_norm_clip=-1, num_points=1024, num_points_test=2048, wandb_name=None, wandb_group='md-2-sonn-augmCorr', wandb_proj='benchmark-3d-ood-cla', wandb_api=None, loss='subcenter_arcface', cs=False, cs_gan_lr=0.0002, cs_beta=0.1, save_feats=None, open_shape='openshape-pointbert-vitl14-rgb', corruption=None, tar1='none', tar2='none')
+ModelNet40_OOD - Reading data from h5py file: /content/3D_OS_release_data/modelnet40_normal_resampled/ood_sets_cache/SR2_train.h5
+ModelNet40_OOD - split: train, categories: {'bed': 0, 'toilet': 1, 'desk': 2, 'monitor': 3, 'table': 2}
+SR2 train data len: 1916
+ModelNet40_OOD - Reading data from h5py file: /content/3D_OS_release_data/modelnet40_normal_resampled/ood_sets_cache/SR2_test.h5
+ModelNet40_OOD - split: test, categories: {'bed': 0, 'toilet': 1, 'desk': 2, 'monitor': 3, 'table': 2}
+/usr/local/lib/python3.10/dist-packages/torch/utils/data/dataloader.py:557: UserWarning: This DataLoader will create 4 worker processes in total. Our suggested max number of worker in current system is 2, which is smaller than what this DataLoader is going to create. Please be aware that excessive worker creation might get DataLoader running slow or even freeze, lower the worker number to avoid potential slowness/freeze if necessary.
+  warnings.warn(_create_warning_msg(
+Src is SR2
+
+ScanObject - num_points: 2048, sonn_split: main_split, h5_suffix: objectdataset.h5, split: all, class_choice: {10: 0, 14: 1, 5: 2, 6: 3, 9: 2}, num samples: 788
+ScanObject - num_points: 2048, sonn_split: main_split, h5_suffix: objectdataset.h5, split: all, class_choice: {4: 0, 8: 1, 7: 2, 12: 3, 13: 4}, num samples: 1255
+ScanObject - num_points: 2048, sonn_split: main_split, h5_suffix: objectdataset.h5, split: all, class_choice: {0: 400, 1: 401, 2: 402, 3: 403, 11: 404}, num samples: 847
+
+
+
+
+Src logits: torch.Size([788, 768]), tar1 logits: torch.Size([1255, 768]), tar2 logits: torch.Size([847, 768])
+
+################################################################################
+Computing OOD metrics with distance from train features...
+
+  warnings.warn(_create_warning_msg(
+
+
+
+
+Euclidean distances in a non-normalized space:
+AUROC - Src label: 1, Tar label: 0
+Src Test - Clf Acc: 0.6802, Clf Bal Acc: 0.6946
+Test Tar1
+OOD F1 Test - Acc: 0.3901, Th: 0.3849
+OOD J Test - Acc: 0.5893, Th: 0.5400
+Test Tar2
+/content/SemNov_AML_DAAI_23-24/utils/ood_metrics.py:110: RuntimeWarning: invalid value encountered in divide
+  f1 = 2 * (precision * recall) / (precision + recall)
+/content/SemNov_AML_DAAI_23-24/utils/ood_metrics.py:110: RuntimeWarning: invalid value encountered in divide
+  f1 = 2 * (precision * recall) / (precision + recall)
+OOD F1 Test - Acc: 0.5174, Th: 0.8721
+OOD J Test - Acc: 0.6312, Th: 0.4984
+Test Tar1+Tar2
+/content/SemNov_AML_DAAI_23-24/utils/ood_metrics.py:110: RuntimeWarning: invalid value encountered in divide
+  f1 = 2 * (precision * recall) / (precision + recall)
+/content/SemNov_AML_DAAI_23-24/utils/ood_metrics.py:110: RuntimeWarning: invalid value encountered in divide
+  f1 = 2 * (precision * recall) / (precision + recall)
+OOD F1 Test - Acc: 0.7270, Th: 0.8721
+OOD J Test - Acc: 0.5983, Th: 0.5165
+SRC->TAR1:      AUROC: 0.5508, FPR95: 0.9442, AUPR_IN: 0.4515, AUPR_OUT: 0.6447, F1_TH: 0.3849, F1_TH_ACC: 0.3901, J_TH: 0.5400, J_TH_ACC: 0.5893
+SRC->TAR2:      AUROC: 0.6660, FPR95: 0.8560, AUPR_IN: 0.6312, AUPR_OUT: 0.6667, F1_TH: 0.8721, F1_TH_ACC: 0.5174, J_TH: 0.4984, J_TH_ACC: 0.6312
+SRC->TAR1+TAR2: AUROC: 0.5972, FPR95: 0.9087, AUPR_IN: 0.3598, AUPR_OUT: 0.7869, F1_TH: 0.8721, F1_TH_ACC: 0.7270, J_TH: 0.5165, J_TH_ACC: 0.5983
+to spreadsheet: 0.5507952959734665,0.9442231075697212,0.4514683250577079,0.6446723472837037,0.6660016840565988,0.8559622195985832,0.6311757815302697,0.666711799378956,0.5972176607243767,0.9086584205518554,0.35980437817385635,0.7868850958442115
+
+Euclidean distances with prototypes:
+AUROC - Src label: 1, Tar label: 0
+Src Test - Clf Acc: 0.1713, Clf Bal Acc: 0.2500
+Test Tar1
+OOD F1 Test - Acc: 0.3867, Th: 0.3095
+OOD J Test - Acc: 0.6686, Th: 0.4958
+Test Tar2
+OOD F1 Test - Acc: 0.6031, Th: 0.3939
+OOD J Test - Acc: 0.6465, Th: 0.4209
+Test Tar1+Tar2
+OOD F1 Test - Acc: 0.5561, Th: 0.4294
+OOD J Test - Acc: 0.7408, Th: 0.4908
+SRC->TAR1:      AUROC: 0.5746, FPR95: 0.9673, AUPR_IN: 0.5460, AUPR_OUT: 0.6321, F1_TH: 0.3095, F1_TH_ACC: 0.3867, J_TH: 0.4958, J_TH_ACC: 0.6686
+SRC->TAR2:      AUROC: 0.6954, FPR95: 0.8548, AUPR_IN: 0.6976, AUPR_OUT: 0.6797, F1_TH: 0.3939, F1_TH_ACC: 0.6031, J_TH: 0.4209, J_TH_ACC: 0.6465
+SRC->TAR1+TAR2: AUROC: 0.6233, FPR95: 0.9220, AUPR_IN: 0.4630, AUPR_OUT: 0.7869, F1_TH: 0.4294, F1_TH_ACC: 0.5561, J_TH: 0.4908, J_TH_ACC: 0.7408
+to spreadsheet: 0.5745985600744231,0.9673306772908367,0.5459790422051967,0.63211185243337,0.6954104962872845,0.8547815820543093,0.697633691429524,0.6797103967964084,0.6232796780441157,0.9219790675547098,0.46296732764160753,0.7868865250128333
+
+Cosine similarities on the hypersphere:
+AUROC - Src label: 1, Tar label: 0
+Src Test - Clf Acc: 0.6675, Clf Bal Acc: 0.6851
+Test Tar1
+OOD F1 Test - Acc: 0.3906, Th: 0.7142
+OOD J Test - Acc: 0.5874, Th: 0.8067
+Test Tar2
+OOD F1 Test - Acc: 0.6355, Th: 0.7735
+OOD J Test - Acc: 0.6734, Th: 0.8006
+Test Tar1+Tar2
+OOD F1 Test - Acc: 0.6017, Th: 0.8006
+OOD J Test - Acc: 0.6325, Th: 0.8069
+SRC->TAR1:      AUROC: 0.6050, FPR95: 0.9371, AUPR_IN: 0.5243, AUPR_OUT: 0.6758, F1_TH: 0.7142, F1_TH_ACC: 0.3906, J_TH: 0.8067, J_TH_ACC: 0.5874
+SRC->TAR2:      AUROC: 0.7307, FPR95: 0.7934, AUPR_IN: 0.7201, AUPR_OUT: 0.7303, F1_TH: 0.7735, F1_TH_ACC: 0.6355, J_TH: 0.8006, J_TH_ACC: 0.6734
+SRC->TAR1+TAR2: AUROC: 0.6556, FPR95: 0.8792, AUPR_IN: 0.4487, AUPR_OUT: 0.8190, F1_TH: 0.8006, F1_TH_ACC: 0.6017, J_TH: 0.8069, J_TH_ACC: 0.6325
+to spreadsheet: 0.6049881691508079,0.9370517928286852,0.5243063611611741,0.6758321491334214,0.7307127574778705,0.7933884297520661,0.7200814138379094,0.7302728864147298,0.6556488381864988,0.879162702188392,0.44867514714703705,0.8189864866984602
+
+Cosine similarities with prototypes:
+AUROC - Src label: 1, Tar label: 0
+Src Test - Clf Acc: 0.1713, Clf Bal Acc: 0.2500
+Test Tar1
+OOD F1 Test - Acc: 0.3882, Th: 0.6281
+OOD J Test - Acc: 0.6579, Th: 0.7691
+Test Tar2
+OOD F1 Test - Acc: 0.5969, Th: 0.6650
+OOD J Test - Acc: 0.6453, Th: 0.7148
+Test Tar1+Tar2
+OOD F1 Test - Acc: 0.3602, Th: 0.6636
+OOD J Test - Acc: 0.6612, Th: 0.7371
+SRC->TAR1:      AUROC: 0.5715, FPR95: 0.9522, AUPR_IN: 0.5449, AUPR_OUT: 0.6372, F1_TH: 0.6281, F1_TH_ACC: 0.3882, J_TH: 0.7691, J_TH_ACC: 0.6579
+SRC->TAR2:      AUROC: 0.7121, FPR95: 0.7509, AUPR_IN: 0.7144, AUPR_OUT: 0.7268, F1_TH: 0.6650, F1_TH_ACC: 0.5969, J_TH: 0.7148, J_TH_ACC: 0.6453
+SRC->TAR1+TAR2: AUROC: 0.6281, FPR95: 0.8711, AUPR_IN: 0.4725, AUPR_OUT: 0.8041, F1_TH: 0.6636, F1_TH_ACC: 0.3602, J_TH: 0.7371, J_TH_ACC: 0.6612
+to spreadsheet: 0.5714972596921957,0.952191235059761,0.5449395136239639,0.6372439061354864,0.712089998142144,0.7508854781582054,0.7143610728275007,0.7268053713028784,0.6281490434539018,0.8710751665080876,0.47253124150695225,0.8041390828299575
+################################################################################
