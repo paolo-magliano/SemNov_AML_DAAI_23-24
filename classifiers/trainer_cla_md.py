@@ -511,6 +511,8 @@ def eval_ood_md2sonn(opt, config):
     tar2_logits, tar2_pred, tar2_labels = get_network_output(model, ood2_loader, openshape=opt.open_shape is not None)
 
     print(f"Src logits: {src_logits.shape}, tar1 logits: {tar1_logits.shape}, tar2 logits: {tar2_logits.shape}")
+    print(f"Src pred: {src_pred.shape}, tar1 pred: {tar1_pred.shape}, tar2 pred: {tar2_pred.shape}")
+    print(f"Src labels: {src_labels.shape}, tar1 labels: {tar1_labels.shape}, tar2 labels: {tar2_labels.shape}")
     
     if opt.src == 'SR1':
         # src_label_numbers = sonn_2_mdSet1
