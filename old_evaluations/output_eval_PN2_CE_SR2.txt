@@ -5,8 +5,6 @@ Cannot load PointMLP: No module named 'pointnet2_ops'
 Cannot load PointNet2: No module named 'pointnet2_ops'
 /content/SemNov_AML_DAAI_23-24/utils/rsmix_provider.py:157: SyntaxWarning: "is" with a literal. Did you mean "=="?
   if len(label_batch.shape) is 1:
-DGL backend not selected or invalid.  Assuming PyTorch for now.
-Setting the default backend to "pytorch". You can change it in the ~/.dgl/config.json file or export the DGLBACKEND environment variable.  Valid options are: pytorch, mxnet, tensorflow (all lowercase)
 out-of-distribution eval - Modelnet -> SONN ..
 Arguments: Namespace(local_rank=None, use_sync_bn=False, use_amp=False, script_mode='eval', config='cfgs/pn2-msg.yaml', seed=1, epochs=250, batch_size=1, num_workers=4, resume=None, apply_fix_cellphone=True, data_root='/content/3D_OS_release_data', checkpoints_dir='outputs', exp_name='PN2_CE_SR2', eval_step=1, save_step=10, ckpt_path='/content/SemNov_AML_DAAI_23-24/trained_models/PN2_CE_SR2.pth', src='SR2', sonn_split='main_split', sonn_h5_name='objectdataset.h5', augm_set='rw', grad_norm_clip=-1, num_points=1024, num_points_test=2048, wandb_name=None, wandb_group='md-2-sonn-augmCorr', wandb_proj='benchmark-3d-ood-cla', wandb_api=None, loss='CE', cs=False, cs_gan_lr=0.0002, cs_beta=0.1, save_feats=None, open_shape=None, corruption=None, tar1='none', tar2='none')
 ModelNet40_OOD - Reading data from h5py file: /content/3D_OS_release_data/modelnet40_normal_resampled/ood_sets_cache/SR2_train.h5
@@ -29,17 +27,22 @@ Load weights:  <All keys matched successfully>
 
 
 Src logits: torch.Size([788, 4]), tar1 logits: torch.Size([1255, 4]), tar2 logits: torch.Size([847, 4])
+Src pred: torch.Size([788]), tar1 pred: torch.Size([1255]), tar2 pred: torch.Size([847])
+Src labels: torch.Size([788]), tar1 labels: torch.Size([1255]), tar2 labels: torch.Size([847])
+Src: ['bed', 'toilet', 'desk', 'display', 'table']
+Tar1: ['chair', 'shelf', 'door', 'sink', 'sofa']
+Tar2: ['bag', 'bin', 'box', 'cabinet', 'pillow']
 
 ################################################################################
 Computing OOD metrics with MSP normality score...
 AUROC - Src label: 1, Tar label: 0
 Src Test - Clf Acc: 0.8261, Clf Bal Acc: 0.7956
 Src Test - Fail: 137/788
-	A table is predicted as desk - 47 times
-	A desk is predicted as table - 44 times
-	A display is predicted as table - 18 times
-	A table is predicted as bed - 15 times
-	A display is predicted as bed - 5 times
+	A desk is predicted as bed - 47 times
+	A bed is predicted as desk - 44 times
+	A toilet is predicted as desk - 18 times
+	A desk is predicted as display - 15 times
+	A toilet is predicted as display - 5 times
 Test Tar1
 OOD F1 Test - Acc: 0.5977, Th: 0.9822
 OOD J Test - Acc: 0.6251, Th: 0.9947
@@ -50,33 +53,33 @@ Test Tar1+Tar2
 OOD F1 Test - Acc: 0.6249, Th: 0.9958
 Fail src: 264/788
  True class	| Pred	| Times	| Closest class	| Mean score	| Min score	| Max score
- table    	| OOD	| 107	| table    	| 0.8877	| 0.4791	| 0.9954
- table    	| OOD	| 38	| desk    	| 0.7853	| 0.4524	| 0.9944
- desk    	| OOD	| 28	| table    	| 0.8817	| 0.5010	| 0.9953
- desk    	| OOD	| 18	| desk    	| 0.9117	| 0.5262	| 0.9952
- display    	| OOD	| 17	| table    	| 0.8278	| 0.4338	| 0.9919
+ desk    	| OOD	| 107	| desk    	| 0.8877	| 0.4791	| 0.9954
+ desk    	| OOD	| 38	| bed    	| 0.7853	| 0.4524	| 0.9944
+ bed    	| OOD	| 28	| desk    	| 0.8817	| 0.5010	| 0.9953
+ bed    	| OOD	| 18	| bed    	| 0.9117	| 0.5262	| 0.9952
+ toilet    	| OOD	| 17	| desk    	| 0.8278	| 0.4338	| 0.9919
 Fail tar: 820/2102
  True class	| Pred	| Times	| Closest class	| Mean score	| Min score	| Max score
- shelf    	| ID	| 219	| bed    	| 0.9999	| 0.9978	| 1.0000
- cabinet    	| ID	| 135	| bed    	| 0.9993	| 0.9958	| 1.0000
- door    	| ID	| 66	| bed    	| 0.9990	| 0.9958	| 1.0000
- cabinet    	| ID	| 49	| table    	| 0.9987	| 0.9960	| 1.0000
- toilet    	| ID	| 45	| desk    	| 0.9985	| 0.9959	| 1.0000
+ door    	| ID	| 219	| display    	| 0.9999	| 0.9978	| 1.0000
+ cabinet    	| ID	| 135	| display    	| 0.9993	| 0.9958	| 1.0000
+ shelf    	| ID	| 66	| display    	| 0.9990	| 0.9958	| 1.0000
+ cabinet    	| ID	| 49	| desk    	| 0.9987	| 0.9960	| 1.0000
+ sofa    	| ID	| 45	| bed    	| 0.9985	| 0.9959	| 1.0000
 OOD J Test - Acc: 0.6716, Th: 0.9988
 Fail src: 344/788
  True class	| Pred	| Times	| Closest class	| Mean score	| Min score	| Max score
- table    	| OOD	| 151	| table    	| 0.9197	| 0.4791	| 0.9987
- table    	| OOD	| 41	| desk    	| 0.8008	| 0.4524	| 0.9979
- desk    	| OOD	| 33	| table    	| 0.8994	| 0.5010	| 0.9988
- desk    	| OOD	| 29	| desk    	| 0.9441	| 0.5262	| 0.9986
- bed    	| OOD	| 24	| bed    	| 0.9493	| 0.7459	| 0.9988
+ desk    	| OOD	| 151	| desk    	| 0.9197	| 0.4791	| 0.9987
+ desk    	| OOD	| 41	| bed    	| 0.8008	| 0.4524	| 0.9979
+ bed    	| OOD	| 33	| desk    	| 0.8994	| 0.5010	| 0.9988
+ bed    	| OOD	| 29	| bed    	| 0.9441	| 0.5262	| 0.9986
+ display    	| OOD	| 24	| display    	| 0.9493	| 0.7459	| 0.9988
 Fail tar: 605/2102
  True class	| Pred	| Times	| Closest class	| Mean score	| Min score	| Max score
- shelf    	| ID	| 218	| bed    	| 0.9999	| 0.9993	| 1.0000
- cabinet    	| ID	| 107	| bed    	| 0.9998	| 0.9988	| 1.0000
- door    	| ID	| 45	| bed    	| 0.9997	| 0.9990	| 1.0000
- cabinet    	| ID	| 27	| table    	| 0.9997	| 0.9989	| 1.0000
- door    	| ID	| 25	| table    	| 0.9997	| 0.9989	| 1.0000
+ door    	| ID	| 218	| display    	| 0.9999	| 0.9993	| 1.0000
+ cabinet    	| ID	| 107	| display    	| 0.9998	| 0.9988	| 1.0000
+ shelf    	| ID	| 45	| display    	| 0.9997	| 0.9990	| 1.0000
+ cabinet    	| ID	| 27	| desk    	| 0.9997	| 0.9989	| 1.0000
+ shelf    	| ID	| 25	| desk    	| 0.9997	| 0.9989	| 1.0000
 SRC->TAR1:      AUROC: 0.6679, FPR95: 0.8821, AUPR_IN: 0.5718, AUPR_OUT: 0.7420, F1_TH: 0.9822, F1_TH_ACC: 0.5977, J_TH: 0.9947, J_TH_ACC: 0.6251
 SRC->TAR2:      AUROC: 0.6886, FPR95: 0.8890, AUPR_IN: 0.6897, AUPR_OUT: 0.6585, F1_TH: 0.9156, F1_TH_ACC: 0.5847, J_TH: 0.9993, J_TH_ACC: 0.6557
 SRC->TAR1+TAR2: AUROC: 0.6762, FPR95: 0.8849, AUPR_IN: 0.4700, AUPR_OUT: 0.8267, F1_TH: 0.9958, F1_TH_ACC: 0.6249, J_TH: 0.9988, J_TH_ACC: 0.6716
@@ -88,11 +91,11 @@ Computing OOD metrics with MLS normality score...
 AUROC - Src label: 1, Tar label: 0
 Src Test - Clf Acc: 0.8261, Clf Bal Acc: 0.7956
 Src Test - Fail: 137/788
-	A table is predicted as desk - 47 times
-	A desk is predicted as table - 44 times
-	A display is predicted as table - 18 times
-	A table is predicted as bed - 15 times
-	A display is predicted as bed - 5 times
+	A desk is predicted as bed - 47 times
+	A bed is predicted as desk - 44 times
+	A toilet is predicted as desk - 18 times
+	A desk is predicted as display - 15 times
+	A toilet is predicted as display - 5 times
 Test Tar1
 OOD F1 Test - Acc: 0.5981, Th: 2.9130
 OOD J Test - Acc: 0.6158, Th: 3.3782
@@ -103,33 +106,33 @@ Test Tar1+Tar2
 OOD F1 Test - Acc: 0.5550, Th: 3.0231
 Fail src: 188/788
  True class	| Pred	| Times	| Closest class	| Mean score	| Min score	| Max score
- table    	| OOD	| 80	| table    	| 1.7869	| 0.1589	| 2.9588
- table    	| OOD	| 30	| desk    	| 1.2752	| -0.3290	| 2.7442
- desk    	| OOD	| 18	| table    	| 2.0836	| 0.7649	| 3.0009
- display    	| OOD	| 16	| table    	| 1.7419	| -0.1785	| 2.9029
- table    	| OOD	| 14	| bed    	| 1.0117	| -0.5575	| 2.5356
+ desk    	| OOD	| 80	| desk    	| 1.7869	| 0.1589	| 2.9588
+ desk    	| OOD	| 30	| bed    	| 1.2752	| -0.3290	| 2.7442
+ bed    	| OOD	| 18	| desk    	| 2.0836	| 0.7649	| 3.0009
+ toilet    	| OOD	| 16	| desk    	| 1.7419	| -0.1785	| 2.9029
+ desk    	| OOD	| 14	| display    	| 1.0117	| -0.5575	| 2.5356
 Fail tar: 1098/2102
  True class	| Pred	| Times	| Closest class	| Mean score	| Min score	| Max score
- shelf    	| ID	| 221	| bed    	| 6.5408	| 4.3508	| 8.1029
- cabinet    	| ID	| 161	| bed    	| 5.4719	| 3.0442	| 7.6563
- door    	| ID	| 93	| bed    	| 4.7990	| 3.0284	| 7.4328
- cabinet    	| ID	| 84	| table    	| 4.2965	| 3.0327	| 6.6633
- toilet    	| ID	| 62	| desk    	| 4.5124	| 3.0624	| 8.2648
+ door    	| ID	| 221	| display    	| 6.5408	| 4.3508	| 8.1029
+ cabinet    	| ID	| 161	| display    	| 5.4719	| 3.0442	| 7.6563
+ shelf    	| ID	| 93	| display    	| 4.7990	| 3.0284	| 7.4328
+ cabinet    	| ID	| 84	| desk    	| 4.2965	| 3.0327	| 6.6633
+ sofa    	| ID	| 62	| bed    	| 4.5124	| 3.0624	| 8.2648
 OOD J Test - Acc: 0.6232, Th: 3.9766
 Fail src: 290/788
  True class	| Pred	| Times	| Closest class	| Mean score	| Min score	| Max score
- table    	| OOD	| 134	| table    	| 2.4596	| 0.1589	| 3.9161
- table    	| OOD	| 37	| desk    	| 1.6767	| -0.3290	| 3.8505
- desk    	| OOD	| 29	| table    	| 2.5544	| 0.7649	| 3.8242
- desk    	| OOD	| 19	| desk    	| 2.9321	| 0.0722	| 3.9551
- display    	| OOD	| 18	| table    	| 1.9422	| -0.1785	| 3.5902
+ desk    	| OOD	| 134	| desk    	| 2.4596	| 0.1589	| 3.9161
+ desk    	| OOD	| 37	| bed    	| 1.6767	| -0.3290	| 3.8505
+ bed    	| OOD	| 29	| desk    	| 2.5544	| 0.7649	| 3.8242
+ bed    	| OOD	| 19	| bed    	| 2.9321	| 0.0722	| 3.9551
+ toilet    	| OOD	| 18	| desk    	| 1.9422	| -0.1785	| 3.5902
 Fail tar: 799/2102
  True class	| Pred	| Times	| Closest class	| Mean score	| Min score	| Max score
- shelf    	| ID	| 221	| bed    	| 6.5408	| 4.3508	| 8.1029
- cabinet    	| ID	| 140	| bed    	| 5.7606	| 4.0167	| 7.6563
- door    	| ID	| 66	| bed    	| 5.3616	| 4.0454	| 7.4328
- cabinet    	| ID	| 46	| table    	| 4.9732	| 3.9859	| 6.6633
- bin    	| ID	| 42	| display    	| 5.3499	| 4.0496	| 7.1884
+ door    	| ID	| 221	| display    	| 6.5408	| 4.3508	| 8.1029
+ cabinet    	| ID	| 140	| display    	| 5.7606	| 4.0167	| 7.6563
+ shelf    	| ID	| 66	| display    	| 5.3616	| 4.0454	| 7.4328
+ cabinet    	| ID	| 46	| desk    	| 4.9732	| 3.9859	| 6.6633
+ bin    	| ID	| 42	| toilet    	| 5.3499	| 4.0496	| 7.1884
 SRC->TAR1:      AUROC: 0.6553, FPR95: 0.8558, AUPR_IN: 0.5392, AUPR_OUT: 0.7417, F1_TH: 2.9130, F1_TH_ACC: 0.5981, J_TH: 3.3782, J_TH_ACC: 0.6158
 SRC->TAR2:      AUROC: 0.6586, FPR95: 0.8937, AUPR_IN: 0.6583, AUPR_OUT: 0.6309, F1_TH: 0.9058, F1_TH_ACC: 0.5131, J_TH: 4.5069, J_TH_ACC: 0.6294
 SRC->TAR1+TAR2: AUROC: 0.6566, FPR95: 0.8711, AUPR_IN: 0.4334, AUPR_OUT: 0.8198, F1_TH: 3.0231, F1_TH_ACC: 0.5550, J_TH: 3.9766, J_TH_ACC: 0.6232
@@ -141,11 +144,11 @@ Computing OOD metrics with entropy normality score...
 AUROC - Src label: 1, Tar label: 0
 Src Test - Clf Acc: 0.8261, Clf Bal Acc: 0.7956
 Src Test - Fail: 137/788
-	A table is predicted as desk - 47 times
-	A desk is predicted as table - 44 times
-	A display is predicted as table - 18 times
-	A table is predicted as bed - 15 times
-	A display is predicted as bed - 5 times
+	A desk is predicted as bed - 47 times
+	A bed is predicted as desk - 44 times
+	A toilet is predicted as desk - 18 times
+	A desk is predicted as display - 15 times
+	A toilet is predicted as display - 5 times
 Test Tar1
 OOD F1 Test - Acc: 0.5507, Th: 12.9200
 OOD J Test - Acc: 0.6246, Th: 108.8955
@@ -156,33 +159,33 @@ Test Tar1+Tar2
 OOD F1 Test - Acc: 0.6166, Th: 114.4796
 Fail src: 252/788
  True class	| Pred	| Times	| Closest class	| Mean score	| Min score	| Max score
- table    	| OOD	| 103	| table    	| 28.6947	| 4.1212	| 110.4733
- table    	| OOD	| 37	| desk    	| 19.0318	| 3.4721	| 90.4367
- desk    	| OOD	| 26	| table    	| 19.3459	| 4.5103	| 58.1054
- display    	| OOD	| 17	| table    	| 24.3410	| 3.6212	| 72.2713
- desk    	| OOD	| 16	| desk    	| 39.6977	| 3.9772	| 102.4809
+ desk    	| OOD	| 103	| desk    	| 28.6947	| 4.1212	| 110.4733
+ desk    	| OOD	| 37	| bed    	| 19.0318	| 3.4721	| 90.4367
+ bed    	| OOD	| 26	| desk    	| 19.3459	| 4.5103	| 58.1054
+ toilet    	| OOD	| 17	| desk    	| 24.3410	| 3.6212	| 72.2713
+ bed    	| OOD	| 16	| bed    	| 39.6977	| 3.9772	| 102.4809
 Fail tar: 856/2102
  True class	| Pred	| Times	| Closest class	| Mean score	| Min score	| Max score
- shelf    	| ID	| 220	| bed    	| 7562.3379	| 127.3941	| 44267.2227
- cabinet    	| ID	| 142	| bed    	| 4510.8502	| 114.6101	| 41470.3555
- door    	| ID	| 68	| bed    	| 1784.0385	| 119.0886	| 20919.2891
- cabinet    	| ID	| 52	| table    	| 2113.5586	| 117.7026	| 28410.5625
- toilet    	| ID	| 49	| desk    	| 2889.2675	| 114.5420	| 90079.7344
+ door    	| ID	| 220	| display    	| 7562.3379	| 127.3941	| 44267.2227
+ cabinet    	| ID	| 142	| display    	| 4510.8502	| 114.6101	| 41470.3555
+ shelf    	| ID	| 68	| display    	| 1784.0385	| 119.0886	| 20919.2891
+ cabinet    	| ID	| 52	| desk    	| 2113.5586	| 117.7026	| 28410.5625
+ sofa    	| ID	| 49	| bed    	| 2889.2675	| 114.5420	| 90079.7344
 OOD J Test - Acc: 0.6720, Th: 411.6670
 Fail src: 345/788
  True class	| Pred	| Times	| Closest class	| Mean score	| Min score	| Max score
- table    	| OOD	| 153	| table    	| 92.3563	| 4.1212	| 395.6814
- table    	| OOD	| 41	| desk    	| 34.8169	| 3.4721	| 236.6950
- desk    	| OOD	| 33	| table    	| 66.0546	| 4.5103	| 389.4924
- desk    	| OOD	| 29	| desk    	| 108.4896	| 3.9772	| 367.3907
- bed    	| OOD	| 23	| bed    	| 94.2020	| 5.1876	| 299.2801
+ desk    	| OOD	| 153	| desk    	| 92.3563	| 4.1212	| 395.6814
+ desk    	| OOD	| 41	| bed    	| 34.8169	| 3.4721	| 236.6950
+ bed    	| OOD	| 33	| desk    	| 66.0546	| 4.5103	| 389.4924
+ bed    	| OOD	| 29	| bed    	| 108.4896	| 3.9772	| 367.3907
+ display    	| OOD	| 23	| display    	| 94.2020	| 5.1876	| 299.2801
 Fail tar: 603/2102
  True class	| Pred	| Times	| Closest class	| Mean score	| Min score	| Max score
- shelf    	| ID	| 218	| bed    	| 7630.0018	| 647.9147	| 44267.2227
- cabinet    	| ID	| 107	| bed    	| 5912.0170	| 424.9567	| 41470.3555
- door    	| ID	| 45	| bed    	| 2571.6455	| 476.1913	| 20919.2891
- cabinet    	| ID	| 26	| table    	| 4003.6791	| 445.2480	| 28410.5625
- door    	| ID	| 25	| table    	| 6148.4572	| 424.4722	| 29537.3203
+ door    	| ID	| 218	| display    	| 7630.0018	| 647.9147	| 44267.2227
+ cabinet    	| ID	| 107	| display    	| 5912.0170	| 424.9567	| 41470.3555
+ shelf    	| ID	| 45	| display    	| 2571.6455	| 476.1913	| 20919.2891
+ cabinet    	| ID	| 26	| desk    	| 4003.6791	| 445.2480	| 28410.5625
+ shelf    	| ID	| 25	| desk    	| 6148.4572	| 424.4722	| 29537.3203
 SRC->TAR1:      AUROC: 0.6701, FPR95: 0.8462, AUPR_IN: 0.5723, AUPR_OUT: 0.7460, F1_TH: 12.9200, F1_TH_ACC: 0.5507, J_TH: 108.8955, J_TH_ACC: 0.6246
 SRC->TAR2:      AUROC: 0.6885, FPR95: 0.8878, AUPR_IN: 0.6894, AUPR_OUT: 0.6557, F1_TH: 12.6269, F1_TH_ACC: 0.5835, J_TH: 690.4738, J_TH_ACC: 0.6557
 SRC->TAR1+TAR2: AUROC: 0.6775, FPR95: 0.8630, AUPR_IN: 0.4700, AUPR_OUT: 0.8279, F1_TH: 114.4796, F1_TH_ACC: 0.6166, J_TH: 411.6670, J_TH_ACC: 0.6720
@@ -201,11 +204,11 @@ Euclidean distances in a non-normalized space:
 AUROC - Src label: 1, Tar label: 0
 Src Test - Clf Acc: 0.8426, Clf Bal Acc: 0.8148
 Src Test - Fail: 124/788
-	A table is predicted as desk - 55 times
-	A desk is predicted as table - 39 times
-	A display is predicted as table - 18 times
-	A table is predicted as bed - 4 times
-	A display is predicted as bed - 3 times
+	A desk is predicted as bed - 55 times
+	A bed is predicted as desk - 39 times
+	A toilet is predicted as desk - 18 times
+	A desk is predicted as display - 4 times
+	A toilet is predicted as display - 3 times
 Test Tar1
 OOD F1 Test - Acc: 0.6319, Th: 0.2248
 OOD J Test - Acc: 0.6510, Th: 0.2636
@@ -216,33 +219,33 @@ Test Tar1+Tar2
 OOD F1 Test - Acc: 0.6758, Th: 0.3157
 Fail src: 273/788
  True class	| Pred	| Times	| Closest class	| Mean score	| Min score	| Max score
- table    	| OOD	| 111	| table    	| 0.2177	| 0.1277	| 0.3089
- table    	| OOD	| 41	| desk    	| 0.1773	| 0.1030	| 0.2773
- bed    	| OOD	| 26	| bed    	| 0.2102	| 0.1380	| 0.2853
- display    	| OOD	| 24	| display    	| 0.2275	| 0.1076	| 0.3094
- desk    	| OOD	| 22	| desk    	| 0.2260	| 0.1512	| 0.2947
+ desk    	| OOD	| 111	| desk    	| 0.2177	| 0.1277	| 0.3089
+ desk    	| OOD	| 41	| bed    	| 0.1773	| 0.1030	| 0.2773
+ display    	| OOD	| 26	| display    	| 0.2102	| 0.1380	| 0.2853
+ toilet    	| OOD	| 24	| toilet    	| 0.2275	| 0.1076	| 0.3094
+ bed    	| OOD	| 22	| bed    	| 0.2260	| 0.1512	| 0.2947
 Fail tar: 664/2102
  True class	| Pred	| Times	| Closest class	| Mean score	| Min score	| Max score
- shelf    	| ID	| 209	| bed    	| 0.7602	| 0.3160	| 1.6638
- cabinet    	| ID	| 102	| bed    	| 0.6386	| 0.3175	| 1.8745
- cabinet    	| ID	| 62	| table    	| 0.4412	| 0.3166	| 0.8396
- door    	| ID	| 42	| table    	| 0.5204	| 0.3187	| 1.0254
- door    	| ID	| 34	| bed    	| 0.5146	| 0.3278	| 1.2249
+ door    	| ID	| 209	| display    	| 0.7602	| 0.3160	| 1.6638
+ cabinet    	| ID	| 102	| display    	| 0.6386	| 0.3175	| 1.8745
+ cabinet    	| ID	| 62	| desk    	| 0.4412	| 0.3166	| 0.8396
+ shelf    	| ID	| 42	| desk    	| 0.5204	| 0.3187	| 1.0254
+ shelf    	| ID	| 34	| display    	| 0.5146	| 0.3278	| 1.2249
 OOD J Test - Acc: 0.6758, Th: 0.3157
 Fail src: 273/788
  True class	| Pred	| Times	| Closest class	| Mean score	| Min score	| Max score
- table    	| OOD	| 111	| table    	| 0.2177	| 0.1277	| 0.3089
- table    	| OOD	| 41	| desk    	| 0.1773	| 0.1030	| 0.2773
- bed    	| OOD	| 26	| bed    	| 0.2102	| 0.1380	| 0.2853
- display    	| OOD	| 24	| display    	| 0.2275	| 0.1076	| 0.3094
- desk    	| OOD	| 22	| desk    	| 0.2260	| 0.1512	| 0.2947
+ desk    	| OOD	| 111	| desk    	| 0.2177	| 0.1277	| 0.3089
+ desk    	| OOD	| 41	| bed    	| 0.1773	| 0.1030	| 0.2773
+ display    	| OOD	| 26	| display    	| 0.2102	| 0.1380	| 0.2853
+ toilet    	| OOD	| 24	| toilet    	| 0.2275	| 0.1076	| 0.3094
+ bed    	| OOD	| 22	| bed    	| 0.2260	| 0.1512	| 0.2947
 Fail tar: 664/2102
  True class	| Pred	| Times	| Closest class	| Mean score	| Min score	| Max score
- shelf    	| ID	| 209	| bed    	| 0.7602	| 0.3160	| 1.6638
- cabinet    	| ID	| 102	| bed    	| 0.6386	| 0.3175	| 1.8745
- cabinet    	| ID	| 62	| table    	| 0.4412	| 0.3166	| 0.8396
- door    	| ID	| 42	| table    	| 0.5204	| 0.3187	| 1.0254
- door    	| ID	| 34	| bed    	| 0.5146	| 0.3278	| 1.2249
+ door    	| ID	| 209	| display    	| 0.7602	| 0.3160	| 1.6638
+ cabinet    	| ID	| 102	| display    	| 0.6386	| 0.3175	| 1.8745
+ cabinet    	| ID	| 62	| desk    	| 0.4412	| 0.3166	| 0.8396
+ shelf    	| ID	| 42	| desk    	| 0.5204	| 0.3187	| 1.0254
+ shelf    	| ID	| 34	| display    	| 0.5146	| 0.3278	| 1.2249
 SRC->TAR1:      AUROC: 0.6961, FPR95: 0.7817, AUPR_IN: 0.5237, AUPR_OUT: 0.7897, F1_TH: 0.2248, F1_TH_ACC: 0.6319, J_TH: 0.2636, J_TH_ACC: 0.6510
 SRC->TAR2:      AUROC: 0.7243, FPR95: 0.8158, AUPR_IN: 0.6803, AUPR_OUT: 0.7218, F1_TH: 0.1751, F1_TH_ACC: 0.6104, J_TH: 0.3717, J_TH_ACC: 0.6844
 SRC->TAR1+TAR2: AUROC: 0.7074, FPR95: 0.7954, AUPR_IN: 0.4215, AUPR_OUT: 0.8609, F1_TH: 0.3157, F1_TH_ACC: 0.6758, J_TH: 0.3157, J_TH_ACC: 0.6758
@@ -252,9 +255,9 @@ Euclidean distances with prototypes:
 AUROC - Src label: 1, Tar label: 0
 Src Test - Clf Acc: 0.1713, Clf Bal Acc: 0.2500
 Src Test - Fail: 653/788
-	A table is predicted as desk - 390 times
-	A bed is predicted as desk - 181 times
-	A display is predicted as desk - 82 times
+	A desk is predicted as bed - 390 times
+	A display is predicted as bed - 181 times
+	A toilet is predicted as bed - 82 times
 Test Tar1
 OOD F1 Test - Acc: 0.6143, Th: 0.0966
 OOD J Test - Acc: 0.6476, Th: 0.1149
@@ -273,27 +276,27 @@ Test Tar1+Tar2
 OOD F1 Test - Acc: 0.7270, Th: 0.8518
 Fail src: 788/788
  True class	| Pred	| Times	| Closest class	| Mean score	| Min score	| Max score
- table    	| OOD	| 390	| desk    	| 0.1677	| 0.0651	| 0.6285
- bed    	| OOD	| 181	| desk    	| 0.1988	| 0.0796	| 0.5637
- desk    	| OOD	| 135	| desk    	| 0.1665	| 0.0732	| 0.6385
- display    	| OOD	| 82	| desk    	| 0.1235	| 0.0661	| 0.3710
+ desk    	| OOD	| 390	| bed    	| 0.1677	| 0.0651	| 0.6285
+ display    	| OOD	| 181	| bed    	| 0.1988	| 0.0796	| 0.5637
+ bed    	| OOD	| 135	| bed    	| 0.1665	| 0.0732	| 0.6385
+ toilet    	| OOD	| 82	| bed    	| 0.1235	| 0.0661	| 0.3710
 Fail tar: 1/2102
  True class	| Pred	| Times	| Closest class	| Mean score	| Min score	| Max score
- cabinet    	| ID	| 1	| desk    	| 0.8518	| 0.8518	| 0.8518
+ cabinet    	| ID	| 1	| bed    	| 0.8518	| 0.8518	| 0.8518
 OOD J Test - Acc: 0.6540, Th: 0.1149
 Fail src: 269/788
  True class	| Pred	| Times	| Closest class	| Mean score	| Min score	| Max score
- table    	| OOD	| 144	| desk    	| 0.0905	| 0.0651	| 0.1145
- display    	| OOD	| 50	| desk    	| 0.0898	| 0.0661	| 0.1133
- desk    	| OOD	| 48	| desk    	| 0.0933	| 0.0732	| 0.1147
- bed    	| OOD	| 27	| desk    	| 0.0950	| 0.0796	| 0.1111
+ desk    	| OOD	| 144	| bed    	| 0.0905	| 0.0651	| 0.1145
+ toilet    	| OOD	| 50	| bed    	| 0.0898	| 0.0661	| 0.1133
+ bed    	| OOD	| 48	| bed    	| 0.0933	| 0.0732	| 0.1147
+ display    	| OOD	| 27	| bed    	| 0.0950	| 0.0796	| 0.1111
 Fail tar: 731/2102
  True class	| Pred	| Times	| Closest class	| Mean score	| Min score	| Max score
- shelf    	| ID	| 214	| desk    	| 0.1973	| 0.1161	| 0.5596
- cabinet    	| ID	| 179	| desk    	| 0.1778	| 0.1154	| 0.8518
- door    	| ID	| 102	| desk    	| 0.1726	| 0.1161	| 0.4304
- chair    	| ID	| 62	| desk    	| 0.1485	| 0.1160	| 0.2689
- toilet    	| ID	| 38	| desk    	| 0.1503	| 0.1154	| 0.3388
+ door    	| ID	| 214	| bed    	| 0.1973	| 0.1161	| 0.5596
+ cabinet    	| ID	| 179	| bed    	| 0.1778	| 0.1154	| 0.8518
+ shelf    	| ID	| 102	| bed    	| 0.1726	| 0.1161	| 0.4304
+ chair    	| ID	| 62	| bed    	| 0.1485	| 0.1160	| 0.2689
+ sofa    	| ID	| 38	| bed    	| 0.1503	| 0.1154	| 0.3388
 SRC->TAR1:      AUROC: 0.7051, FPR95: 0.7873, AUPR_IN: 0.5908, AUPR_OUT: 0.7893, F1_TH: 0.0966, F1_TH_ACC: 0.6143, J_TH: 0.1149, J_TH_ACC: 0.6476
 SRC->TAR2:      AUROC: 0.7196, FPR95: 0.8253, AUPR_IN: 0.7011, AUPR_OUT: 0.7164, F1_TH: 0.8518, F1_TH_ACC: 0.5174, J_TH: 0.1453, J_TH_ACC: 0.6813
 SRC->TAR1+TAR2: AUROC: 0.7110, FPR95: 0.8026, AUPR_IN: 0.4807, AUPR_OUT: 0.8595, F1_TH: 0.8518, F1_TH_ACC: 0.7270, J_TH: 0.1149, J_TH_ACC: 0.6540
@@ -303,11 +306,11 @@ Cosine similarities on the hypersphere:
 AUROC - Src label: 1, Tar label: 0
 Src Test - Clf Acc: 0.8376, Clf Bal Acc: 0.8158
 Src Test - Fail: 128/788
-	A table is predicted as desk - 51 times
-	A desk is predicted as table - 40 times
-	A display is predicted as table - 16 times
-	A table is predicted as bed - 12 times
-	A display is predicted as bed - 4 times
+	A desk is predicted as bed - 51 times
+	A bed is predicted as desk - 40 times
+	A toilet is predicted as desk - 16 times
+	A desk is predicted as display - 12 times
+	A toilet is predicted as display - 4 times
 Test Tar1
 OOD F1 Test - Acc: 0.5928, Th: 0.9833
 OOD J Test - Acc: 0.6437, Th: 0.9943
@@ -326,30 +329,30 @@ Test Tar1+Tar2
 OOD F1 Test - Acc: 0.7266, Th: 0.9999
 Fail src: 788/788
  True class	| Pred	| Times	| Closest class	| Mean score	| Min score	| Max score
- table    	| OOD	| 325	| table    	| 0.9901	| 0.8979	| 0.9998
- bed    	| OOD	| 180	| bed    	| 0.9962	| 0.9371	| 0.9998
- desk    	| OOD	| 95	| desk    	| 0.9927	| 0.9132	| 0.9997
- display    	| OOD	| 60	| display    	| 0.9866	| 0.8413	| 0.9996
- table    	| OOD	| 51	| desk    	| 0.9554	| 0.7726	| 0.9996
+ desk    	| OOD	| 325	| desk    	| 0.9901	| 0.8979	| 0.9998
+ display    	| OOD	| 180	| display    	| 0.9962	| 0.9371	| 0.9998
+ bed    	| OOD	| 95	| bed    	| 0.9927	| 0.9132	| 0.9997
+ toilet    	| OOD	| 60	| toilet    	| 0.9866	| 0.8413	| 0.9996
+ desk    	| OOD	| 51	| bed    	| 0.9554	| 0.7726	| 0.9996
 Fail tar: 2/2102
  True class	| Pred	| Times	| Closest class	| Mean score	| Min score	| Max score
- box    	| ID	| 1	| desk    	| 0.9999	| 0.9999	| 0.9999
- cabinet    	| ID	| 1	| bed    	| 0.9999	| 0.9999	| 0.9999
+ box    	| ID	| 1	| bed    	| 0.9999	| 0.9999	| 0.9999
+ cabinet    	| ID	| 1	| display    	| 0.9999	| 0.9999	| 0.9999
 OOD J Test - Acc: 0.6737, Th: 0.9954
 Fail src: 297/788
  True class	| Pred	| Times	| Closest class	| Mean score	| Min score	| Max score
- table    	| OOD	| 120	| table    	| 0.9761	| 0.8979	| 0.9953
- table    	| OOD	| 43	| desk    	| 0.9473	| 0.7726	| 0.9953
- bed    	| OOD	| 30	| bed    	| 0.9842	| 0.9371	| 0.9950
- desk    	| OOD	| 27	| desk    	| 0.9776	| 0.9132	| 0.9951
- desk    	| OOD	| 22	| table    	| 0.9669	| 0.9399	| 0.9948
+ desk    	| OOD	| 120	| desk    	| 0.9761	| 0.8979	| 0.9953
+ desk    	| OOD	| 43	| bed    	| 0.9473	| 0.7726	| 0.9953
+ display    	| OOD	| 30	| display    	| 0.9842	| 0.9371	| 0.9950
+ bed    	| OOD	| 27	| bed    	| 0.9776	| 0.9132	| 0.9951
+ bed    	| OOD	| 22	| desk    	| 0.9669	| 0.9399	| 0.9948
 Fail tar: 646/2102
  True class	| Pred	| Times	| Closest class	| Mean score	| Min score	| Max score
- shelf    	| ID	| 197	| bed    	| 0.9987	| 0.9955	| 0.9998
- cabinet    	| ID	| 98	| bed    	| 0.9982	| 0.9954	| 0.9999
- toilet    	| ID	| 58	| desk    	| 0.9975	| 0.9954	| 0.9997
- door    	| ID	| 42	| bed    	| 0.9979	| 0.9958	| 0.9995
- cabinet    	| ID	| 37	| table    	| 0.9976	| 0.9954	| 0.9992
+ door    	| ID	| 197	| display    	| 0.9987	| 0.9955	| 0.9998
+ cabinet    	| ID	| 98	| display    	| 0.9982	| 0.9954	| 0.9999
+ sofa    	| ID	| 58	| bed    	| 0.9975	| 0.9954	| 0.9997
+ shelf    	| ID	| 42	| display    	| 0.9979	| 0.9958	| 0.9995
+ cabinet    	| ID	| 37	| desk    	| 0.9976	| 0.9954	| 0.9992
 SRC->TAR1:      AUROC: 0.6805, FPR95: 0.8327, AUPR_IN: 0.5348, AUPR_OUT: 0.7560, F1_TH: 0.9833, F1_TH_ACC: 0.5928, J_TH: 0.9943, J_TH_ACC: 0.6437
 SRC->TAR2:      AUROC: 0.6994, FPR95: 0.8949, AUPR_IN: 0.6614, AUPR_OUT: 0.6603, F1_TH: 0.9999, F1_TH_ACC: 0.5168, J_TH: 0.9954, J_TH_ACC: 0.6807
 SRC->TAR1+TAR2: AUROC: 0.6881, FPR95: 0.8578, AUPR_IN: 0.4220, AUPR_OUT: 0.8336, F1_TH: 0.9999, F1_TH_ACC: 0.7266, J_TH: 0.9954, J_TH_ACC: 0.6737
@@ -359,9 +362,9 @@ Cosine similarities with prototypes:
 AUROC - Src label: 1, Tar label: 0
 Src Test - Clf Acc: 0.1713, Clf Bal Acc: 0.2500
 Src Test - Fail: 653/788
-	A table is predicted as desk - 390 times
-	A bed is predicted as desk - 181 times
-	A display is predicted as desk - 82 times
+	A desk is predicted as bed - 390 times
+	A display is predicted as bed - 181 times
+	A toilet is predicted as bed - 82 times
 Test Tar1
 OOD F1 Test - Acc: 0.5693, Th: 0.9181
 OOD J Test - Acc: 0.6486, Th: 0.9652
@@ -380,27 +383,27 @@ Test Tar1+Tar2
 OOD F1 Test - Acc: 0.7266, Th: 0.9989
 Fail src: 788/788
  True class	| Pred	| Times	| Closest class	| Mean score	| Min score	| Max score
- table    	| OOD	| 390	| desk    	| 0.9469	| 0.7365	| 0.9987
- bed    	| OOD	| 181	| desk    	| 0.9689	| 0.8302	| 0.9977
- desk    	| OOD	| 135	| desk    	| 0.9467	| 0.7685	| 0.9988
- display    	| OOD	| 82	| desk    	| 0.9357	| 0.7795	| 0.9979
+ desk    	| OOD	| 390	| bed    	| 0.9469	| 0.7365	| 0.9987
+ display    	| OOD	| 181	| bed    	| 0.9689	| 0.8302	| 0.9977
+ bed    	| OOD	| 135	| bed    	| 0.9467	| 0.7685	| 0.9988
+ toilet    	| OOD	| 82	| bed    	| 0.9357	| 0.7795	| 0.9979
 Fail tar: 2/2102
  True class	| Pred	| Times	| Closest class	| Mean score	| Min score	| Max score
- cabinet    	| ID	| 2	| desk    	| 0.9989	| 0.9989	| 0.9989
+ cabinet    	| ID	| 2	| bed    	| 0.9989	| 0.9989	| 0.9989
 OOD J Test - Acc: 0.6789, Th: 0.9652
 Fail src: 328/788
  True class	| Pred	| Times	| Closest class	| Mean score	| Min score	| Max score
- table    	| OOD	| 178	| desk    	| 0.9025	| 0.7365	| 0.9645
- desk    	| OOD	| 60	| desk    	| 0.9012	| 0.7685	| 0.9634
- bed    	| OOD	| 47	| desk    	| 0.9289	| 0.8302	| 0.9649
- display    	| OOD	| 43	| desk    	| 0.8904	| 0.7795	| 0.9628
+ desk    	| OOD	| 178	| bed    	| 0.9025	| 0.7365	| 0.9645
+ bed    	| OOD	| 60	| bed    	| 0.9012	| 0.7685	| 0.9634
+ display    	| OOD	| 47	| bed    	| 0.9289	| 0.8302	| 0.9649
+ toilet    	| OOD	| 43	| bed    	| 0.8904	| 0.7795	| 0.9628
 Fail tar: 600/2102
  True class	| Pred	| Times	| Closest class	| Mean score	| Min score	| Max score
- shelf    	| ID	| 176	| desk    	| 0.9809	| 0.9659	| 0.9987
- cabinet    	| ID	| 117	| desk    	| 0.9816	| 0.9655	| 0.9989
- door    	| ID	| 68	| desk    	| 0.9823	| 0.9669	| 0.9976
- toilet    	| ID	| 62	| desk    	| 0.9814	| 0.9662	| 0.9974
- chair    	| ID	| 50	| desk    	| 0.9763	| 0.9655	| 0.9974
+ door    	| ID	| 176	| bed    	| 0.9809	| 0.9659	| 0.9987
+ cabinet    	| ID	| 117	| bed    	| 0.9816	| 0.9655	| 0.9989
+ shelf    	| ID	| 68	| bed    	| 0.9823	| 0.9669	| 0.9976
+ sofa    	| ID	| 62	| bed    	| 0.9814	| 0.9662	| 0.9974
+ chair    	| ID	| 50	| bed    	| 0.9763	| 0.9655	| 0.9974
 SRC->TAR1:      AUROC: 0.6748, FPR95: 0.8757, AUPR_IN: 0.5627, AUPR_OUT: 0.7428, F1_TH: 0.9181, F1_TH_ACC: 0.5693, J_TH: 0.9652, J_TH_ACC: 0.6486
 SRC->TAR2:      AUROC: 0.7036, FPR95: 0.9185, AUPR_IN: 0.6766, AUPR_OUT: 0.6697, F1_TH: 0.9989, F1_TH_ACC: 0.5168, J_TH: 0.9585, J_TH_ACC: 0.6703
 SRC->TAR1+TAR2: AUROC: 0.6864, FPR95: 0.8930, AUPR_IN: 0.4493, AUPR_OUT: 0.8300, F1_TH: 0.9989, F1_TH_ACC: 0.7266, J_TH: 0.9652, J_TH_ACC: 0.6789
@@ -417,11 +420,11 @@ Computing OOD metrics with ODIN normality score...
 AUROC - Src label: 1, Tar label: 0
 Src Test - Clf Acc: 0.8261, Clf Bal Acc: 0.7956
 Src Test - Fail: 137/788
-	A table is predicted as desk - 47 times
-	A desk is predicted as table - 44 times
-	A display is predicted as table - 18 times
-	A table is predicted as bed - 15 times
-	A display is predicted as bed - 5 times
+	A desk is predicted as bed - 47 times
+	A bed is predicted as desk - 44 times
+	A toilet is predicted as desk - 18 times
+	A desk is predicted as display - 15 times
+	A toilet is predicted as display - 5 times
 Test Tar1
 OOD F1 Test - Acc: 0.6123, Th: 0.2512
 OOD J Test - Acc: 0.6349, Th: 0.2513
@@ -432,33 +435,33 @@ Test Tar1+Tar2
 OOD F1 Test - Acc: 0.6128, Th: 0.2513
 Fail src: 222/788
  True class	| Pred	| Times	| Closest class	| Mean score	| Min score	| Max score
- table    	| OOD	| 94	| table    	| 0.2509	| 0.2502	| 0.2513
- table    	| OOD	| 35	| desk    	| 0.2508	| 0.2502	| 0.2513
- display    	| OOD	| 16	| table    	| 0.2508	| 0.2504	| 0.2513
- desk    	| OOD	| 14	| table    	| 0.2510	| 0.2506	| 0.2513
- table    	| OOD	| 14	| bed    	| 0.2506	| 0.2502	| 0.2512
+ desk    	| OOD	| 94	| desk    	| 0.2509	| 0.2502	| 0.2513
+ desk    	| OOD	| 35	| bed    	| 0.2508	| 0.2502	| 0.2513
+ toilet    	| OOD	| 16	| desk    	| 0.2508	| 0.2504	| 0.2513
+ bed    	| OOD	| 14	| desk    	| 0.2510	| 0.2506	| 0.2513
+ desk    	| OOD	| 14	| display    	| 0.2506	| 0.2502	| 0.2512
 Fail tar: 897/2102
  True class	| Pred	| Times	| Closest class	| Mean score	| Min score	| Max score
- shelf    	| ID	| 221	| bed    	| 0.2521	| 0.2516	| 0.2526
- cabinet    	| ID	| 139	| bed    	| 0.2519	| 0.2513	| 0.2526
- door    	| ID	| 73	| bed    	| 0.2518	| 0.2513	| 0.2526
- cabinet    	| ID	| 66	| table    	| 0.2517	| 0.2513	| 0.2523
- bin    	| ID	| 46	| display    	| 0.2518	| 0.2513	| 0.2526
+ door    	| ID	| 221	| display    	| 0.2521	| 0.2516	| 0.2526
+ cabinet    	| ID	| 139	| display    	| 0.2519	| 0.2513	| 0.2526
+ shelf    	| ID	| 73	| display    	| 0.2518	| 0.2513	| 0.2526
+ cabinet    	| ID	| 66	| desk    	| 0.2517	| 0.2513	| 0.2523
+ bin    	| ID	| 46	| toilet    	| 0.2518	| 0.2513	| 0.2526
 OOD J Test - Acc: 0.6128, Th: 0.2513
 Fail src: 222/788
  True class	| Pred	| Times	| Closest class	| Mean score	| Min score	| Max score
- table    	| OOD	| 94	| table    	| 0.2509	| 0.2502	| 0.2513
- table    	| OOD	| 35	| desk    	| 0.2508	| 0.2502	| 0.2513
- display    	| OOD	| 16	| table    	| 0.2508	| 0.2504	| 0.2513
- desk    	| OOD	| 14	| table    	| 0.2510	| 0.2506	| 0.2513
- table    	| OOD	| 14	| bed    	| 0.2506	| 0.2502	| 0.2512
+ desk    	| OOD	| 94	| desk    	| 0.2509	| 0.2502	| 0.2513
+ desk    	| OOD	| 35	| bed    	| 0.2508	| 0.2502	| 0.2513
+ toilet    	| OOD	| 16	| desk    	| 0.2508	| 0.2504	| 0.2513
+ bed    	| OOD	| 14	| desk    	| 0.2510	| 0.2506	| 0.2513
+ desk    	| OOD	| 14	| display    	| 0.2506	| 0.2502	| 0.2512
 Fail tar: 897/2102
  True class	| Pred	| Times	| Closest class	| Mean score	| Min score	| Max score
- shelf    	| ID	| 221	| bed    	| 0.2521	| 0.2516	| 0.2526
- cabinet    	| ID	| 139	| bed    	| 0.2519	| 0.2513	| 0.2526
- door    	| ID	| 73	| bed    	| 0.2518	| 0.2513	| 0.2526
- cabinet    	| ID	| 66	| table    	| 0.2517	| 0.2513	| 0.2523
- bin    	| ID	| 46	| display    	| 0.2518	| 0.2513	| 0.2526
+ door    	| ID	| 221	| display    	| 0.2521	| 0.2516	| 0.2526
+ cabinet    	| ID	| 139	| display    	| 0.2519	| 0.2513	| 0.2526
+ shelf    	| ID	| 73	| display    	| 0.2518	| 0.2513	| 0.2526
+ cabinet    	| ID	| 66	| desk    	| 0.2517	| 0.2513	| 0.2523
+ bin    	| ID	| 46	| toilet    	| 0.2518	| 0.2513	| 0.2526
 SRC->TAR1:      AUROC: 0.6743, FPR95: 0.8279, AUPR_IN: 0.5666, AUPR_OUT: 0.7568, F1_TH: 0.2512, F1_TH_ACC: 0.6123, J_TH: 0.2513, J_TH_ACC: 0.6349
 SRC->TAR2:      AUROC: 0.6801, FPR95: 0.8796, AUPR_IN: 0.6793, AUPR_OUT: 0.6490, F1_TH: 0.2506, F1_TH_ACC: 0.5211, J_TH: 0.2516, J_TH_ACC: 0.6495
 SRC->TAR1+TAR2: AUROC: 0.6767, FPR95: 0.8487, AUPR_IN: 0.4610, AUPR_OUT: 0.8312, F1_TH: 0.2513, F1_TH_ACC: 0.6128, J_TH: 0.2513, J_TH_ACC: 0.6128
@@ -475,11 +478,11 @@ Computing OOD metrics with Energy normality score...
 AUROC - Src label: 1, Tar label: 0
 Src Test - Clf Acc: 0.8261, Clf Bal Acc: 0.7956
 Src Test - Fail: 137/788
-	A table is predicted as desk - 47 times
-	A desk is predicted as table - 44 times
-	A display is predicted as table - 18 times
-	A table is predicted as bed - 15 times
-	A display is predicted as bed - 5 times
+	A desk is predicted as bed - 47 times
+	A bed is predicted as desk - 44 times
+	A toilet is predicted as desk - 18 times
+	A desk is predicted as display - 15 times
+	A toilet is predicted as display - 5 times
 Test Tar1
 OOD F1 Test - Acc: 0.5727, Th: 2.4447
 OOD J Test - Acc: 0.6207, Th: 3.4530
@@ -490,33 +493,33 @@ Test Tar1+Tar2
 OOD F1 Test - Acc: 0.5848, Th: 3.3487
 Fail src: 211/788
  True class	| Pred	| Times	| Closest class	| Mean score	| Min score	| Max score
- table    	| OOD	| 89	| table    	| 2.1827	| 0.6121	| 3.3383
- table    	| OOD	| 32	| desk    	| 1.7873	| 0.5342	| 3.1530
- desk    	| OOD	| 23	| table    	| 2.4814	| 0.9615	| 3.3018
- display    	| OOD	| 16	| table    	| 1.8920	| 0.7045	| 3.0699
- table    	| OOD	| 13	| bed    	| 1.3513	| 0.3027	| 2.8030
+ desk    	| OOD	| 89	| desk    	| 2.1827	| 0.6121	| 3.3383
+ desk    	| OOD	| 32	| bed    	| 1.7873	| 0.5342	| 3.1530
+ bed    	| OOD	| 23	| desk    	| 2.4814	| 0.9615	| 3.3018
+ toilet    	| OOD	| 16	| desk    	| 1.8920	| 0.7045	| 3.0699
+ desk    	| OOD	| 13	| display    	| 1.3513	| 0.3027	| 2.8030
 Fail tar: 989/2102
  True class	| Pred	| Times	| Closest class	| Mean score	| Min score	| Max score
- shelf    	| ID	| 221	| bed    	| 6.5757	| 4.2391	| 7.8728
- cabinet    	| ID	| 154	| bed    	| 5.5835	| 3.3761	| 7.9331
- door    	| ID	| 81	| bed    	| 5.0474	| 3.3843	| 7.2096
- cabinet    	| ID	| 69	| table    	| 4.5604	| 3.4179	| 6.2103
- bin    	| ID	| 51	| display    	| 5.0250	| 3.4165	| 7.4720
+ door    	| ID	| 221	| display    	| 6.5757	| 4.2391	| 7.8728
+ cabinet    	| ID	| 154	| display    	| 5.5835	| 3.3761	| 7.9331
+ shelf    	| ID	| 81	| display    	| 5.0474	| 3.3843	| 7.2096
+ cabinet    	| ID	| 69	| desk    	| 4.5604	| 3.4179	| 6.2103
+ bin    	| ID	| 51	| toilet    	| 5.0250	| 3.4165	| 7.4720
 OOD J Test - Acc: 0.6374, Th: 4.1136
 Fail src: 297/788
  True class	| Pred	| Times	| Closest class	| Mean score	| Min score	| Max score
- table    	| OOD	| 136	| table    	| 2.7179	| 0.6121	| 4.0725
- table    	| OOD	| 38	| desk    	| 2.0778	| 0.5342	| 3.9013
- desk    	| OOD	| 29	| table    	| 2.7420	| 0.9615	| 3.9147
- desk    	| OOD	| 21	| desk    	| 3.1419	| 1.1296	| 3.8001
- display    	| OOD	| 18	| table    	| 2.0714	| 0.7045	| 3.6432
+ desk    	| OOD	| 136	| desk    	| 2.7179	| 0.6121	| 4.0725
+ desk    	| OOD	| 38	| bed    	| 2.0778	| 0.5342	| 3.9013
+ bed    	| OOD	| 29	| desk    	| 2.7420	| 0.9615	| 3.9147
+ bed    	| OOD	| 21	| bed    	| 3.1419	| 1.1296	| 3.8001
+ toilet    	| OOD	| 18	| desk    	| 2.0714	| 0.7045	| 3.6432
 Fail tar: 751/2102
  True class	| Pred	| Times	| Closest class	| Mean score	| Min score	| Max score
- shelf    	| ID	| 221	| bed    	| 6.5757	| 4.2391	| 7.8728
- cabinet    	| ID	| 131	| bed    	| 5.8986	| 4.1988	| 7.9331
- door    	| ID	| 63	| bed    	| 5.3879	| 4.1432	| 7.2096
- cabinet    	| ID	| 42	| table    	| 5.0662	| 4.1841	| 6.2103
- bin    	| ID	| 39	| display    	| 5.3899	| 4.1628	| 7.4720
+ door    	| ID	| 221	| display    	| 6.5757	| 4.2391	| 7.8728
+ cabinet    	| ID	| 131	| display    	| 5.8986	| 4.1988	| 7.9331
+ shelf    	| ID	| 63	| display    	| 5.3879	| 4.1432	| 7.2096
+ cabinet    	| ID	| 42	| desk    	| 5.0662	| 4.1841	| 6.2103
+ bin    	| ID	| 39	| toilet    	| 5.3899	| 4.1628	| 7.4720
 SRC->TAR1:      AUROC: 0.6594, FPR95: 0.8390, AUPR_IN: 0.5374, AUPR_OUT: 0.7543, F1_TH: 2.4447, F1_TH_ACC: 0.5727, J_TH: 3.4530, J_TH_ACC: 0.6207
 SRC->TAR2:      AUROC: 0.6615, FPR95: 0.8914, AUPR_IN: 0.6546, AUPR_OUT: 0.6400, F1_TH: 1.4140, F1_TH_ACC: 0.5193, J_TH: 4.1136, J_TH_ACC: 0.6324
 SRC->TAR1+TAR2: AUROC: 0.6602, FPR95: 0.8601, AUPR_IN: 0.4287, AUPR_OUT: 0.8277, F1_TH: 3.3487, F1_TH_ACC: 0.5848, J_TH: 4.1136, J_TH_ACC: 0.6374
@@ -533,11 +536,11 @@ Computing OOD metrics with GradNorm normality score...
 AUROC - Src label: 1, Tar label: 0
 Src Test - Clf Acc: 0.8261, Clf Bal Acc: 0.7956
 Src Test - Fail: 137/788
-	A table is predicted as desk - 47 times
-	A desk is predicted as table - 44 times
-	A display is predicted as table - 18 times
-	A table is predicted as bed - 15 times
-	A display is predicted as bed - 5 times
+	A desk is predicted as bed - 47 times
+	A bed is predicted as desk - 44 times
+	A toilet is predicted as desk - 18 times
+	A desk is predicted as display - 15 times
+	A toilet is predicted as display - 5 times
 Test Tar1
 OOD F1 Test - Acc: 0.6099, Th: 258.3991
 OOD J Test - Acc: 0.6280, Th: 275.3743
@@ -548,33 +551,33 @@ Test Tar1+Tar2
 OOD F1 Test - Acc: 0.5869, Th: 277.0748
 Fail src: 206/788
  True class	| Pred	| Times	| Closest class	| Mean score	| Min score	| Max score
- table    	| OOD	| 82	| table    	| 212.9421	| 54.0987	| 275.3743
- table    	| OOD	| 34	| desk    	| 170.0812	| 46.2296	| 273.4537
- desk    	| OOD	| 15	| desk    	| 228.5034	| 92.2407	| 275.8204
- desk    	| OOD	| 15	| table    	| 217.1084	| 101.4547	| 265.3642
- display    	| OOD	| 14	| table    	| 191.6960	| 76.7611	| 255.2323
+ desk    	| OOD	| 82	| desk    	| 212.9421	| 54.0987	| 275.3743
+ desk    	| OOD	| 34	| bed    	| 170.0812	| 46.2296	| 273.4537
+ bed    	| OOD	| 15	| bed    	| 228.5034	| 92.2407	| 275.8204
+ bed    	| OOD	| 15	| desk    	| 217.1084	| 101.4547	| 265.3642
+ toilet    	| OOD	| 14	| desk    	| 191.6960	| 76.7611	| 255.2323
 Fail tar: 988/2102
  True class	| Pred	| Times	| Closest class	| Mean score	| Min score	| Max score
- shelf    	| ID	| 221	| bed    	| 385.6998	| 301.5054	| 471.1194
- cabinet    	| ID	| 150	| bed    	| 352.4142	| 277.1098	| 462.4274
- cabinet    	| ID	| 96	| table    	| 358.1942	| 277.5930	| 493.4152
- door    	| ID	| 73	| bed    	| 335.7239	| 277.1254	| 431.5775
- door    	| ID	| 64	| table    	| 365.1791	| 279.9366	| 483.8665
+ door    	| ID	| 221	| display    	| 385.6998	| 301.5054	| 471.1194
+ cabinet    	| ID	| 150	| display    	| 352.4142	| 277.1098	| 462.4274
+ cabinet    	| ID	| 96	| desk    	| 358.1942	| 277.5930	| 493.4152
+ shelf    	| ID	| 73	| display    	| 335.7239	| 277.1254	| 431.5775
+ shelf    	| ID	| 64	| desk    	| 365.1791	| 279.9366	| 483.8665
 OOD J Test - Acc: 0.5869, Th: 277.0748
 Fail src: 206/788
  True class	| Pred	| Times	| Closest class	| Mean score	| Min score	| Max score
- table    	| OOD	| 82	| table    	| 212.9421	| 54.0987	| 275.3743
- table    	| OOD	| 34	| desk    	| 170.0812	| 46.2296	| 273.4537
- desk    	| OOD	| 15	| desk    	| 228.5034	| 92.2407	| 275.8204
- desk    	| OOD	| 15	| table    	| 217.1084	| 101.4547	| 265.3642
- display    	| OOD	| 14	| table    	| 191.6960	| 76.7611	| 255.2323
+ desk    	| OOD	| 82	| desk    	| 212.9421	| 54.0987	| 275.3743
+ desk    	| OOD	| 34	| bed    	| 170.0812	| 46.2296	| 273.4537
+ bed    	| OOD	| 15	| bed    	| 228.5034	| 92.2407	| 275.8204
+ bed    	| OOD	| 15	| desk    	| 217.1084	| 101.4547	| 265.3642
+ toilet    	| OOD	| 14	| desk    	| 191.6960	| 76.7611	| 255.2323
 Fail tar: 988/2102
  True class	| Pred	| Times	| Closest class	| Mean score	| Min score	| Max score
- shelf    	| ID	| 221	| bed    	| 385.6998	| 301.5054	| 471.1194
- cabinet    	| ID	| 150	| bed    	| 352.4142	| 277.1098	| 462.4274
- cabinet    	| ID	| 96	| table    	| 358.1942	| 277.5930	| 493.4152
- door    	| ID	| 73	| bed    	| 335.7239	| 277.1254	| 431.5775
- door    	| ID	| 64	| table    	| 365.1791	| 279.9366	| 483.8665
+ door    	| ID	| 221	| display    	| 385.6998	| 301.5054	| 471.1194
+ cabinet    	| ID	| 150	| display    	| 352.4142	| 277.1098	| 462.4274
+ cabinet    	| ID	| 96	| desk    	| 358.1942	| 277.5930	| 493.4152
+ shelf    	| ID	| 73	| display    	| 335.7239	| 277.1254	| 431.5775
+ shelf    	| ID	| 64	| desk    	| 365.1791	| 279.9366	| 483.8665
 SRC->TAR1:      AUROC: 0.6833, FPR95: 0.8574, AUPR_IN: 0.5769, AUPR_OUT: 0.7603, F1_TH: 258.3991, F1_TH_ACC: 0.6099, J_TH: 275.3743, J_TH_ACC: 0.6280
 SRC->TAR2:      AUROC: 0.6684, FPR95: 0.8985, AUPR_IN: 0.6494, AUPR_OUT: 0.6496, F1_TH: 197.6070, F1_TH_ACC: 0.5523, J_TH: 339.9331, J_TH_ACC: 0.6385
 SRC->TAR1+TAR2: AUROC: 0.6773, FPR95: 0.8739, AUPR_IN: 0.4482, AUPR_OUT: 0.8325, F1_TH: 277.0748, F1_TH_ACC: 0.5869, J_TH: 277.0748, J_TH_ACC: 0.5869
@@ -598,11 +601,11 @@ React - using SR2 test to compute threshold
 AUROC - Src label: 1, Tar label: 0
 Src Test - Clf Acc: 0.8261, Clf Bal Acc: 0.7956
 Src Test - Fail: 137/788
-	A table is predicted as desk - 47 times
-	A desk is predicted as table - 44 times
-	A display is predicted as table - 18 times
-	A table is predicted as bed - 15 times
-	A display is predicted as bed - 5 times
+	A desk is predicted as bed - 47 times
+	A bed is predicted as desk - 44 times
+	A toilet is predicted as desk - 18 times
+	A desk is predicted as display - 15 times
+	A toilet is predicted as display - 5 times
 Test Tar1
 OOD F1 Test - Acc: 0.5825, Th: 2.6544
 OOD J Test - Acc: 0.6216, Th: 3.4917
@@ -613,33 +616,33 @@ Test Tar1+Tar2
 OOD F1 Test - Acc: 0.6394, Th: 4.0788
 Fail src: 293/788
  True class	| Pred	| Times	| Closest class	| Mean score	| Min score	| Max score
- table    	| OOD	| 135	| table    	| 2.6056	| 0.6512	| 4.0315
- table    	| OOD	| 40	| desk    	| 2.0955	| 0.3645	| 4.0310
- desk    	| OOD	| 30	| table    	| 2.6942	| 1.0594	| 3.9626
- desk    	| OOD	| 20	| desk    	| 2.8991	| 0.8893	| 3.9004
- display    	| OOD	| 17	| table    	| 2.0130	| 0.4021	| 3.6658
+ desk    	| OOD	| 135	| desk    	| 2.6056	| 0.6512	| 4.0315
+ desk    	| OOD	| 40	| bed    	| 2.0955	| 0.3645	| 4.0310
+ bed    	| OOD	| 30	| desk    	| 2.6942	| 1.0594	| 3.9626
+ bed    	| OOD	| 20	| bed    	| 2.8991	| 0.8893	| 3.9004
+ toilet    	| OOD	| 17	| desk    	| 2.0130	| 0.4021	| 3.6658
 Fail tar: 749/2102
  True class	| Pred	| Times	| Closest class	| Mean score	| Min score	| Max score
- shelf    	| ID	| 220	| bed    	| 5.8676	| 4.2382	| 6.5011
- cabinet    	| ID	| 134	| bed    	| 5.4053	| 4.1060	| 6.6018
- door    	| ID	| 63	| bed    	| 5.2309	| 4.0950	| 6.2896
- cabinet    	| ID	| 37	| table    	| 4.9065	| 4.1495	| 6.1742
- bin    	| ID	| 33	| display    	| 4.9791	| 4.2061	| 6.0318
+ door    	| ID	| 220	| display    	| 5.8676	| 4.2382	| 6.5011
+ cabinet    	| ID	| 134	| display    	| 5.4053	| 4.1060	| 6.6018
+ shelf    	| ID	| 63	| display    	| 5.2309	| 4.0950	| 6.2896
+ cabinet    	| ID	| 37	| desk    	| 4.9065	| 4.1495	| 6.1742
+ bin    	| ID	| 33	| toilet    	| 4.9791	| 4.2061	| 6.0318
 OOD J Test - Acc: 0.6394, Th: 4.0788
 Fail src: 293/788
  True class	| Pred	| Times	| Closest class	| Mean score	| Min score	| Max score
- table    	| OOD	| 135	| table    	| 2.6056	| 0.6512	| 4.0315
- table    	| OOD	| 40	| desk    	| 2.0955	| 0.3645	| 4.0310
- desk    	| OOD	| 30	| table    	| 2.6942	| 1.0594	| 3.9626
- desk    	| OOD	| 20	| desk    	| 2.8991	| 0.8893	| 3.9004
- display    	| OOD	| 17	| table    	| 2.0130	| 0.4021	| 3.6658
+ desk    	| OOD	| 135	| desk    	| 2.6056	| 0.6512	| 4.0315
+ desk    	| OOD	| 40	| bed    	| 2.0955	| 0.3645	| 4.0310
+ bed    	| OOD	| 30	| desk    	| 2.6942	| 1.0594	| 3.9626
+ bed    	| OOD	| 20	| bed    	| 2.8991	| 0.8893	| 3.9004
+ toilet    	| OOD	| 17	| desk    	| 2.0130	| 0.4021	| 3.6658
 Fail tar: 749/2102
  True class	| Pred	| Times	| Closest class	| Mean score	| Min score	| Max score
- shelf    	| ID	| 220	| bed    	| 5.8676	| 4.2382	| 6.5011
- cabinet    	| ID	| 134	| bed    	| 5.4053	| 4.1060	| 6.6018
- door    	| ID	| 63	| bed    	| 5.2309	| 4.0950	| 6.2896
- cabinet    	| ID	| 37	| table    	| 4.9065	| 4.1495	| 6.1742
- bin    	| ID	| 33	| display    	| 4.9791	| 4.2061	| 6.0318
+ door    	| ID	| 220	| display    	| 5.8676	| 4.2382	| 6.5011
+ cabinet    	| ID	| 134	| display    	| 5.4053	| 4.1060	| 6.6018
+ shelf    	| ID	| 63	| display    	| 5.2309	| 4.0950	| 6.2896
+ cabinet    	| ID	| 37	| desk    	| 4.9065	| 4.1495	| 6.1742
+ bin    	| ID	| 33	| toilet    	| 4.9791	| 4.2061	| 6.0318
 SRC->TAR1:      AUROC: 0.6564, FPR95: 0.8478, AUPR_IN: 0.5434, AUPR_OUT: 0.7463, F1_TH: 2.6544, F1_TH_ACC: 0.5825, J_TH: 3.4917, J_TH_ACC: 0.6216
 SRC->TAR2:      AUROC: 0.6622, FPR95: 0.8926, AUPR_IN: 0.6614, AUPR_OUT: 0.6374, F1_TH: 1.2064, F1_TH_ACC: 0.5113, J_TH: 4.0788, J_TH_ACC: 0.6404
 SRC->TAR1+TAR2: AUROC: 0.6587, FPR95: 0.8658, AUPR_IN: 0.4396, AUPR_OUT: 0.8234, F1_TH: 4.0788, F1_TH_ACC: 0.6394, J_TH: 4.0788, J_TH_ACC: 0.6394

@@ -5,6 +5,8 @@ Cannot load PointMLP: No module named 'pointnet2_ops'
 Cannot load PointNet2: No module named 'pointnet2_ops'
 /content/SemNov_AML_DAAI_23-24/utils/rsmix_provider.py:157: SyntaxWarning: "is" with a literal. Did you mean "=="?
   if len(label_batch.shape) is 1:
+DGL backend not selected or invalid.  Assuming PyTorch for now.
+Setting the default backend to "pytorch". You can change it in the ~/.dgl/config.json file or export the DGLBACKEND environment variable.  Valid options are: pytorch, mxnet, tensorflow (all lowercase)
 out-of-distribution eval - Modelnet -> SONN ..
 Arguments: Namespace(local_rank=None, use_sync_bn=False, use_amp=False, script_mode='eval', config='cfgs/pn2-msg.yaml', seed=1, epochs=250, batch_size=1, num_workers=4, resume=None, apply_fix_cellphone=True, data_root='/content/3D_OS_release_data', checkpoints_dir='outputs', exp_name='PN2_CE_SR1', eval_step=1, save_step=10, ckpt_path='/content/SemNov_AML_DAAI_23-24/trained_models/PN2_CE_SR1.pth', src='SR1', sonn_split='main_split', sonn_h5_name='objectdataset.h5', augm_set='rw', grad_norm_clip=-1, num_points=1024, num_points_test=2048, wandb_name=None, wandb_group='md-2-sonn-augmCorr', wandb_proj='benchmark-3d-ood-cla', wandb_api=None, loss='CE', cs=False, cs_gan_lr=0.0002, cs_beta=0.1, save_feats=None, open_shape=None, corruption=None, tar1='none', tar2='none')
 ModelNet40_OOD - Reading data from h5py file: /content/3D_OS_release_data/modelnet40_normal_resampled/ood_sets_cache/SR1_train.h5
@@ -27,17 +29,20 @@ Load weights:  <All keys matched successfully>
 
 
 Src logits: torch.Size([1255, 5]), tar1 logits: torch.Size([788, 5]), tar2 logits: torch.Size([847, 5])
+Src: ['chair', 'shelf', 'door', 'sink', 'sofa']
+Tar1: ['bed', 'toilet', 'desk', 'display', 'table']
+Tar2: ['bag', 'bin', 'box', 'cabinet', 'pillow']
 
 ################################################################################
 Computing OOD metrics with MSP normality score...
 AUROC - Src label: 1, Tar label: 0
 Src Test - Clf Acc: 0.8088, Clf Bal Acc: 0.7679
 Src Test - Fail: 240/1255
-	A toilet is predicted as chair - 118 times
-	A sofa is predicted as toilet - 33 times
-	A sofa is predicted as chair - 17 times
-	A toilet is predicted as sofa - 17 times
-	A door is predicted as toilet - 12 times
+	A sofa is predicted as chair - 118 times
+	A sink is predicted as sofa - 33 times
+	A sink is predicted as chair - 17 times
+	A sofa is predicted as sink - 17 times
+	A shelf is predicted as sofa - 12 times
 Test Tar1
 OOD F1 Test - Acc: 0.7523, Th: 0.9730
 OOD J Test - Acc: 0.7572, Th: 0.9969
@@ -48,33 +53,33 @@ Test Tar1+Tar2
 OOD F1 Test - Acc: 0.7657, Th: 0.9926
 Fail src: 316/1255
  True class	| Pred	| Times	| Closest class	| Mean score	| Min score	| Max score
- toilet    	| OOD	| 59	| toilet    	| 0.8814	| 0.5181	| 0.9923
- door    	| OOD	| 50	| door    	| 0.8777	| 0.4387	| 0.9923
- sofa    	| OOD	| 43	| sofa    	| 0.8775	| 0.4082	| 0.9919
- toilet    	| OOD	| 43	| chair    	| 0.8464	| 0.4410	| 0.9915
- sofa    	| OOD	| 21	| toilet    	| 0.8148	| 0.5320	| 0.9837
+ sofa    	| OOD	| 59	| sofa    	| 0.8814	| 0.5181	| 0.9923
+ shelf    	| OOD	| 50	| shelf    	| 0.8777	| 0.4387	| 0.9923
+ sink    	| OOD	| 43	| sink    	| 0.8775	| 0.4082	| 0.9919
+ sofa    	| OOD	| 43	| chair    	| 0.8464	| 0.4410	| 0.9915
+ sink    	| OOD	| 21	| sofa    	| 0.8148	| 0.5320	| 0.9837
 Fail tar: 361/1635
  True class	| Pred	| Times	| Closest class	| Mean score	| Min score	| Max score
- table    	| ID	| 41	| chair    	| 0.9979	| 0.9932	| 1.0000
- cabinet    	| ID	| 39	| shelf    	| 0.9991	| 0.9948	| 1.0000
- bed    	| ID	| 35	| door    	| 0.9973	| 0.9929	| 0.9999
- bin    	| ID	| 31	| sofa    	| 0.9973	| 0.9932	| 0.9999
- display    	| ID	| 27	| chair    	| 0.9980	| 0.9947	| 1.0000
+ desk    	| ID	| 41	| chair    	| 0.9979	| 0.9932	| 1.0000
+ cabinet    	| ID	| 39	| door    	| 0.9991	| 0.9948	| 1.0000
+ display    	| ID	| 35	| shelf    	| 0.9973	| 0.9929	| 0.9999
+ bin    	| ID	| 31	| sink    	| 0.9973	| 0.9932	| 0.9999
+ toilet    	| ID	| 27	| chair    	| 0.9980	| 0.9947	| 1.0000
 OOD J Test - Acc: 0.7824, Th: 0.9970
 Fail src: 391/1255
  True class	| Pred	| Times	| Closest class	| Mean score	| Min score	| Max score
- toilet    	| OOD	| 75	| toilet    	| 0.9056	| 0.5181	| 0.9968
- door    	| OOD	| 69	| door    	| 0.9099	| 0.4387	| 0.9969
- toilet    	| OOD	| 50	| chair    	| 0.8672	| 0.4410	| 0.9968
- sofa    	| OOD	| 48	| sofa    	| 0.8898	| 0.4082	| 0.9969
+ sofa    	| OOD	| 75	| sofa    	| 0.9056	| 0.5181	| 0.9968
+ shelf    	| OOD	| 69	| shelf    	| 0.9099	| 0.4387	| 0.9969
+ sofa    	| OOD	| 50	| chair    	| 0.8672	| 0.4410	| 0.9968
+ sink    	| OOD	| 48	| sink    	| 0.8898	| 0.4082	| 0.9969
  chair    	| OOD	| 36	| chair    	| 0.9371	| 0.5380	| 0.9969
 Fail tar: 238/1635
  True class	| Pred	| Times	| Closest class	| Mean score	| Min score	| Max score
- cabinet    	| ID	| 34	| shelf    	| 0.9996	| 0.9982	| 1.0000
- table    	| ID	| 27	| chair    	| 0.9991	| 0.9976	| 1.0000
- bed    	| ID	| 19	| door    	| 0.9988	| 0.9978	| 0.9999
- bin    	| ID	| 19	| sofa    	| 0.9987	| 0.9971	| 0.9999
- display    	| ID	| 18	| chair    	| 0.9991	| 0.9973	| 1.0000
+ cabinet    	| ID	| 34	| door    	| 0.9996	| 0.9982	| 1.0000
+ desk    	| ID	| 27	| chair    	| 0.9991	| 0.9976	| 1.0000
+ display    	| ID	| 19	| shelf    	| 0.9988	| 0.9978	| 0.9999
+ bin    	| ID	| 19	| sink    	| 0.9987	| 0.9971	| 0.9999
+ toilet    	| ID	| 18	| chair    	| 0.9991	| 0.9973	| 1.0000
 SRC->TAR1:      AUROC: 0.8346, FPR95: 0.7855, AUPR_IN: 0.9045, AUPR_OUT: 0.6942, F1_TH: 0.9730, F1_TH_ACC: 0.7523, J_TH: 0.9969, J_TH_ACC: 0.7572
 SRC->TAR2:      AUROC: 0.8218, FPR95: 0.8087, AUPR_IN: 0.8858, AUPR_OUT: 0.6981, F1_TH: 0.9708, F1_TH_ACC: 0.7455, J_TH: 0.9970, J_TH_ACC: 0.7512
 SRC->TAR1+TAR2: AUROC: 0.8280, FPR95: 0.7976, AUPR_IN: 0.8273, AUPR_OUT: 0.8189, F1_TH: 0.9926, F1_TH_ACC: 0.7657, J_TH: 0.9970, J_TH_ACC: 0.7824
@@ -86,11 +91,11 @@ Computing OOD metrics with MLS normality score...
 AUROC - Src label: 1, Tar label: 0
 Src Test - Clf Acc: 0.8088, Clf Bal Acc: 0.7679
 Src Test - Fail: 240/1255
-	A toilet is predicted as chair - 118 times
-	A sofa is predicted as toilet - 33 times
-	A sofa is predicted as chair - 17 times
-	A toilet is predicted as sofa - 17 times
-	A door is predicted as toilet - 12 times
+	A sofa is predicted as chair - 118 times
+	A sink is predicted as sofa - 33 times
+	A sink is predicted as chair - 17 times
+	A sofa is predicted as sink - 17 times
+	A shelf is predicted as sofa - 12 times
 Test Tar1
 OOD F1 Test - Acc: 0.7739, Th: 3.5184
 OOD J Test - Acc: 0.7675, Th: 4.5003
@@ -101,33 +106,33 @@ Test Tar1+Tar2
 OOD F1 Test - Acc: 0.7931, Th: 4.3004
 Fail src: 344/1255
  True class	| Pred	| Times	| Closest class	| Mean score	| Min score	| Max score
- door    	| OOD	| 81	| door    	| 2.9954	| 0.2377	| 4.2484
- toilet    	| OOD	| 58	| toilet    	| 3.0268	| 0.5446	| 4.2039
- sofa    	| OOD	| 46	| sofa    	| 2.6251	| 0.4826	| 4.0969
- toilet    	| OOD	| 34	| chair    	| 2.6524	| 0.6178	| 4.0900
- sofa    	| OOD	| 22	| toilet    	| 2.6459	| 0.7016	| 4.1231
+ shelf    	| OOD	| 81	| shelf    	| 2.9954	| 0.2377	| 4.2484
+ sofa    	| OOD	| 58	| sofa    	| 3.0268	| 0.5446	| 4.2039
+ sink    	| OOD	| 46	| sink    	| 2.6251	| 0.4826	| 4.0969
+ sofa    	| OOD	| 34	| chair    	| 2.6524	| 0.6178	| 4.0900
+ sink    	| OOD	| 22	| sofa    	| 2.6459	| 0.7016	| 4.1231
 Fail tar: 254/1635
  True class	| Pred	| Times	| Closest class	| Mean score	| Min score	| Max score
- cabinet    	| ID	| 35	| shelf    	| 6.2750	| 4.7474	| 8.3745
- table    	| ID	| 35	| chair    	| 5.4413	| 4.3501	| 8.4033
- display    	| ID	| 25	| chair    	| 5.5528	| 4.3188	| 7.5376
- bin    	| ID	| 17	| sofa    	| 4.9646	| 4.3942	| 6.1326
- bed    	| ID	| 16	| door    	| 4.7912	| 4.3603	| 5.9459
+ cabinet    	| ID	| 35	| door    	| 6.2750	| 4.7474	| 8.3745
+ desk    	| ID	| 35	| chair    	| 5.4413	| 4.3501	| 8.4033
+ toilet    	| ID	| 25	| chair    	| 5.5528	| 4.3188	| 7.5376
+ bin    	| ID	| 17	| sink    	| 4.9646	| 4.3942	| 6.1326
+ display    	| ID	| 16	| shelf    	| 4.7912	| 4.3603	| 5.9459
 OOD J Test - Acc: 0.7931, Th: 4.3004
 Fail src: 344/1255
  True class	| Pred	| Times	| Closest class	| Mean score	| Min score	| Max score
- door    	| OOD	| 81	| door    	| 2.9954	| 0.2377	| 4.2484
- toilet    	| OOD	| 58	| toilet    	| 3.0268	| 0.5446	| 4.2039
- sofa    	| OOD	| 46	| sofa    	| 2.6251	| 0.4826	| 4.0969
- toilet    	| OOD	| 34	| chair    	| 2.6524	| 0.6178	| 4.0900
- sofa    	| OOD	| 22	| toilet    	| 2.6459	| 0.7016	| 4.1231
+ shelf    	| OOD	| 81	| shelf    	| 2.9954	| 0.2377	| 4.2484
+ sofa    	| OOD	| 58	| sofa    	| 3.0268	| 0.5446	| 4.2039
+ sink    	| OOD	| 46	| sink    	| 2.6251	| 0.4826	| 4.0969
+ sofa    	| OOD	| 34	| chair    	| 2.6524	| 0.6178	| 4.0900
+ sink    	| OOD	| 22	| sofa    	| 2.6459	| 0.7016	| 4.1231
 Fail tar: 254/1635
  True class	| Pred	| Times	| Closest class	| Mean score	| Min score	| Max score
- cabinet    	| ID	| 35	| shelf    	| 6.2750	| 4.7474	| 8.3745
- table    	| ID	| 35	| chair    	| 5.4413	| 4.3501	| 8.4033
- display    	| ID	| 25	| chair    	| 5.5528	| 4.3188	| 7.5376
- bin    	| ID	| 17	| sofa    	| 4.9646	| 4.3942	| 6.1326
- bed    	| ID	| 16	| door    	| 4.7912	| 4.3603	| 5.9459
+ cabinet    	| ID	| 35	| door    	| 6.2750	| 4.7474	| 8.3745
+ desk    	| ID	| 35	| chair    	| 5.4413	| 4.3501	| 8.4033
+ toilet    	| ID	| 25	| chair    	| 5.5528	| 4.3188	| 7.5376
+ bin    	| ID	| 17	| sink    	| 4.9646	| 4.3942	| 6.1326
+ display    	| ID	| 16	| shelf    	| 4.7912	| 4.3603	| 5.9459
 SRC->TAR1:      AUROC: 0.8476, FPR95: 0.7411, AUPR_IN: 0.9109, AUPR_OUT: 0.7186, F1_TH: 3.5184, F1_TH_ACC: 0.7739, J_TH: 4.5003, J_TH_ACC: 0.7675
 SRC->TAR2:      AUROC: 0.8420, FPR95: 0.7084, AUPR_IN: 0.8939, AUPR_OUT: 0.7411, F1_TH: 3.0794, F1_TH_ACC: 0.7621, J_TH: 4.3004, J_TH_ACC: 0.7735
 SRC->TAR1+TAR2: AUROC: 0.8447, FPR95: 0.7242, AUPR_IN: 0.8369, AUPR_OUT: 0.8416, F1_TH: 4.3004, F1_TH_ACC: 0.7931, J_TH: 4.3004, J_TH_ACC: 0.7931
@@ -139,11 +144,11 @@ Computing OOD metrics with entropy normality score...
 AUROC - Src label: 1, Tar label: 0
 Src Test - Clf Acc: 0.8088, Clf Bal Acc: 0.7679
 Src Test - Fail: 240/1255
-	A toilet is predicted as chair - 118 times
-	A sofa is predicted as toilet - 33 times
-	A sofa is predicted as chair - 17 times
-	A toilet is predicted as sofa - 17 times
-	A door is predicted as toilet - 12 times
+	A sofa is predicted as chair - 118 times
+	A sink is predicted as sofa - 33 times
+	A sink is predicted as chair - 17 times
+	A sofa is predicted as sink - 17 times
+	A shelf is predicted as sofa - 12 times
 Test Tar1
 OOD F1 Test - Acc: 0.7509, Th: 33.9324
 OOD J Test - Acc: 0.7636, Th: 164.6609
@@ -154,33 +159,33 @@ Test Tar1+Tar2
 OOD F1 Test - Acc: 0.7758, Th: 144.8515
 Fail src: 345/1255
  True class	| Pred	| Times	| Closest class	| Mean score	| Min score	| Max score
- toilet    	| OOD	| 66	| toilet    	| 38.3801	| 4.8442	| 143.7598
- door    	| OOD	| 61	| door    	| 44.6872	| 4.2532	| 126.6964
- toilet    	| OOD	| 44	| chair    	| 30.8716	| 4.7459	| 133.1541
- sofa    	| OOD	| 44	| sofa    	| 29.7218	| 4.5214	| 123.9463
+ sofa    	| OOD	| 66	| sofa    	| 38.3801	| 4.8442	| 143.7598
+ shelf    	| OOD	| 61	| shelf    	| 44.6872	| 4.2532	| 126.6964
+ sofa    	| OOD	| 44	| chair    	| 30.8716	| 4.7459	| 133.1541
+ sink    	| OOD	| 44	| sink    	| 29.7218	| 4.5214	| 123.9463
  chair    	| OOD	| 24	| chair    	| 58.8941	| 5.8120	| 129.6608
 Fail tar: 303/1635
  True class	| Pred	| Times	| Closest class	| Mean score	| Min score	| Max score
- cabinet    	| ID	| 37	| shelf    	| 5801.3522	| 165.9790	| 55764.9492
- table    	| ID	| 34	| chair    	| 2412.7214	| 158.7524	| 40189.6445
- bed    	| ID	| 29	| door    	| 572.7045	| 148.9424	| 3375.0422
- bin    	| ID	| 26	| sofa    	| 669.1306	| 150.6541	| 3299.8945
- display    	| ID	| 23	| chair    	| 2749.2791	| 160.0844	| 24575.2266
+ cabinet    	| ID	| 37	| door    	| 5801.3522	| 165.9790	| 55764.9492
+ desk    	| ID	| 34	| chair    	| 2412.7214	| 158.7524	| 40189.6445
+ display    	| ID	| 29	| shelf    	| 572.7045	| 148.9424	| 3375.0422
+ bin    	| ID	| 26	| sink    	| 669.1306	| 150.6541	| 3299.8945
+ toilet    	| ID	| 23	| chair    	| 2749.2791	| 160.0844	| 24575.2266
 OOD J Test - Acc: 0.7792, Th: 164.6609
 Fail src: 360/1255
  True class	| Pred	| Times	| Closest class	| Mean score	| Min score	| Max score
- toilet    	| OOD	| 71	| toilet    	| 46.3342	| 4.8442	| 161.8132
- door    	| OOD	| 64	| door    	| 49.5401	| 4.2532	| 149.9289
- toilet    	| OOD	| 47	| chair    	| 38.6903	| 4.7459	| 162.1009
- sofa    	| OOD	| 44	| sofa    	| 29.7218	| 4.5214	| 123.9463
+ sofa    	| OOD	| 71	| sofa    	| 46.3342	| 4.8442	| 161.8132
+ shelf    	| OOD	| 64	| shelf    	| 49.5401	| 4.2532	| 149.9289
+ sofa    	| OOD	| 47	| chair    	| 38.6903	| 4.7459	| 162.1009
+ sink    	| OOD	| 44	| sink    	| 29.7218	| 4.5214	| 123.9463
  chair    	| OOD	| 26	| chair    	| 66.1692	| 5.8120	| 155.4386
 Fail tar: 278/1635
  True class	| Pred	| Times	| Closest class	| Mean score	| Min score	| Max score
- cabinet    	| ID	| 37	| shelf    	| 5801.3522	| 165.9790	| 55764.9492
- table    	| ID	| 32	| chair    	| 2553.5221	| 190.4744	| 40189.6445
- bed    	| ID	| 25	| door    	| 639.3982	| 181.5910	| 3375.0422
- bin    	| ID	| 22	| sofa    	| 762.1914	| 182.2800	| 3299.8945
- display    	| ID	| 20	| chair    	| 3137.3705	| 211.5617	| 24575.2266
+ cabinet    	| ID	| 37	| door    	| 5801.3522	| 165.9790	| 55764.9492
+ desk    	| ID	| 32	| chair    	| 2553.5221	| 190.4744	| 40189.6445
+ display    	| ID	| 25	| shelf    	| 639.3982	| 181.5910	| 3375.0422
+ bin    	| ID	| 22	| sink    	| 762.1914	| 182.2800	| 3299.8945
+ toilet    	| ID	| 20	| chair    	| 3137.3705	| 211.5617	| 24575.2266
 SRC->TAR1:      AUROC: 0.8366, FPR95: 0.7614, AUPR_IN: 0.9053, AUPR_OUT: 0.6950, F1_TH: 33.9324, F1_TH_ACC: 0.7509, J_TH: 164.6609, J_TH_ACC: 0.7636
 SRC->TAR2:      AUROC: 0.8263, FPR95: 0.7721, AUPR_IN: 0.8874, AUPR_OUT: 0.7104, F1_TH: 20.5976, F1_TH_ACC: 0.7374, J_TH: 223.1864, J_TH_ACC: 0.7517
 SRC->TAR1+TAR2: AUROC: 0.8313, FPR95: 0.7670, AUPR_IN: 0.8288, AUPR_OUT: 0.8237, F1_TH: 144.8515, F1_TH_ACC: 0.7758, J_TH: 164.6609, J_TH_ACC: 0.7792
@@ -199,11 +204,11 @@ Euclidean distances in a non-normalized space:
 AUROC - Src label: 1, Tar label: 0
 Src Test - Clf Acc: 0.7992, Clf Bal Acc: 0.7426
 Src Test - Fail: 252/1255
-	A toilet is predicted as chair - 115 times
-	A sofa is predicted as toilet - 39 times
-	A sofa is predicted as chair - 26 times
-	A door is predicted as toilet - 17 times
-	A toilet is predicted as sofa - 17 times
+	A sofa is predicted as chair - 115 times
+	A sink is predicted as sofa - 39 times
+	A sink is predicted as chair - 26 times
+	A shelf is predicted as sofa - 17 times
+	A sofa is predicted as sink - 17 times
 Test Tar1
 OOD F1 Test - Acc: 0.7396, Th: 0.2471
 OOD J Test - Acc: 0.7450, Th: 0.3054
@@ -223,27 +228,27 @@ OOD F1 Test - Acc: 0.5654, Th: 4.7074
 Fail src: 1255/1255
  True class	| Pred	| Times	| Closest class	| Mean score	| Min score	| Max score
  chair    	| OOD	| 388	| chair    	| 0.6192	| 0.1412	| 1.5039
- door    	| OOD	| 228	| door    	| 0.4545	| 0.1253	| 1.1852
- shelf    	| OOD	| 215	| shelf    	| 1.4959	| 0.1404	| 4.3715
- toilet    	| OOD	| 122	| toilet    	| 0.3556	| 0.1326	| 1.5715
- toilet    	| OOD	| 115	| chair    	| 0.4401	| 0.1552	| 1.6683
+ shelf    	| OOD	| 228	| shelf    	| 0.4545	| 0.1253	| 1.1852
+ door    	| OOD	| 215	| door    	| 1.4959	| 0.1404	| 4.3715
+ sofa    	| OOD	| 122	| sofa    	| 0.3556	| 0.1326	| 1.5715
+ sofa    	| OOD	| 115	| chair    	| 0.4401	| 0.1552	| 1.6683
 Fail tar: 1/1635
  True class	| Pred	| Times	| Closest class	| Mean score	| Min score	| Max score
- cabinet    	| ID	| 1	| shelf    	| 4.7074	| 4.7074	| 4.7074
+ cabinet    	| ID	| 1	| door    	| 4.7074	| 4.7074	| 4.7074
 OOD J Test - Acc: 0.7747, Th: 0.3063
 Fail src: 365/1255
  True class	| Pred	| Times	| Closest class	| Mean score	| Min score	| Max score
- door    	| OOD	| 60	| door    	| 0.2188	| 0.1253	| 0.3010
- toilet    	| OOD	| 58	| toilet    	| 0.2297	| 0.1326	| 0.3052
- toilet    	| OOD	| 46	| chair    	| 0.2237	| 0.1552	| 0.3054
- sofa    	| OOD	| 43	| sofa    	| 0.1807	| 0.1274	| 0.2865
+ shelf    	| OOD	| 60	| shelf    	| 0.2188	| 0.1253	| 0.3010
+ sofa    	| OOD	| 58	| sofa    	| 0.2297	| 0.1326	| 0.3052
+ sofa    	| OOD	| 46	| chair    	| 0.2237	| 0.1552	| 0.3054
+ sink    	| OOD	| 43	| sink    	| 0.1807	| 0.1274	| 0.2865
  chair    	| OOD	| 37	| chair    	| 0.2288	| 0.1412	| 0.3033
 Fail tar: 286/1635
  True class	| Pred	| Times	| Closest class	| Mean score	| Min score	| Max score
- table    	| ID	| 37	| chair    	| 0.4525	| 0.3190	| 0.7498
- cabinet    	| ID	| 34	| shelf    	| 0.9696	| 0.3097	| 4.7074
- display    	| ID	| 32	| chair    	| 0.4588	| 0.3208	| 1.0749
- bed    	| ID	| 32	| door    	| 0.4501	| 0.3107	| 1.0268
+ desk    	| ID	| 37	| chair    	| 0.4525	| 0.3190	| 0.7498
+ cabinet    	| ID	| 34	| door    	| 0.9696	| 0.3097	| 4.7074
+ toilet    	| ID	| 32	| chair    	| 0.4588	| 0.3208	| 1.0749
+ display    	| ID	| 32	| shelf    	| 0.4501	| 0.3107	| 1.0268
  bin    	| ID	| 18	| chair    	| 0.4490	| 0.3082	| 0.8880
 SRC->TAR1:      AUROC: 0.8034, FPR95: 0.8680, AUPR_IN: 0.8840, AUPR_OUT: 0.6358, F1_TH: 0.2471, F1_TH_ACC: 0.7396, J_TH: 0.3054, J_TH_ACC: 0.7450
 SRC->TAR2:      AUROC: 0.8304, FPR95: 0.7485, AUPR_IN: 0.8759, AUPR_OUT: 0.7251, F1_TH: 4.7074, F1_TH_ACC: 0.4025, J_TH: 0.3063, J_TH_ACC: 0.7650
@@ -254,10 +259,10 @@ Euclidean distances with prototypes:
 AUROC - Src label: 1, Tar label: 0
 Src Test - Clf Acc: 0.2127, Clf Bal Acc: 0.2000
 Src Test - Fail: 988/1255
-	A chair is predicted as door - 395 times
-	A toilet is predicted as door - 254 times
-	A shelf is predicted as door - 221 times
-	A sofa is predicted as door - 118 times
+	A chair is predicted as shelf - 395 times
+	A sofa is predicted as shelf - 254 times
+	A door is predicted as shelf - 221 times
+	A sink is predicted as shelf - 118 times
 Test Tar1
 OOD F1 Test - Acc: 0.7205, Th: 0.1013
 OOD J Test - Acc: 0.7166, Th: 0.1240
@@ -268,33 +273,33 @@ Test Tar1+Tar2
 OOD F1 Test - Acc: 0.7246, Th: 0.1104
 Fail src: 340/1255
  True class	| Pred	| Times	| Closest class	| Mean score	| Min score	| Max score
- toilet    	| OOD	| 119	| door    	| 0.0938	| 0.0701	| 0.1099
- sofa    	| OOD	| 91	| door    	| 0.0864	| 0.0681	| 0.1093
- door    	| OOD	| 80	| door    	| 0.0944	| 0.0736	| 0.1096
- chair    	| OOD	| 42	| door    	| 0.0956	| 0.0759	| 0.1100
- shelf    	| OOD	| 8	| door    	| 0.0879	| 0.0733	| 0.1055
+ sofa    	| OOD	| 119	| shelf    	| 0.0938	| 0.0701	| 0.1099
+ sink    	| OOD	| 91	| shelf    	| 0.0864	| 0.0681	| 0.1093
+ shelf    	| OOD	| 80	| shelf    	| 0.0944	| 0.0736	| 0.1096
+ chair    	| OOD	| 42	| shelf    	| 0.0956	| 0.0759	| 0.1100
+ door    	| OOD	| 8	| shelf    	| 0.0879	| 0.0733	| 0.1055
 Fail tar: 456/1635
  True class	| Pred	| Times	| Closest class	| Mean score	| Min score	| Max score
- cabinet    	| ID	| 98	| door    	| 0.2010	| 0.1106	| 0.7613
- table    	| ID	| 84	| door    	| 0.1389	| 0.1108	| 0.2623
- bed    	| ID	| 64	| door    	| 0.1430	| 0.1108	| 0.2206
- display    	| ID	| 48	| door    	| 0.1477	| 0.1107	| 0.2653
- bin    	| ID	| 48	| door    	| 0.1435	| 0.1113	| 0.2815
+ cabinet    	| ID	| 98	| shelf    	| 0.2010	| 0.1106	| 0.7613
+ desk    	| ID	| 84	| shelf    	| 0.1389	| 0.1108	| 0.2623
+ display    	| ID	| 64	| shelf    	| 0.1430	| 0.1108	| 0.2206
+ toilet    	| ID	| 48	| shelf    	| 0.1477	| 0.1107	| 0.2653
+ bin    	| ID	| 48	| shelf    	| 0.1435	| 0.1113	| 0.2815
 OOD J Test - Acc: 0.7491, Th: 0.1240
 Fail src: 446/1255
  True class	| Pred	| Times	| Closest class	| Mean score	| Min score	| Max score
- toilet    	| OOD	| 165	| door    	| 0.0998	| 0.0701	| 0.1230
- door    	| OOD	| 103	| door    	| 0.0995	| 0.0736	| 0.1228
- sofa    	| OOD	| 100	| door    	| 0.0891	| 0.0681	| 0.1217
- chair    	| OOD	| 68	| door    	| 0.1041	| 0.0759	| 0.1233
- shelf    	| OOD	| 10	| door    	| 0.0941	| 0.0733	| 0.1220
+ sofa    	| OOD	| 165	| shelf    	| 0.0998	| 0.0701	| 0.1230
+ shelf    	| OOD	| 103	| shelf    	| 0.0995	| 0.0736	| 0.1228
+ sink    	| OOD	| 100	| shelf    	| 0.0891	| 0.0681	| 0.1217
+ chair    	| OOD	| 68	| shelf    	| 0.1041	| 0.0759	| 0.1233
+ door    	| OOD	| 10	| shelf    	| 0.0941	| 0.0733	| 0.1220
 Fail tar: 279/1635
  True class	| Pred	| Times	| Closest class	| Mean score	| Min score	| Max score
- cabinet    	| ID	| 67	| door    	| 0.2401	| 0.1240	| 0.7613
- table    	| ID	| 45	| door    	| 0.1579	| 0.1248	| 0.2623
- bed    	| ID	| 44	| door    	| 0.1543	| 0.1249	| 0.2206
- display    	| ID	| 35	| door    	| 0.1590	| 0.1253	| 0.2653
- bin    	| ID	| 28	| door    	| 0.1627	| 0.1245	| 0.2815
+ cabinet    	| ID	| 67	| shelf    	| 0.2401	| 0.1240	| 0.7613
+ desk    	| ID	| 45	| shelf    	| 0.1579	| 0.1248	| 0.2623
+ display    	| ID	| 44	| shelf    	| 0.1543	| 0.1249	| 0.2206
+ toilet    	| ID	| 35	| shelf    	| 0.1590	| 0.1253	| 0.2653
+ bin    	| ID	| 28	| shelf    	| 0.1627	| 0.1245	| 0.2815
 SRC->TAR1:      AUROC: 0.7875, FPR95: 0.8871, AUPR_IN: 0.8772, AUPR_OUT: 0.6103, F1_TH: 0.1013, F1_TH_ACC: 0.7205, J_TH: 0.1240, J_TH_ACC: 0.7166
 SRC->TAR2:      AUROC: 0.7821, FPR95: 0.8323, AUPR_IN: 0.8460, AUPR_OUT: 0.6431, F1_TH: 0.1015, F1_TH_ACC: 0.7207, J_TH: 0.1246, J_TH_ACC: 0.7188
 SRC->TAR1+TAR2: AUROC: 0.7847, FPR95: 0.8587, AUPR_IN: 0.7728, AUPR_OUT: 0.7699, F1_TH: 0.1104, F1_TH_ACC: 0.7246, J_TH: 0.1240, J_TH_ACC: 0.7491
@@ -304,11 +309,11 @@ Cosine similarities on the hypersphere:
 AUROC - Src label: 1, Tar label: 0
 Src Test - Clf Acc: 0.8072, Clf Bal Acc: 0.7711
 Src Test - Fail: 242/1255
-	A toilet is predicted as chair - 109 times
-	A sofa is predicted as toilet - 33 times
-	A toilet is predicted as sofa - 23 times
-	A door is predicted as shelf - 16 times
-	A door is predicted as toilet - 14 times
+	A sofa is predicted as chair - 109 times
+	A sink is predicted as sofa - 33 times
+	A sofa is predicted as sink - 23 times
+	A shelf is predicted as door - 16 times
+	A shelf is predicted as sofa - 14 times
 Test Tar1
 OOD F1 Test - Acc: 0.7347, Th: 0.9733
 OOD J Test - Acc: 0.7078, Th: 0.9942
@@ -319,33 +324,33 @@ Test Tar1+Tar2
 OOD F1 Test - Acc: 0.7436, Th: 0.9867
 Fail src: 331/1255
  True class	| Pred	| Times	| Closest class	| Mean score	| Min score	| Max score
- toilet    	| OOD	| 57	| toilet    	| 0.9609	| 0.9114	| 0.9855
- sofa    	| OOD	| 43	| sofa    	| 0.9631	| 0.9109	| 0.9860
- toilet    	| OOD	| 41	| chair    	| 0.9663	| 0.9166	| 0.9863
+ sofa    	| OOD	| 57	| sofa    	| 0.9609	| 0.9114	| 0.9855
+ sink    	| OOD	| 43	| sink    	| 0.9631	| 0.9109	| 0.9860
+ sofa    	| OOD	| 41	| chair    	| 0.9663	| 0.9166	| 0.9863
  chair    	| OOD	| 40	| chair    	| 0.9659	| 0.9010	| 0.9860
- door    	| OOD	| 40	| door    	| 0.9627	| 0.9008	| 0.9861
+ shelf    	| OOD	| 40	| shelf    	| 0.9627	| 0.9008	| 0.9861
 Fail tar: 410/1635
  True class	| Pred	| Times	| Closest class	| Mean score	| Min score	| Max score
- cabinet    	| ID	| 50	| shelf    	| 0.9966	| 0.9868	| 1.0000
- bed    	| ID	| 45	| door    	| 0.9935	| 0.9869	| 0.9988
- table    	| ID	| 41	| sofa    	| 0.9937	| 0.9871	| 0.9995
- table    	| ID	| 30	| chair    	| 0.9930	| 0.9869	| 0.9985
- bed    	| ID	| 26	| shelf    	| 0.9944	| 0.9878	| 0.9992
+ cabinet    	| ID	| 50	| door    	| 0.9966	| 0.9868	| 1.0000
+ display    	| ID	| 45	| shelf    	| 0.9935	| 0.9869	| 0.9988
+ desk    	| ID	| 41	| sink    	| 0.9937	| 0.9871	| 0.9995
+ desk    	| ID	| 30	| chair    	| 0.9930	| 0.9869	| 0.9985
+ display    	| ID	| 26	| door    	| 0.9944	| 0.9878	| 0.9992
 OOD J Test - Acc: 0.7436, Th: 0.9867
 Fail src: 331/1255
  True class	| Pred	| Times	| Closest class	| Mean score	| Min score	| Max score
- toilet    	| OOD	| 57	| toilet    	| 0.9609	| 0.9114	| 0.9855
- sofa    	| OOD	| 43	| sofa    	| 0.9631	| 0.9109	| 0.9860
- toilet    	| OOD	| 41	| chair    	| 0.9663	| 0.9166	| 0.9863
+ sofa    	| OOD	| 57	| sofa    	| 0.9609	| 0.9114	| 0.9855
+ sink    	| OOD	| 43	| sink    	| 0.9631	| 0.9109	| 0.9860
+ sofa    	| OOD	| 41	| chair    	| 0.9663	| 0.9166	| 0.9863
  chair    	| OOD	| 40	| chair    	| 0.9659	| 0.9010	| 0.9860
- door    	| OOD	| 40	| door    	| 0.9627	| 0.9008	| 0.9861
+ shelf    	| OOD	| 40	| shelf    	| 0.9627	| 0.9008	| 0.9861
 Fail tar: 410/1635
  True class	| Pred	| Times	| Closest class	| Mean score	| Min score	| Max score
- cabinet    	| ID	| 50	| shelf    	| 0.9966	| 0.9868	| 1.0000
- bed    	| ID	| 45	| door    	| 0.9935	| 0.9869	| 0.9988
- table    	| ID	| 41	| sofa    	| 0.9937	| 0.9871	| 0.9995
- table    	| ID	| 30	| chair    	| 0.9930	| 0.9869	| 0.9985
- bed    	| ID	| 26	| shelf    	| 0.9944	| 0.9878	| 0.9992
+ cabinet    	| ID	| 50	| door    	| 0.9966	| 0.9868	| 1.0000
+ display    	| ID	| 45	| shelf    	| 0.9935	| 0.9869	| 0.9988
+ desk    	| ID	| 41	| sink    	| 0.9937	| 0.9871	| 0.9995
+ desk    	| ID	| 30	| chair    	| 0.9930	| 0.9869	| 0.9985
+ display    	| ID	| 26	| door    	| 0.9944	| 0.9878	| 0.9992
 SRC->TAR1:      AUROC: 0.8057, FPR95: 0.8008, AUPR_IN: 0.8818, AUPR_OUT: 0.6656, F1_TH: 0.9733, F1_TH_ACC: 0.7347, J_TH: 0.9942, J_TH_ACC: 0.7078
 SRC->TAR2:      AUROC: 0.7962, FPR95: 0.8123, AUPR_IN: 0.8475, AUPR_OUT: 0.6805, F1_TH: 0.9767, F1_TH_ACC: 0.7364, J_TH: 0.9868, J_TH_ACC: 0.7441
 SRC->TAR1+TAR2: AUROC: 0.8008, FPR95: 0.8067, AUPR_IN: 0.7742, AUPR_OUT: 0.8018, F1_TH: 0.9867, F1_TH_ACC: 0.7436, J_TH: 0.9867, J_TH_ACC: 0.7436
@@ -355,10 +360,10 @@ Cosine similarities with prototypes:
 AUROC - Src label: 1, Tar label: 0
 Src Test - Clf Acc: 0.2127, Clf Bal Acc: 0.2000
 Src Test - Fail: 988/1255
-	A chair is predicted as door - 395 times
-	A toilet is predicted as door - 254 times
-	A shelf is predicted as door - 221 times
-	A sofa is predicted as door - 118 times
+	A chair is predicted as shelf - 395 times
+	A sofa is predicted as shelf - 254 times
+	A door is predicted as shelf - 221 times
+	A sink is predicted as shelf - 118 times
 Test Tar1
 OOD F1 Test - Acc: 0.6456, Th: 0.8317
 OOD J Test - Acc: 0.6706, Th: 0.9441
@@ -369,33 +374,33 @@ Test Tar1+Tar2
 OOD F1 Test - Acc: 0.6512, Th: 0.9180
 Fail src: 364/1255
  True class	| Pred	| Times	| Closest class	| Mean score	| Min score	| Max score
- toilet    	| OOD	| 146	| door    	| 0.8498	| 0.7466	| 0.9168
- chair    	| OOD	| 92	| door    	| 0.8647	| 0.7523	| 0.9172
- door    	| OOD	| 67	| door    	| 0.8650	| 0.7539	| 0.9160
- sofa    	| OOD	| 54	| door    	| 0.8693	| 0.7570	| 0.9163
- shelf    	| OOD	| 5	| door    	| 0.8879	| 0.8553	| 0.9094
+ sofa    	| OOD	| 146	| shelf    	| 0.8498	| 0.7466	| 0.9168
+ chair    	| OOD	| 92	| shelf    	| 0.8647	| 0.7523	| 0.9172
+ shelf    	| OOD	| 67	| shelf    	| 0.8650	| 0.7539	| 0.9160
+ sink    	| OOD	| 54	| shelf    	| 0.8693	| 0.7570	| 0.9163
+ door    	| OOD	| 5	| shelf    	| 0.8879	| 0.8553	| 0.9094
 Fail tar: 644/1635
  True class	| Pred	| Times	| Closest class	| Mean score	| Min score	| Max score
- cabinet    	| ID	| 151	| door    	| 0.9595	| 0.9181	| 0.9991
- table    	| ID	| 125	| door    	| 0.9549	| 0.9191	| 0.9980
- bin    	| ID	| 99	| door    	| 0.9553	| 0.9198	| 0.9955
- bed    	| ID	| 92	| door    	| 0.9545	| 0.9183	| 0.9932
- box    	| ID	| 48	| door    	| 0.9509	| 0.9182	| 0.9978
+ cabinet    	| ID	| 151	| shelf    	| 0.9595	| 0.9181	| 0.9991
+ desk    	| ID	| 125	| shelf    	| 0.9549	| 0.9191	| 0.9980
+ bin    	| ID	| 99	| shelf    	| 0.9553	| 0.9198	| 0.9955
+ display    	| ID	| 92	| shelf    	| 0.9545	| 0.9183	| 0.9932
+ box    	| ID	| 48	| shelf    	| 0.9509	| 0.9182	| 0.9978
 OOD J Test - Acc: 0.6903, Th: 0.9467
 Fail src: 527/1255
  True class	| Pred	| Times	| Closest class	| Mean score	| Min score	| Max score
- toilet    	| OOD	| 190	| door    	| 0.8688	| 0.7466	| 0.9453
- chair    	| OOD	| 152	| door    	| 0.8919	| 0.7523	| 0.9461
- door    	| OOD	| 105	| door    	| 0.8896	| 0.7539	| 0.9464
- sofa    	| OOD	| 72	| door    	| 0.8855	| 0.7570	| 0.9427
- shelf    	| OOD	| 8	| door    	| 0.9018	| 0.8553	| 0.9317
+ sofa    	| OOD	| 190	| shelf    	| 0.8688	| 0.7466	| 0.9453
+ chair    	| OOD	| 152	| shelf    	| 0.8919	| 0.7523	| 0.9461
+ shelf    	| OOD	| 105	| shelf    	| 0.8896	| 0.7539	| 0.9464
+ sink    	| OOD	| 72	| shelf    	| 0.8855	| 0.7570	| 0.9427
+ door    	| OOD	| 8	| shelf    	| 0.9018	| 0.8553	| 0.9317
 Fail tar: 368/1635
  True class	| Pred	| Times	| Closest class	| Mean score	| Min score	| Max score
- cabinet    	| ID	| 88	| door    	| 0.9792	| 0.9473	| 0.9991
- table    	| ID	| 72	| door    	| 0.9715	| 0.9475	| 0.9980
- bin    	| ID	| 56	| door    	| 0.9712	| 0.9489	| 0.9955
- bed    	| ID	| 52	| door    	| 0.9703	| 0.9485	| 0.9932
- bag    	| ID	| 30	| door    	| 0.9756	| 0.9508	| 0.9969
+ cabinet    	| ID	| 88	| shelf    	| 0.9792	| 0.9473	| 0.9991
+ desk    	| ID	| 72	| shelf    	| 0.9715	| 0.9475	| 0.9980
+ bin    	| ID	| 56	| shelf    	| 0.9712	| 0.9489	| 0.9955
+ display    	| ID	| 52	| shelf    	| 0.9703	| 0.9485	| 0.9932
+ bag    	| ID	| 30	| shelf    	| 0.9756	| 0.9508	| 0.9969
 SRC->TAR1:      AUROC: 0.7407, FPR95: 0.8744, AUPR_IN: 0.8369, AUPR_OUT: 0.5817, F1_TH: 0.8317, F1_TH_ACC: 0.6456, J_TH: 0.9441, J_TH_ACC: 0.6706
 SRC->TAR2:      AUROC: 0.6871, FPR95: 0.9469, AUPR_IN: 0.7721, AUPR_OUT: 0.5299, F1_TH: 0.7466, F1_TH_ACC: 0.5985, J_TH: 0.9467, J_TH_ACC: 0.6475
 SRC->TAR1+TAR2: AUROC: 0.7129, FPR95: 0.9119, AUPR_IN: 0.6852, AUPR_OUT: 0.7122, F1_TH: 0.9180, F1_TH_ACC: 0.6512, J_TH: 0.9467, J_TH_ACC: 0.6903
@@ -412,11 +417,11 @@ Computing OOD metrics with ODIN normality score...
 AUROC - Src label: 1, Tar label: 0
 Src Test - Clf Acc: 0.8088, Clf Bal Acc: 0.7679
 Src Test - Fail: 240/1255
-	A toilet is predicted as chair - 118 times
-	A sofa is predicted as toilet - 33 times
-	A sofa is predicted as chair - 17 times
-	A toilet is predicted as sofa - 17 times
-	A door is predicted as toilet - 12 times
+	A sofa is predicted as chair - 118 times
+	A sink is predicted as sofa - 33 times
+	A sink is predicted as chair - 17 times
+	A sofa is predicted as sink - 17 times
+	A shelf is predicted as sofa - 12 times
 Test Tar1
 OOD F1 Test - Acc: 0.7465, Th: 0.2010
 OOD J Test - Acc: 0.7621, Th: 0.2013
@@ -427,33 +432,33 @@ Test Tar1+Tar2
 OOD F1 Test - Acc: 0.7796, Th: 0.2012
 Fail src: 299/1255
  True class	| Pred	| Times	| Closest class	| Mean score	| Min score	| Max score
- door    	| OOD	| 61	| door    	| 0.2010	| 0.2004	| 0.2012
- toilet    	| OOD	| 49	| toilet    	| 0.2010	| 0.2005	| 0.2012
- sofa    	| OOD	| 44	| sofa    	| 0.2009	| 0.2004	| 0.2012
- toilet    	| OOD	| 34	| chair    	| 0.2009	| 0.2003	| 0.2012
- sofa    	| OOD	| 21	| toilet    	| 0.2009	| 0.2004	| 0.2012
+ shelf    	| OOD	| 61	| shelf    	| 0.2010	| 0.2004	| 0.2012
+ sofa    	| OOD	| 49	| sofa    	| 0.2010	| 0.2005	| 0.2012
+ sink    	| OOD	| 44	| sink    	| 0.2009	| 0.2004	| 0.2012
+ sofa    	| OOD	| 34	| chair    	| 0.2009	| 0.2003	| 0.2012
+ sink    	| OOD	| 21	| sofa    	| 0.2009	| 0.2004	| 0.2012
 Fail tar: 338/1635
  True class	| Pred	| Times	| Closest class	| Mean score	| Min score	| Max score
- table    	| ID	| 47	| chair    	| 0.2016	| 0.2013	| 0.2022
- cabinet    	| ID	| 39	| shelf    	| 0.2017	| 0.2012	| 0.2023
- bed    	| ID	| 29	| door    	| 0.2014	| 0.2012	| 0.2018
- display    	| ID	| 28	| chair    	| 0.2016	| 0.2013	| 0.2021
- cabinet    	| ID	| 21	| door    	| 0.2015	| 0.2013	| 0.2019
+ desk    	| ID	| 47	| chair    	| 0.2016	| 0.2013	| 0.2022
+ cabinet    	| ID	| 39	| door    	| 0.2017	| 0.2012	| 0.2023
+ display    	| ID	| 29	| shelf    	| 0.2014	| 0.2012	| 0.2018
+ toilet    	| ID	| 28	| chair    	| 0.2016	| 0.2013	| 0.2021
+ cabinet    	| ID	| 21	| shelf    	| 0.2015	| 0.2013	| 0.2019
 OOD J Test - Acc: 0.7820, Th: 0.2013
 Fail src: 316/1255
  True class	| Pred	| Times	| Closest class	| Mean score	| Min score	| Max score
- door    	| OOD	| 66	| door    	| 0.2010	| 0.2004	| 0.2013
- toilet    	| OOD	| 54	| toilet    	| 0.2010	| 0.2005	| 0.2013
- sofa    	| OOD	| 47	| sofa    	| 0.2009	| 0.2004	| 0.2013
- toilet    	| OOD	| 35	| chair    	| 0.2010	| 0.2003	| 0.2013
- sofa    	| OOD	| 21	| toilet    	| 0.2009	| 0.2004	| 0.2012
+ shelf    	| OOD	| 66	| shelf    	| 0.2010	| 0.2004	| 0.2013
+ sofa    	| OOD	| 54	| sofa    	| 0.2010	| 0.2005	| 0.2013
+ sink    	| OOD	| 47	| sink    	| 0.2009	| 0.2004	| 0.2013
+ sofa    	| OOD	| 35	| chair    	| 0.2010	| 0.2003	| 0.2013
+ sink    	| OOD	| 21	| sofa    	| 0.2009	| 0.2004	| 0.2012
 Fail tar: 314/1635
  True class	| Pred	| Times	| Closest class	| Mean score	| Min score	| Max score
- table    	| ID	| 44	| chair    	| 0.2016	| 0.2013	| 0.2022
- cabinet    	| ID	| 38	| shelf    	| 0.2017	| 0.2013	| 0.2023
- display    	| ID	| 28	| chair    	| 0.2016	| 0.2013	| 0.2021
- bed    	| ID	| 26	| door    	| 0.2014	| 0.2013	| 0.2018
- cabinet    	| ID	| 20	| door    	| 0.2015	| 0.2013	| 0.2019
+ desk    	| ID	| 44	| chair    	| 0.2016	| 0.2013	| 0.2022
+ cabinet    	| ID	| 38	| door    	| 0.2017	| 0.2013	| 0.2023
+ toilet    	| ID	| 28	| chair    	| 0.2016	| 0.2013	| 0.2021
+ display    	| ID	| 26	| shelf    	| 0.2014	| 0.2013	| 0.2018
+ cabinet    	| ID	| 20	| shelf    	| 0.2015	| 0.2013	| 0.2019
 SRC->TAR1:      AUROC: 0.8406, FPR95: 0.7360, AUPR_IN: 0.9061, AUPR_OUT: 0.7076, F1_TH: 0.2010, F1_TH_ACC: 0.7465, J_TH: 0.2013, J_TH_ACC: 0.7621
 SRC->TAR2:      AUROC: 0.8468, FPR95: 0.6753, AUPR_IN: 0.8970, AUPR_OUT: 0.7458, F1_TH: 0.2010, F1_TH_ACC: 0.7607, J_TH: 0.2013, J_TH_ACC: 0.7793
 SRC->TAR1+TAR2: AUROC: 0.8438, FPR95: 0.7046, AUPR_IN: 0.8355, AUPR_OUT: 0.8400, F1_TH: 0.2012, F1_TH_ACC: 0.7796, J_TH: 0.2013, J_TH_ACC: 0.7820
@@ -470,11 +475,11 @@ Computing OOD metrics with Energy normality score...
 AUROC - Src label: 1, Tar label: 0
 Src Test - Clf Acc: 0.8088, Clf Bal Acc: 0.7679
 Src Test - Fail: 240/1255
-	A toilet is predicted as chair - 118 times
-	A sofa is predicted as toilet - 33 times
-	A sofa is predicted as chair - 17 times
-	A toilet is predicted as sofa - 17 times
-	A door is predicted as toilet - 12 times
+	A sofa is predicted as chair - 118 times
+	A sink is predicted as sofa - 33 times
+	A sink is predicted as chair - 17 times
+	A sofa is predicted as sink - 17 times
+	A shelf is predicted as sofa - 12 times
 Test Tar1
 OOD F1 Test - Acc: 0.7680, Th: 3.5586
 OOD J Test - Acc: 0.7504, Th: 4.7090
@@ -485,32 +490,32 @@ Test Tar1+Tar2
 OOD F1 Test - Acc: 0.7817, Th: 4.0958
 Fail src: 322/1255
  True class	| Pred	| Times	| Closest class	| Mean score	| Min score	| Max score
- door    	| OOD	| 71	| door    	| 2.9188	| 1.0907	| 4.0682
- toilet    	| OOD	| 52	| toilet    	| 3.1070	| 1.3234	| 4.0673
- sofa    	| OOD	| 41	| sofa    	| 2.5546	| 1.1916	| 3.8750
- toilet    	| OOD	| 35	| chair    	| 2.9357	| 1.0122	| 4.0600
- sofa    	| OOD	| 21	| toilet    	| 2.6677	| 0.9552	| 4.0448
+ shelf    	| OOD	| 71	| shelf    	| 2.9188	| 1.0907	| 4.0682
+ sofa    	| OOD	| 52	| sofa    	| 3.1070	| 1.3234	| 4.0673
+ sink    	| OOD	| 41	| sink    	| 2.5546	| 1.1916	| 3.8750
+ sofa    	| OOD	| 35	| chair    	| 2.9357	| 1.0122	| 4.0600
+ sink    	| OOD	| 21	| sofa    	| 2.6677	| 0.9552	| 4.0448
 Fail tar: 309/1635
  True class	| Pred	| Times	| Closest class	| Mean score	| Min score	| Max score
- table    	| ID	| 40	| chair    	| 5.3238	| 4.1382	| 7.6109
- cabinet    	| ID	| 38	| shelf    	| 6.0866	| 4.1603	| 8.2940
- display    	| ID	| 28	| chair    	| 5.5095	| 4.1933	| 7.8383
- bed    	| ID	| 28	| door    	| 4.6521	| 4.1948	| 5.5078
- bin    	| ID	| 20	| sofa    	| 4.7947	| 4.1126	| 5.9209
+ desk    	| ID	| 40	| chair    	| 5.3238	| 4.1382	| 7.6109
+ cabinet    	| ID	| 38	| door    	| 6.0866	| 4.1603	| 8.2940
+ toilet    	| ID	| 28	| chair    	| 5.5095	| 4.1933	| 7.8383
+ display    	| ID	| 28	| shelf    	| 4.6521	| 4.1948	| 5.5078
+ bin    	| ID	| 20	| sink    	| 4.7947	| 4.1126	| 5.9209
 OOD J Test - Acc: 0.7865, Th: 4.3158
 Fail src: 351/1255
  True class	| Pred	| Times	| Closest class	| Mean score	| Min score	| Max score
- door    	| OOD	| 79	| door    	| 3.0445	| 1.0907	| 4.2451
- toilet    	| OOD	| 56	| toilet    	| 3.1865	| 1.3234	| 4.2904
- sofa    	| OOD	| 44	| sofa    	| 2.6674	| 1.1916	| 4.2859
- toilet    	| OOD	| 41	| chair    	| 3.1110	| 1.0122	| 4.1655
+ shelf    	| OOD	| 79	| shelf    	| 3.0445	| 1.0907	| 4.2451
+ sofa    	| OOD	| 56	| sofa    	| 3.1865	| 1.3234	| 4.2904
+ sink    	| OOD	| 44	| sink    	| 2.6674	| 1.1916	| 4.2859
+ sofa    	| OOD	| 41	| chair    	| 3.1110	| 1.0122	| 4.1655
  chair    	| OOD	| 22	| chair    	| 3.3342	| 2.0844	| 4.2811
 Fail tar: 266/1635
  True class	| Pred	| Times	| Closest class	| Mean score	| Min score	| Max score
- table    	| ID	| 38	| chair    	| 5.3855	| 4.3202	| 7.6109
- cabinet    	| ID	| 36	| shelf    	| 6.1931	| 4.3263	| 8.2940
- display    	| ID	| 25	| chair    	| 5.6628	| 4.3755	| 7.8383
- bed    	| ID	| 22	| door    	| 4.7611	| 4.3274	| 5.5078
+ desk    	| ID	| 38	| chair    	| 5.3855	| 4.3202	| 7.6109
+ cabinet    	| ID	| 36	| door    	| 6.1931	| 4.3263	| 8.2940
+ toilet    	| ID	| 25	| chair    	| 5.6628	| 4.3755	| 7.8383
+ display    	| ID	| 22	| shelf    	| 4.7611	| 4.3274	| 5.5078
  bin    	| ID	| 16	| chair    	| 5.2483	| 4.4029	| 6.5864
 SRC->TAR1:      AUROC: 0.8408, FPR95: 0.7132, AUPR_IN: 0.9074, AUPR_OUT: 0.7099, F1_TH: 3.5586, F1_TH_ACC: 0.7680, J_TH: 4.7090, J_TH_ACC: 0.7504
 SRC->TAR2:      AUROC: 0.8473, FPR95: 0.6399, AUPR_IN: 0.8967, AUPR_OUT: 0.7539, F1_TH: 3.1510, F1_TH_ACC: 0.7669, J_TH: 4.2383, J_TH_ACC: 0.7735
@@ -528,11 +533,11 @@ Computing OOD metrics with GradNorm normality score...
 AUROC - Src label: 1, Tar label: 0
 Src Test - Clf Acc: 0.8088, Clf Bal Acc: 0.7679
 Src Test - Fail: 240/1255
-	A toilet is predicted as chair - 118 times
-	A sofa is predicted as toilet - 33 times
-	A sofa is predicted as chair - 17 times
-	A toilet is predicted as sofa - 17 times
-	A door is predicted as toilet - 12 times
+	A sofa is predicted as chair - 118 times
+	A sink is predicted as sofa - 33 times
+	A sink is predicted as chair - 17 times
+	A sofa is predicted as sink - 17 times
+	A shelf is predicted as sofa - 12 times
 Test Tar1
 OOD F1 Test - Acc: 0.7396, Th: 370.4965
 OOD J Test - Acc: 0.7420, Th: 431.1538
@@ -543,33 +548,33 @@ Test Tar1+Tar2
 OOD F1 Test - Acc: 0.7332, Th: 404.2365
 Fail src: 293/1255
  True class	| Pred	| Times	| Closest class	| Mean score	| Min score	| Max score
- toilet    	| OOD	| 68	| toilet    	| 334.5345	| 170.0794	| 400.8731
- door    	| OOD	| 55	| door    	| 330.1918	| 138.5276	| 400.1241
- sofa    	| OOD	| 37	| sofa    	| 295.4966	| 147.1220	| 403.7976
- toilet    	| OOD	| 29	| chair    	| 312.2724	| 176.1898	| 401.7290
- sofa    	| OOD	| 18	| toilet    	| 307.7357	| 156.3846	| 396.5065
+ sofa    	| OOD	| 68	| sofa    	| 334.5345	| 170.0794	| 400.8731
+ shelf    	| OOD	| 55	| shelf    	| 330.1918	| 138.5276	| 400.1241
+ sink    	| OOD	| 37	| sink    	| 295.4966	| 147.1220	| 403.7976
+ sofa    	| OOD	| 29	| chair    	| 312.2724	| 176.1898	| 401.7290
+ sink    	| OOD	| 18	| sofa    	| 307.7357	| 156.3846	| 396.5065
 Fail tar: 478/1635
  True class	| Pred	| Times	| Closest class	| Mean score	| Min score	| Max score
- table    	| ID	| 74	| chair    	| 489.3071	| 405.1450	| 791.6173
- cabinet    	| ID	| 45	| shelf    	| 519.9722	| 411.0253	| 702.0680
- cabinet    	| ID	| 42	| door    	| 458.5322	| 406.4102	| 588.5010
- bin    	| ID	| 33	| sofa    	| 479.4292	| 409.8230	| 604.6415
- table    	| ID	| 31	| door    	| 472.3742	| 408.1028	| 613.4929
+ desk    	| ID	| 74	| chair    	| 489.3071	| 405.1450	| 791.6173
+ cabinet    	| ID	| 45	| door    	| 519.9722	| 411.0253	| 702.0680
+ cabinet    	| ID	| 42	| shelf    	| 458.5322	| 406.4102	| 588.5010
+ bin    	| ID	| 33	| sink    	| 479.4292	| 409.8230	| 604.6415
+ desk    	| ID	| 31	| shelf    	| 472.3742	| 408.1028	| 613.4929
 OOD J Test - Acc: 0.7512, Th: 431.6802
 Fail src: 361/1255
  True class	| Pred	| Times	| Closest class	| Mean score	| Min score	| Max score
- door    	| OOD	| 79	| door    	| 355.3421	| 138.5276	| 429.7426
- toilet    	| OOD	| 78	| toilet    	| 344.4520	| 170.0794	| 431.2413
- sofa    	| OOD	| 42	| sofa    	| 309.6000	| 147.1220	| 431.1538
- toilet    	| OOD	| 32	| chair    	| 321.5894	| 176.1898	| 415.7455
+ shelf    	| OOD	| 79	| shelf    	| 355.3421	| 138.5276	| 429.7426
+ sofa    	| OOD	| 78	| sofa    	| 344.4520	| 170.0794	| 431.2413
+ sink    	| OOD	| 42	| sink    	| 309.6000	| 147.1220	| 431.1538
+ sofa    	| OOD	| 32	| chair    	| 321.5894	| 176.1898	| 415.7455
  chair    	| OOD	| 30	| chair    	| 384.5494	| 303.7513	| 427.9295
 Fail tar: 358/1635
  True class	| Pred	| Times	| Closest class	| Mean score	| Min score	| Max score
- table    	| ID	| 54	| chair    	| 515.7275	| 433.9276	| 791.6173
- cabinet    	| ID	| 39	| shelf    	| 535.0055	| 438.8982	| 702.0680
+ desk    	| ID	| 54	| chair    	| 515.7275	| 433.9276	| 791.6173
+ cabinet    	| ID	| 39	| door    	| 535.0055	| 438.8982	| 702.0680
  bin    	| ID	| 26	| chair    	| 505.9544	| 432.7314	| 660.3983
- bin    	| ID	| 25	| sofa    	| 498.5452	| 433.9748	| 604.6415
- cabinet    	| ID	| 25	| door    	| 484.4094	| 433.6529	| 588.5010
+ bin    	| ID	| 25	| sink    	| 498.5452	| 433.9748	| 604.6415
+ cabinet    	| ID	| 25	| shelf    	| 484.4094	| 433.6529	| 588.5010
 SRC->TAR1:      AUROC: 0.8110, FPR95: 0.7627, AUPR_IN: 0.8747, AUPR_OUT: 0.6768, F1_TH: 370.4965, F1_TH_ACC: 0.7396, J_TH: 431.1538, J_TH_ACC: 0.7420
 SRC->TAR2:      AUROC: 0.8101, FPR95: 0.7060, AUPR_IN: 0.8618, AUPR_OUT: 0.7115, F1_TH: 370.2531, F1_TH_ACC: 0.7479, J_TH: 434.9627, J_TH_ACC: 0.7360
 SRC->TAR1+TAR2: AUROC: 0.8105, FPR95: 0.7333, AUPR_IN: 0.7793, AUPR_OUT: 0.8166, F1_TH: 404.2365, F1_TH_ACC: 0.7332, J_TH: 431.6802, J_TH_ACC: 0.7512
@@ -593,11 +598,11 @@ React - using SR1 test to compute threshold
 AUROC - Src label: 1, Tar label: 0
 Src Test - Clf Acc: 0.8088, Clf Bal Acc: 0.7679
 Src Test - Fail: 240/1255
-	A toilet is predicted as chair - 118 times
-	A sofa is predicted as toilet - 33 times
-	A sofa is predicted as chair - 17 times
-	A toilet is predicted as sofa - 17 times
-	A door is predicted as toilet - 12 times
+	A sofa is predicted as chair - 118 times
+	A sink is predicted as sofa - 33 times
+	A sink is predicted as chair - 17 times
+	A sofa is predicted as sink - 17 times
+	A shelf is predicted as sofa - 12 times
 Test Tar1
 OOD F1 Test - Acc: 0.7675, Th: 3.5533
 OOD J Test - Acc: 0.7739, Th: 3.9799
@@ -608,32 +613,32 @@ Test Tar1+Tar2
 OOD F1 Test - Acc: 0.7865, Th: 3.9851
 Fail src: 316/1255
  True class	| Pred	| Times	| Closest class	| Mean score	| Min score	| Max score
- door    	| OOD	| 63	| door    	| 2.7017	| 0.9708	| 3.9467
- toilet    	| OOD	| 48	| toilet    	| 2.9776	| 1.1046	| 3.8273
- sofa    	| OOD	| 48	| sofa    	| 2.5302	| 1.2065	| 3.9799
- toilet    	| OOD	| 35	| chair    	| 3.0148	| 1.2351	| 3.9218
- sofa    	| OOD	| 21	| toilet    	| 2.5275	| 1.3627	| 3.9046
+ shelf    	| OOD	| 63	| shelf    	| 2.7017	| 0.9708	| 3.9467
+ sofa    	| OOD	| 48	| sofa    	| 2.9776	| 1.1046	| 3.8273
+ sink    	| OOD	| 48	| sink    	| 2.5302	| 1.2065	| 3.9799
+ sofa    	| OOD	| 35	| chair    	| 3.0148	| 1.2351	| 3.9218
+ sink    	| OOD	| 21	| sofa    	| 2.5275	| 1.3627	| 3.9046
 Fail tar: 301/1635
  True class	| Pred	| Times	| Closest class	| Mean score	| Min score	| Max score
- table    	| ID	| 37	| chair    	| 5.3268	| 4.0172	| 7.8962
- cabinet    	| ID	| 35	| shelf    	| 4.7065	| 4.0128	| 5.2357
- display    	| ID	| 28	| chair    	| 5.3412	| 4.1223	| 7.2503
- bed    	| ID	| 26	| door    	| 4.5161	| 3.9867	| 5.4285
+ desk    	| ID	| 37	| chair    	| 5.3268	| 4.0172	| 7.8962
+ cabinet    	| ID	| 35	| door    	| 4.7065	| 4.0128	| 5.2357
+ toilet    	| ID	| 28	| chair    	| 5.3412	| 4.1223	| 7.2503
+ display    	| ID	| 26	| shelf    	| 4.5161	| 3.9867	| 5.4285
  bin    	| ID	| 18	| chair    	| 5.1732	| 4.1314	| 7.0575
 OOD J Test - Acc: 0.7865, Th: 3.9851
 Fail src: 316/1255
  True class	| Pred	| Times	| Closest class	| Mean score	| Min score	| Max score
- door    	| OOD	| 63	| door    	| 2.7017	| 0.9708	| 3.9467
- toilet    	| OOD	| 48	| toilet    	| 2.9776	| 1.1046	| 3.8273
- sofa    	| OOD	| 48	| sofa    	| 2.5302	| 1.2065	| 3.9799
- toilet    	| OOD	| 35	| chair    	| 3.0148	| 1.2351	| 3.9218
- sofa    	| OOD	| 21	| toilet    	| 2.5275	| 1.3627	| 3.9046
+ shelf    	| OOD	| 63	| shelf    	| 2.7017	| 0.9708	| 3.9467
+ sofa    	| OOD	| 48	| sofa    	| 2.9776	| 1.1046	| 3.8273
+ sink    	| OOD	| 48	| sink    	| 2.5302	| 1.2065	| 3.9799
+ sofa    	| OOD	| 35	| chair    	| 3.0148	| 1.2351	| 3.9218
+ sink    	| OOD	| 21	| sofa    	| 2.5275	| 1.3627	| 3.9046
 Fail tar: 301/1635
  True class	| Pred	| Times	| Closest class	| Mean score	| Min score	| Max score
- table    	| ID	| 37	| chair    	| 5.3268	| 4.0172	| 7.8962
- cabinet    	| ID	| 35	| shelf    	| 4.7065	| 4.0128	| 5.2357
- display    	| ID	| 28	| chair    	| 5.3412	| 4.1223	| 7.2503
- bed    	| ID	| 26	| door    	| 4.5161	| 3.9867	| 5.4285
+ desk    	| ID	| 37	| chair    	| 5.3268	| 4.0172	| 7.8962
+ cabinet    	| ID	| 35	| door    	| 4.7065	| 4.0128	| 5.2357
+ toilet    	| ID	| 28	| chair    	| 5.3412	| 4.1223	| 7.2503
+ display    	| ID	| 26	| shelf    	| 4.5161	| 3.9867	| 5.4285
  bin    	| ID	| 18	| chair    	| 5.1732	| 4.1314	| 7.0575
 SRC->TAR1:      AUROC: 0.8312, FPR95: 0.7462, AUPR_IN: 0.8958, AUPR_OUT: 0.6997, F1_TH: 3.5533, F1_TH_ACC: 0.7675, J_TH: 3.9799, J_TH_ACC: 0.7739
 SRC->TAR2:      AUROC: 0.8479, FPR95: 0.6623, AUPR_IN: 0.9014, AUPR_OUT: 0.7508, F1_TH: 3.0050, F1_TH_ACC: 0.7617, J_TH: 3.9851, J_TH_ACC: 0.7764
