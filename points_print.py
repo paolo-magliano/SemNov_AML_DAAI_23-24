@@ -8,7 +8,6 @@ from torchvision import transforms
 
 from datasets.modelnet import *
 from datasets.scanobject import *
-from base_args import add_base_args
 from classifiers.trainer_cla_md import *
 
 import pyvista as pv
