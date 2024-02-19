@@ -53,5 +53,5 @@ if __name__ == '__main__':
         points, labels = batch[0], batch[1]
         for point, label in zip(points, labels):
             print(f"Label: {label}, Points: {point.shape}")
-            pv.plot(point)
+            pv.plot(point.to('cpu').numpy(), title=f"{select}: {label}")
             break
