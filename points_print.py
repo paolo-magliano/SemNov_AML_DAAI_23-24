@@ -11,6 +11,7 @@ from datasets.scanobject import *
 from classifiers.trainer_cla_md import *
 
 import pyvista as pv
+from pyvista import examples
 
 if __name__ == '__main__':
     opt = get_args()
