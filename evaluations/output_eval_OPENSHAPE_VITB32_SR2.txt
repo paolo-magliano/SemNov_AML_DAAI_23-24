@@ -3,8 +3,10 @@ Cannot load RSCNN: No module named 'pointnet2_ops'
 Cannot load PCT: No module named 'pointnet2_ops'
 Cannot load PointMLP: No module named 'pointnet2_ops'
 Cannot load PointNet2: No module named 'pointnet2_ops'
+/content/SemNov_AML_DAAI_23-24/utils/rsmix_provider.py:157: SyntaxWarning: "is" with a literal. Did you mean "=="?
+  if len(label_batch.shape) is 1:
 out-of-distribution eval - Modelnet -> SONN ..
-Arguments: Namespace(local_rank=None, use_sync_bn=False, use_amp=False, script_mode='eval', config='cfgs/dgcnn-cla.yaml', seed=1, epochs=250, batch_size=1, num_workers=4, resume=None, apply_fix_cellphone=True, data_root='/content/3D_OS_release_data', checkpoints_dir='outputs', exp_name='DGCNN_CE_SR2', eval_step=1, save_step=10, ckpt_path='/content/SemNov_AML_DAAI_23-24/trained_models/DGCNN_CE_SR2.pth', src='SR2', sonn_split='main_split', sonn_h5_name='objectdataset.h5', augm_set='rw', grad_norm_clip=-1, num_points=1024, num_points_test=2048, wandb_name=None, wandb_group='md-2-sonn-augmCorr', wandb_proj='benchmark-3d-ood-cla', wandb_api=None, loss='CE', cs=False, cs_gan_lr=0.0002, cs_beta=0.1, save_feats=None, open_shape='openshape-pointbert-vitb32-rgb', corruption=None, tar1='none', tar2='none')
+Arguments: Namespace(local_rank=None, use_sync_bn=False, use_amp=False, script_mode='eval', config='cfgs/dgcnn-cla.yaml', seed=1, epochs=250, batch_size=1, num_workers=4, resume=None, apply_fix_cellphone=True, data_root='/content/3D_OS_release_data', checkpoints_dir='outputs', exp_name='DGCNN_SUBCENTER_SR2', eval_step=1, save_step=10, ckpt_path='/content/SemNov_AML_DAAI_23-24/trained_models/DGCNN_SUBCENTER_SR2.pth', src='SR2', sonn_split='main_split', sonn_h5_name='objectdataset.h5', augm_set='rw', grad_norm_clip=-1, num_points=1024, num_points_test=2048, wandb_name=None, wandb_group='md-2-sonn-augmCorr', wandb_proj='benchmark-3d-ood-cla', wandb_api=None, loss='subcenter_arcface', cs=False, cs_gan_lr=0.0002, cs_beta=0.1, save_feats=None, open_shape='openshape-pointbert-vitb32-rgb', corruption=None, tar1='none', tar2='none')
 ModelNet40_OOD - Reading data from h5py file: /content/3D_OS_release_data/modelnet40_normal_resampled/ood_sets_cache/SR2_train.h5
 ModelNet40_OOD - split: train, categories: {'bed': 0, 'toilet': 1, 'desk': 2, 'monitor': 3, 'table': 2}
 SR2 train data len: 1916
@@ -20,12 +22,8 @@ ScanObject - num_points: 2048, sonn_split: main_split, h5_suffix: objectdataset.
 
 
 
+
 Src logits: torch.Size([788, 512]), tar1 logits: torch.Size([1255, 512]), tar2 logits: torch.Size([847, 512])
-Src pred: torch.Size([788]), tar1 pred: torch.Size([1255]), tar2 pred: torch.Size([847])
-Src labels: torch.Size([788]), tar1 labels: torch.Size([1255]), tar2 labels: torch.Size([847])
-Src: ['bed', 'toilet', 'desk', 'display', 'table']
-Tar1: ['chair', 'shelf', 'door', 'sink', 'sofa']
-Tar2: ['bag', 'bin', 'box', 'cabinet', 'pillow']
 
 ################################################################################
 Computing OOD metrics with distance from train features...
