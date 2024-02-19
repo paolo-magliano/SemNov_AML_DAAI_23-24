@@ -10,8 +10,8 @@ from datasets.modelnet import *
 from datasets.scanobject import *
 from classifiers.trainer_cla_md import *
 
-import pyvista as pv
-from pyvista import examples
+import pyvista
+
 
 if __name__ == '__main__':
     opt = get_args()
@@ -54,5 +54,6 @@ if __name__ == '__main__':
         for point, label in zip(points, labels):
             pt = to_numpy(point)
             print(f"Label: {label}, Points: {pt.shape}")
-            pv.plot(pt)
-            break
+            pyvista.plot(pt)
+            print("Done")
+            exit()
