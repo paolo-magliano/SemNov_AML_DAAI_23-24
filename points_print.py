@@ -52,6 +52,7 @@ if __name__ == '__main__':
     for i, batch in enumerate(loader, 0):
         points, labels = batch[0], batch[1]
         for point, label in zip(points, labels):
-            print(f"Label: {label}, Points: {point.shape}")
-            pv.plot(point.to('cpu').numpy(), title=f"{select}: {label}")
+            pt = to_numpy(point)
+            print(f"Label: {label}, Points: {pt.shape}")
+            pv.plot(pt)
             break
