@@ -51,5 +51,6 @@ if __name__ == '__main__':
     for i, batch in enumerate(loader, 0):
         points, labels = batch[0], batch[1]
         for point, label in zip(points, labels):
-            pv.plot(point, title=f"{select} {label}", window_size=(1024, 1024))
+            print(f"Label: {label}, Points: {point.shape}")
+            pv.plot(point)
             break
